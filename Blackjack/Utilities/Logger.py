@@ -1,8 +1,8 @@
 ####################
 #
-# HiLoCounting.py
+# Logger.py
 #
 ####################
 
-class HiLoCounting:
+class Logger:
     pass

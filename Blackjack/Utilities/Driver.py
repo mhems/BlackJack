@@ -1,8 +1,8 @@
 ####################
 #
-# HiLoCounting.py
+# Driver.py
 #
 ####################
 
-class HiLoCounting:
+class Driver:
     pass

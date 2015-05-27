@@ -1,8 +1,8 @@
 ####################
 #
-# HiLoCounting.py
+# ConfigurationParser.py
 #
 ####################
 
-class HiLoCounting:
+class ConfigurationParser:
     pass

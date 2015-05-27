@@ -1,8 +1,8 @@
 ####################
 #
-# HiLoCounting.py
+# StrategyTableParser.py
 #
 ####################
 
-class HiLoCounting:
+class StrategyTableParser:
     pass
