@@ -4,51 +4,81 @@
 #
 ####################
 
+from itertools import groupby
 from Card import *
+import Hand
 
-class BlackjackHand:
-
+class BlackjackHand(Hand.Hand):
+    """Represents Blackjack hand"""
+    
     BLACKJACK_VALUE = 21
     
     def __init__(self):
-        self.cards = []
+        """Initializes hand to have no cards"""
+        self.__cards = []
 
-    @property
     def value(self):
-        pass
-
-    @property
-    def softValue(self):
-        pass
+        """Returns largest non-bust value if possible, else largest value"""
+        val = sum([c.value for c in self.__cards if not c.isAce()])
+        nAces = self.numAces()
+        if nAces > 0:
+            if nAces > 1:
+                val += (nAces - 1) * Card.SOFT_ACE_VALUE
+            if val + Card.HARD_ACE_VALUE <= BlackjackHand.BLACKJACK_VALUE:
+                val += Card.HARD_ACE_VALUE
+            else:
+                val += Card.SOFT_ACE_VALUE
+        return val
     
-    @property
+    def isSoft(self):
+        """Returns True iff hand has all aces being used as soft values"""
+        val = sum([c.value for c in self.__cards if not c.isAce()])
+        nAces = self.numAces()
+        if nAces > 0:
+            if nAces > 1:
+                val += (nAces - 1) * Card.SOFT_ACE_VALUE
+            if val + Card.HARD_ACE_VALUE <= BlackjackHand.BLACKJACK_VALUE:
+                return False
+            else:
+                return True
+        return False
+
     def numCards(self):
-        return len(self.cards)
+        """Returns number of cards in hand"""
+        return len(self.__cards)
+
+    def numAces(self):
+        """Returns number of ace cards in hand"""
+        return len([c for c in self.__cards if c.isAce()])
 
     def isBlackjack(self):
-        return self.numCards == 2 and self.value == BlackjackHand.BLACKJACK_VALUE
+        """Returns True iff initial two cards sum to blackjack value"""
+        return self.numCards() == 2 and self.value() == BlackjackHand.BLACKJACK_VALUE
     
-    def isPair(self):
-        return self.numCards == 2 and self.cards[0].rank == self.cards[1].rank
+    def isPairByRank(self):
+        """Returns True iff initial two cards are equal in rank"""
+        return self.numCards() == 2 and self.__cards[0].rank == self.__cards[1].rank
 
+    def isPairByValue(self):
+        """Returns True iff initial two cards are equal in value"""
+        return self.numCards() == 2 and self.__cards[0].value == self.__cards[1].value
+    
     def isBust(self):
-        return self.value > BlackjackHand.BLACKJACK_VALUE
+        """Returns True iff no hand variant is less than or equal to blackjack value"""
+        return self.value() > BlackjackHand.BLACKJACK_VALUE
 
     def hasAce(self):
-        return len(ifilter(lambda x: x.isAce(), self.cards)) >= 1
+        """Returns True iff hand has at least one ace"""
+        return self.numAces >= 1
 
-    def addCards(self,*args):
-        if args:
-            self.cards.extend(list(args))
+    def addCards(self,cards):
+        """Adds args to hand"""
+        self.__cards.extend(cards)
 
     def reset(self):
-        self.cards = []
+        """Removes all cards from hand"""
+        self.__cards = []
             
     def __str__(self):
-        return ', '.join((str(c) for c in self.cards))
-
-            
-if __name__ == '__main__':
-    hand = BlackjackHand()
-    hand.addCards(Card('A','C'),Card(4,'D'))
-    print(hand)
+        """Returns comma delimited list of cards' representations"""
+        return ', '.join((str(c) for c in self.__cards))

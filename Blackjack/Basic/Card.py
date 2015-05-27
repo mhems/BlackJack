@@ -5,7 +5,10 @@
 ####################
 
 class Card:
-
+    """Represents a playing card"""
+    
+    HARD_ACE_VALUE = 11
+    SOFT_ACE_VALUE = 1
     ranks = [2,3,4,5,6,7,8,9,10,'J','Q','K','A']
     suits = ['S','H','D','C']
 
@@ -22,6 +25,7 @@ class Card:
     __charToNameDict['C'] = 'Clubs'
     
     def __init__(self, rank, suit):
+        """Initializes card's rank and suit to rank and suit respectively"""
         self.__rank = rank if isinstance(rank,int) else rank[0].upper()
         self.__suit = suit[0].upper()
         if self.__rank not in Card.ranks:
@@ -31,24 +35,29 @@ class Card:
         
     @property
     def rank(self):
+        """Returns rank of card"""
         return Card.__charToNameDict[self.__rank]
 
     @rank.setter
     def rank(self,_):
+        """Prevents rank from being set"""
         raise TypeError("Cannot set card's rank")
 
     @property
     def suit(self):
+        """Returns suit of card"""
         return Card.__charToNameDict[self.__suit]
     
     @suit.setter
     def suit(self,_):
+        """Prevents suit from being set"""
         raise TypeError("Cannot set card's suit")
 
     @property
     def value(self):
+        """Returns integer value of card"""
         if self.isAce():
-            return [1,11]
+            return Card.HARD_ACE_VALUE
         elif self.isFaceCard():
             return 10
         else:
@@ -56,38 +65,30 @@ class Card:
 
     @value.setter
     def value(self,_):
+        """Prevents value from being set"""
         raise TypeError("Cannot set card's value")
 
     def __str__(self):
+        """Returns canonical representation of card"""
         return str(self.rank) + ' of ' + self.suit
 
     def __repr__(self):
+        """Returns canonical representation of card"""
         return str(self.rank) + ' of ' + self.suit
 
     def isAce(self):
+        """Returns True iff card is an Ace"""
         return self.__rank == 'A'
 
     def isFaceCard(self):
+        """Returns True iff card is a face card"""
         return self.__rank in ['J','Q','K','A']
 
     @staticmethod
     def makeDeck():
+        """Returns list of 52 cards over all ranks and suits"""
         cards = []
         for suit in Card.suits:
             for rank in Card.ranks:
                 cards.append(Card(rank,suit))
         return cards
-
-    
-if __name__ == '__main__':
-    c = Card(4,'D')
-    print(c)
-    #d = Card(4,'E')
-    print(c.rank)
-    print(c.suit)
-    print(c.value)
-    a = Card('A', 'D')
-    print(a.value)
-    j = Card('J', 'D')
-    print(j.value)
-    #    c.rank = 4

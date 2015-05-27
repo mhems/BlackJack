@@ -7,9 +7,12 @@
 from Card import *
 
 class Shoe:
+    """Represents a shoe of decks for dealing purposes"""
+
     NUM_CARDS_PER_DECK = 52
 
     def __init__(self,n,algorithm,cutIndex=0):
+        """Initializes shoe to have n decks, algorithm function for shuffling, and cutIndex"""
         self.__cards = []
         self.numDecks = n
         self.__algorithm = algorithm
@@ -22,15 +25,14 @@ class Shoe:
             self.__decks.append(Card.makeDeck())
 
     def deal(self,n=1):
+        """Remove and return n cards from beginning of shoe"""
         c = []
         for i in range(n):
             c.append(self.__dealOneCard())
         return c
-
-    def burn(self,n=1):
-        deal(n)
-
+    
     def __dealOneCard(self):
+        """Convenience method to deal one card"""
         if self.isEmpty():
             self.__decks = self.__algorithm(self.__decks)
             self.__index = 0
@@ -40,17 +42,17 @@ class Shoe:
         return c
     
     def numCardsRemainingToBeDealt(self):
+        """Returns number of cards remaining to be dealt from shoe"""
         return self.numDecks * Shoe.NUM_CARDS_PER_DECK - self.cutIndex
 
     def numCardsRemainingInShoe(self):
+        """Returns number of cards remaining in shoe"""
         return self.numDecks * Shoe.NUM_CARDS_PER_DECK - self.__index
     
     def isExhausted(self):
+        """Returns True iff all cards that will be dealt have been dealt"""
         return self.index >= self.cutIndex
 
     def isEmpty(self):
+        """Returns True iff all cards in shoe have been dealt"""
         return self.index >= self.numDecks * Shoe.NUM_CARDS_PER_DECK
-
-if __name__ == '__main__':
-    s = Shoe(6,None)
-    print(s)
