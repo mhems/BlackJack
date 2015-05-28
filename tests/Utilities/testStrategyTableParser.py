@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testStrategyTableParser.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testStrategyTableParser(unittest.TestCase):
     def setUp(self):
         pass
 

@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testHiLoCounting.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testHiLoCounting(unittest.TestCase):
     def setUp(self):
         pass
 

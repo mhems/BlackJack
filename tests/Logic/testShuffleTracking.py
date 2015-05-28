@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testShuffleTracking.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testShuffleTracking(unittest.TestCase):
     def setUp(self):
         pass
 

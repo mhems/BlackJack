@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testConfigurationParser.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testConfigurationParser(unittest.TestCase):
     def setUp(self):
         pass
 

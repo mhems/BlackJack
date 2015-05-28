@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testChipStack.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testChipStack(unittest.TestCase):
     def setUp(self):
         pass
 

@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testBank.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testBank(unittest.TestCase):
     def setUp(self):
         pass
 

@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testLogger.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testLogger(unittest.TestCase):
     def setUp(self):
         pass
 

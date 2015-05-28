@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testDriver.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testDriver(unittest.TestCase):
     def setUp(self):
         pass
 

@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testSurrenderCommand.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testSurrenderCommand(unittest.TestCase):
     def setUp(self):
         pass
 

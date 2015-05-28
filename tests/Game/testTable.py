@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testTable.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testTable(unittest.TestCase):
     def setUp(self):
         pass
 

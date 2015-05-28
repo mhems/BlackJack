@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testSplitCommand.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testSplitCommand(unittest.TestCase):
     def setUp(self):
         pass
 

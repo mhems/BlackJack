@@ -1,12 +1,12 @@
 ####################
 #
-# testCard.py
+# testHumanInputAction.py
 #
 ####################
 
 import unittest
 
-class testCard(unittest.TestCase):
+class testHumanInputAction(unittest.TestCase):
     def setUp(self):
         pass
 
