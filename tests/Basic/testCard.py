@@ -4,6 +4,7 @@
 #
 ####################
 
+from Blackjack.Basic.Card import Card
 import unittest
 
 class testCard(unittest.TestCase):
