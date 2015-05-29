@@ -4,6 +4,9 @@
 #
 ####################
 
+from functools import total_ordering
+
+@total_ordering
 class Card:
     """Represents a playing card"""
     
@@ -76,6 +79,14 @@ class Card:
         """Returns canonical representation of card"""
         return str(self.rank) + ' of ' + self.suit
 
+    def __eq__(self,other):
+        """Returns True if self has equal rank to that of other"""
+        return self.__rank == other.__rank
+
+    def __lt__(self,other):
+        """Returns True iff self has rank less than that of other"""
+        return Card.ranks.index(self.__rank) < Card.ranks.index(other.__rank)
+
     def isAce(self):
         """Returns True iff card is an Ace"""
         return self.__rank == 'A'
@@ -87,8 +98,4 @@ class Card:
     @staticmethod
     def makeDeck():
         """Returns list of 52 cards over all ranks and suits"""
-        cards = []
-        for suit in Card.suits:
-            for rank in Card.ranks:
-                cards.append(Card(rank,suit))
-        return cards
+        return [Card(r,s) for r in Card.ranks for s in Card.suits]

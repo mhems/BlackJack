@@ -4,7 +4,7 @@
 #
 ####################
 
-from Card import *
+from . import Card
 
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""

@@ -5,8 +5,8 @@
 ####################
 
 from itertools import groupby
-from Card import *
-import Hand
+from . import Card
+from . import Hand
 
 class BlackjackHand(Hand.Hand):
     """Represents Blackjack hand"""
