@@ -35,12 +35,12 @@ Logic
 * HiLoCounting
 * ShuffleTracking
 * Action
-* Hit
-* Split
-* Double
-* Stand
-* Surrender
-* EarlySurrender
+* HitCommand
+* SplitCommand
+* DoubleCommand
+* StandCommand
+* SurrenderCommand
+* EarlySurrenderCommand
 * 
 
 Game
