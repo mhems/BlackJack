@@ -62,11 +62,24 @@ class testCard(unittest.TestCase):
         a = Card('A','S')
         self.assertNotEqual(c,a,'testCard:testEq:Cards should not be equal')
 
-    def testLE(self):
-        c = Card(5,'H')
-        n = Card(9,'S')
-        self.assertTrue(c <  n,'testCard:testLE:Cards expected to be in order')
-        self.assertFalse(n < c,'testCard:testLE:Cards expected to not be in order')
+    def testRankEquivalent(self):
+        c = Card(4,'H')
+        c1 = Card(4, 'D')
+        self.assertTrue(c.rankEquivalent(c1),'testCard:testRankEq:Cards should have same rank')
+        c = Card('J','H')
+        c1 = Card('K','D')
+        self.assertFalse(c.rankEquivalent(c1),'testCard:testRankEq:Cards should not have same rank')
+
+    def testValueEquivalent(self):
+        c = Card(4,'H')
+        c1 = Card(4,'D')
+        self.assertTrue(c.valueEquivalent(c1),'testCard:testValueEq:Cards should have same value')
+        c = Card('J','H')
+        c1 = Card('K','C')
+        self.assertTrue(c.valueEquivalent(c1),'testCard:testValueEq:Face cards should have same value')
+        c = Card('A','H')
+        c1 = Card('J','C')
+        self.assertFalse(c.valueEquivalent(c1),'testCard:testValueEq:Cards should not have same value')
 
     def testIsAce(self):
         c = Card('A','H')

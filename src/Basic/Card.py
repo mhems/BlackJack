@@ -4,9 +4,6 @@
 #
 ####################
 
-from functools import total_ordering
-
-@total_ordering
 class Card:
     """Represents a playing card"""
     
@@ -80,13 +77,21 @@ class Card:
         return str(self.rank) + ' of ' + self.suit
 
     def __eq__(self,other):
-        """Returns True if self has equal rank to that of other"""
-        return self.__rank == other.__rank
+        """Returns True if self has equal rank and suit to that of other"""
+        return self.__rank == other.__rank and self.__suit == other.__suit
 
-    def __lt__(self,other):
-        """Returns True iff self has rank less than that of other"""
-        return Card.ranks.index(self.__rank) < Card.ranks.index(other.__rank)
+    def __ne__(self,other):
+        """Returns True iff self is not equal to other"""
+        return not self == other
+    
+    def rankEquivalent(self,other):
+        """Returns True iff other has equivalent rank"""
+        return self.rank == other.rank
 
+    def valueEquivalent(self,other):
+        """Returns True iff other has equivalent value"""
+        return self.value == other.value
+    
     def isAce(self):
         """Returns True iff card is an Ace"""
         return self.__rank == 'A'

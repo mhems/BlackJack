@@ -41,7 +41,7 @@ class testShoe(unittest.TestCase):
         self.assertEqual(len(c),4,'testShoe:testDeal:Deal should return list of 4 cards')
         c = s.deal(2*52-5-26)
         c = s.deal()[0]
-        self.assertEqual(c,Card('A','C'),'testShoe:testDeal:Deal at end of shoe should prompt shuffle')
+        self.assertEqual(c,Card('A','D'),'testShoe:testDeal:Deal at end of shoe should prompt shuffle')
 
     def testDealOneCard(self):
         s = Shoe(3,alg,150)
@@ -49,9 +49,9 @@ class testShoe(unittest.TestCase):
             c = s.dealOneCard()
             self.assertTrue(isinstance(c,Card),'testShoe:testDealOneCard:Deal one card should return one card')
         c = s.dealOneCard()
-        self.assertEqual(c,Card('A','C'),'testShoe:testDealOneCard:Deal should prompt shuffle')
+        self.assertEqual(c,Card('A','D'),'testShoe:testDealOneCard:Deal should prompt shuffle')
         c = s.dealOneCard()
-        self.assertEqual(c,Card('A','D'),'testShoe:testDealOneCard:Deal should deal in order after shuffle')
+        self.assertEqual(c,Card('A','H'),'testShoe:testDealOneCard:Deal should deal in order after shuffle')
         
     def testNumCardsRemainingToBeDealt(self):
         s = Shoe(3,alg)
