@@ -5,6 +5,9 @@
 ####################
 
 from . import Card
+from math import floor
+
+BURN_ONE_ON_SHUFFLE = True
 
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""
@@ -17,33 +20,34 @@ class Shoe:
         self.numDecks = n
         self.__algorithm = algorithm
         self.__index = 0
-        if isinstance(self.cutIndex,float):
-            self.cutIndex = math.floor(n*Shoe.NUM_CARDS_PER_DECK*cutIndex)
+        if isinstance(cutIndex,float):
+            self.cutIndex = int(floor(n*Shoe.NUM_CARDS_PER_DECK*cutIndex))
         else:
             self.cutIndex = cutIndex if cutIndex > 0 else n * Shoe.NUM_CARDS_PER_DECK - Shoe.NUM_CARDS_PER_DECK/2
         for i in range(n):
-            self.__decks.append(Card.makeDeck())
+            self.__cards.extend(Card.Card.makeDeck())
 
     def deal(self,n=1):
         """Remove and return n cards from beginning of shoe"""
         c = []
         for i in range(n):
-            c.append(self.__dealOneCard())
+            c.append(self.dealOneCard())
         return c
     
-    def __dealOneCard(self):
+    def dealOneCard(self):
         """Convenience method to deal one card"""
-        if self.isEmpty():
-            self.__decks = self.__algorithm(self.__decks)
+        if self.isExhausted():
+            self.__cards = self.__algorithm(self.__cards)
             self.__index = 0
-            self.burn()
+            if BURN_ONE_ON_SHUFFLE:
+                self.dealOneCard()
         c = self.__cards[self.__index]
         self.__index += 1
         return c
     
     def numCardsRemainingToBeDealt(self):
         """Returns number of cards remaining to be dealt from shoe"""
-        return self.numDecks * Shoe.NUM_CARDS_PER_DECK - self.cutIndex
+        return self.cutIndex - self.__index
 
     def numCardsRemainingInShoe(self):
         """Returns number of cards remaining in shoe"""
@@ -51,8 +55,9 @@ class Shoe:
     
     def isExhausted(self):
         """Returns True iff all cards that will be dealt have been dealt"""
-        return self.index >= self.cutIndex
+        return self.__index >= self.cutIndex
 
     def isEmpty(self):
         """Returns True iff all cards in shoe have been dealt"""
-        return self.index >= self.numDecks * Shoe.NUM_CARDS_PER_DECK
+        """This is only possible if cut index == len(self.__cards)"""
+        return self.__index >= self.numDecks * Shoe.NUM_CARDS_PER_DECK
