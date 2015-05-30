@@ -38,21 +38,11 @@ class Card:
         """Returns rank of card"""
         return Card.__charToNameDict[self.__rank]
 
-    @rank.setter
-    def rank(self,_):
-        """Prevents rank from being set"""
-        raise TypeError("Cannot set card's rank")
-
     @property
     def suit(self):
         """Returns suit of card"""
         return Card.__charToNameDict[self.__suit]
     
-    @suit.setter
-    def suit(self,_):
-        """Prevents suit from being set"""
-        raise TypeError("Cannot set card's suit")
-
     @property
     def value(self):
         """Returns integer value of card"""
@@ -62,11 +52,6 @@ class Card:
             return 10
         else:
             return self.rank
-
-    @value.setter
-    def value(self,_):
-        """Prevents value from being set"""
-        raise TypeError("Cannot set card's value")
 
     def __str__(self):
         """Returns canonical representation of card"""
