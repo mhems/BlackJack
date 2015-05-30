@@ -5,7 +5,7 @@
 ####################
 
 from itertools import groupby
-from . import Card
+from src.Basic.Card import *
 from . import Hand
 
 class BlackjackHand(Hand.Hand):
@@ -30,19 +30,6 @@ class BlackjackHand(Hand.Hand):
                 val += Card.SOFT_ACE_VALUE
         return val
     
-    def isSoft(self):
-        """Returns True iff hand has all aces being used as soft values"""
-        val = sum([c.value for c in self.__cards if not c.isAce()])
-        nAces = self.numAces()
-        if nAces > 0:
-            if nAces > 1:
-                val += (nAces - 1) * Card.SOFT_ACE_VALUE
-            if val + Card.HARD_ACE_VALUE <= BlackjackHand.BLACKJACK_VALUE:
-                return False
-            else:
-                return True
-        return False
-
     def numCards(self):
         """Returns number of cards in hand"""
         return len(self.__cards)
@@ -57,11 +44,11 @@ class BlackjackHand(Hand.Hand):
     
     def isPairByRank(self):
         """Returns True iff initial two cards are equal in rank"""
-        return self.numCards() == 2 and self.__cards[0].rank == self.__cards[1].rank
+        return self.numCards() == 2 and self.__cards[0].rankEquivalent(self.__cards[1])
 
     def isPairByValue(self):
         """Returns True iff initial two cards are equal in value"""
-        return self.numCards() == 2 and self.__cards[0].value == self.__cards[1].value
+        return self.numCards() == 2 and self.__cards[0].valueEquivalent(self.__cards[1])
     
     def isBust(self):
         """Returns True iff no hand variant is less than or equal to blackjack value"""
@@ -69,7 +56,7 @@ class BlackjackHand(Hand.Hand):
 
     def hasAce(self):
         """Returns True iff hand has at least one ace"""
-        return self.numAces >= 1
+        return self.numAces() >= 1
 
     def addCards(self,cards):
         """Adds args to hand"""
@@ -81,4 +68,4 @@ class BlackjackHand(Hand.Hand):
             
     def __str__(self):
         """Returns comma delimited list of cards' representations"""
-        return ', '.join((str(c) for c in self.__cards))
+        return '[' + ', '.join((str(c) for c in self.__cards)) +']'
