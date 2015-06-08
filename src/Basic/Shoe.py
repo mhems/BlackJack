@@ -7,7 +7,6 @@
 from . import Card
 from math import floor
 
-BURN_ONE_ON_SHUFFLE = True
 
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""
@@ -39,8 +38,7 @@ class Shoe:
         if self.isExhausted():
             self.__cards = self.__algorithm(self.__cards)
             self.__index = 0
-            if BURN_ONE_ON_SHUFFLE:
-                self.dealOneCard()
+            self.deal(Configuration.configuration['NUM_CARDS_BURN_ON_SHUFFLE'])
         c = self.__cards[self.__index]
         self.__index += 1
         return c
