@@ -5,10 +5,11 @@
 ####################
 
 from itertools import groupby
-from src.Basic.Card import *
-from . import Hand
 
-class BlackjackHand(Hand.Hand):
+from src.Basic.Card import Card
+from src.Basic.Hand import Hand
+
+class BlackjackHand(Hand):
     """Represents Blackjack hand"""
     
     BLACKJACK_VALUE = 21

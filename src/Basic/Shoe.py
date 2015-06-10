@@ -4,9 +4,9 @@
 #
 ####################
 
-from . import Card
 from math import floor
 
+from src.Basic.Card import Card
 
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""
@@ -24,7 +24,7 @@ class Shoe:
         else:
             self.cutIndex = cutIndex if cutIndex > 0 else n * Shoe.NUM_CARDS_PER_DECK - Shoe.NUM_CARDS_PER_DECK/2
         for i in range(n):
-            self.__cards.extend(Card.Card.makeDeck())
+            self.__cards.extend(Card.makeDeck())
 
     def deal(self,n=1):
         """Remove and return n cards from beginning of shoe"""

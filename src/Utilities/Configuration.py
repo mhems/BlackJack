@@ -5,12 +5,16 @@
 ####################
 
 from configparser import ConfigParser
-import Shoe
+import re
+
+from src.Basic.Shoe import Shoe
+from Utilities import Utilities
 
 # Make silent parsing errors notify user
 
 class Configuration:
-
+    """Provides handling and access of configuration files"""
+    
     RANGE_ALL = 42
     configuration = {
         # > 0
@@ -56,11 +60,12 @@ class Configuration:
     
     @staticmethod
     def loadConfiguration():
-        res = None #parse(command_line_filename)
+        """Loads configuration data"""
+        res = None #Configuration.parseConfigFile(command_line_filename)
         if res:
             Configuration.__assign(res)
         else:
-            res = parse('config.ini')
+            res = Configuration.parseConfigFile('config.ini')
             if res:
                 Configuration.__assign(res)
         # override any options with present command line flags
@@ -72,7 +77,7 @@ class Configuration:
         num_cards = Configuration.configuration['NUM_DECKS'] * Shoe.NUM_CARDS_PER_DECK
         cut_index = Configuration.configuration['CUT_INDEX']
         if abs(cut_index) > num_cards:
-            Utilities.error('CUT_INDEX: (%d) Cut index cannot be greater than number of cards in shoe (%d)', cut_index, num_cards)
+            Utilities.error('CUT_INDEX: (%d) Cut index cannot be greater than number of cards in shoe (%d)' % (cut_index, num_cards))
             
         if cut_index < 0:
             Configuration.configuration['CUT_INDEX'] = num_cards - abs(cut_index)
@@ -80,7 +85,7 @@ class Configuration:
         if num_burn < 0:
             Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be positive' % num_burn) 
         if num_burn > num_cards:
-            Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be at most the number of cards in the deck (%d)', num_burn, num_cards)
+            Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be at most the number of cards in the deck (%d)' % (num_burn, num_cards))
 
         Configuration.__checkRatio('PAYOUT_RATIO')
         Configuration.__checkRatio('BLACKJACK_PAYOUT_RATIO')
@@ -88,29 +93,31 @@ class Configuration:
 
         resplit_num = Configuration.configuration['RESPLIT_UP_TO']
         if resplit_num < 0:
-            Utilities.error('RESPLIT_UP_TO: (%d) Number of times to resplit must be positive')
+            Utilities.error('RESPLIT_UP_TO: (%d) Number of times to resplit must be positive' % resplit_num)
         Configuration.__checkCardRange('CARDS_ALLOWED_FOR_DOUBLE')
         if Configuration.configuration['LATE_SURRENDER']:
             Configuration.__checkCardRange('ALLOWED_LATE_SURRENDER_RANGE')
         if Configuration.configuration['EARLY_SURRENDER']:
             Configuration.__checkCardRange('ALLOWED_EARLY_SURRENDER_RANGE')
-        if Utilities.numErrors() > 0:
+        if Utilities.numErrors > 0:
             Utilities.fatalError('Fatal semantic error in Configuration.configuration options, exiting now')
 
     @staticmethod
     def __checkRatio(flagname):
+        """Semantic check of options with ratio values"""
         value = Configuration.configuration[flagname]
         if isinstance(value, float):
             Configuration.configuration[flagname] = float(value)
         else:
-            match = re.match('([1-9][0-9]+)/([1-9][0-9]+)')
+            match = re.match('([1-9][0-9]*)/([1-9][0-9]*)', value)
             if isinstance(value, str) and match:
                 Configuration.configuration[flagname] = float(int(match.group(1))/int(match.group(2)))
             else:
-                Utilties.error('%s: (%s) Ratio must be either a decimal or fraction', flagname, value)
+                Utilities.error('%s: (%s) Ratio must be either a decimal or fraction' % (flagname, value))
 
     @staticmethod
     def __checkCardRange(flagname):
+        """Semantic check of options with range values"""
         value = Configuration.configuration[flagname]
         if value == '*':
             Configuration.configuration[flagname] = Configuration.RANGE_ALL
@@ -123,6 +130,7 @@ class Configuration:
             
     @staticmethod
     def __assign(conf):
+        """Assigns values from configuration file into dictionary"""
         Configuration.configuration['NUM_DECKS']                     = conf.getint('general','NUM_DECKS')
         Configuration.configuration['PUSH_ON_BLACKJACK']             = conf.getboolean('general','PUSH_ON_BLACKJACK')
         Configuration.configuration['CUT_INDEX']                     = conf.getint('general','CUT_INDEX')
@@ -142,9 +150,9 @@ class Configuration:
         Configuration.configuration['EARLY_SURRENDER']               = conf.getboolean('surrender','EARLY_SURRENDER')
         Configuration.configuration['ALLOWED_EARLY_SURRENDER_RANGE'] = conf.get('surrender','ALLOWED_EARLY_SURRENDER_RANGE')
 
-
     @staticmethod
     def writeConfigFile(filename, dictionary):
+        """Outputs dictionary to file"""
         func = lambda arg: "%s: Configuration.configuration['%s']\n"
         f = open(filename, 'w')
         f.write('[general]\n')
@@ -177,13 +185,15 @@ class Configuration:
         f.write(func('ALLOWED_EARLY_SURRENDER_RANGE'))
         f.write('\n')
         
-def parse(filename):
-    conf = ConfigParser(defaults=Configuration.configuration)
-    num_read = conf.read(filename)
-    if len(num_read) == 1:
-        return conf
-    else:
-        return None
+    @staticmethod
+    def parseConfigFile(filename):
+        """Parses configuration data from file"""
+        conf = ConfigParser(defaults=Configuration.configuration)
+        num_read = conf.read(filename)
+        if len(num_read) == 1:
+            return conf
+        else:
+            return None
 
-Configuration.load()
+Configuration.loadConfiguration()
 print(Configuration.configuration)
