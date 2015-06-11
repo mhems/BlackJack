@@ -102,7 +102,7 @@ class Configuration:
         if Configuration.configuration['EARLY_SURRENDER']:
             Configuration.__checkCardRange('ALLOWED_EARLY_SURRENDER_RANGE')
         if Utilities.numErrors > 0:
-            Utilities.fatalError('Fatal semantic error in Configuration.configuration options, exiting now')
+            Utilities.fatalError('Fatal semantic error in configuration options, exiting now')
 
     @staticmethod
     def __checkRatio(flagname):

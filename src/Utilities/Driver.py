@@ -6,8 +6,10 @@
 
 import os
 
+"""Drives program execution"""
+
 if __name__ == '__main__':
-    # ugly hack to insure imports work
+    # ugly hack to ensure imports work
     abspath = os.path.abspath(__file__)
     os.environ['PYTHONPATH'] += ':' + abspath[:len(abspath)-len(__file__)]
 
