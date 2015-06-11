@@ -7,15 +7,17 @@
 from configparser import ConfigParser
 import re
 
-from src.Basic.Shoe import Shoe
-from Utilities import Utilities
+from src.Basic.Card import Card
+from src.Utilities.Utilities import Utilities
 
 # Make silent parsing errors notify user
 
 class Configuration:
     """Provides handling and access of configuration files"""
     
+    BLACKJACK_VALUE = 21
     RANGE_ALL = 42
+    
     configuration = {
         # > 0
         'NUM_DECKS'                      : 6,
@@ -74,7 +76,7 @@ class Configuration:
         num_decks = Configuration.configuration['NUM_DECKS']
         if num_decks < 1:
             Utilities.error('NUM_DECKS: (%d) Expected number to be at least 1' % num_decks)
-        num_cards = Configuration.configuration['NUM_DECKS'] * Shoe.NUM_CARDS_PER_DECK
+        num_cards = Configuration.configuration['NUM_DECKS'] * Card.NUM_CARDS_PER_DECK
         cut_index = Configuration.configuration['CUT_INDEX']
         if abs(cut_index) > num_cards:
             Utilities.error('CUT_INDEX: (%d) Cut index cannot be greater than number of cards in shoe (%d)' % (cut_index, num_cards))
@@ -195,5 +197,6 @@ class Configuration:
         else:
             return None
 
-Configuration.loadConfiguration()
-print(Configuration.configuration)
+if __name__ == '__main__':
+    Configuration.loadConfiguration()
+    print(Configuration.configuration)

@@ -11,7 +11,8 @@ class Card:
     SOFT_ACE_VALUE = 1
     ranks = [2,3,4,5,6,7,8,9,10,'J','Q','K','A']
     suits = ['S','H','D','C']
-
+    NUM_CARDS_PER_DECK = len(ranks) * len(suits)
+    
     __charToNameDict = {}
     for i in range(2,11):
         __charToNameDict[i] = i

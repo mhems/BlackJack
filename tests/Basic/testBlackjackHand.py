@@ -4,8 +4,8 @@
 #
 ####################
 
-from src.Basic.BlackjackHand import *
-from src.Basic.Card import *
+from src.Basic.BlackjackHand import BlackjackHand
+from src.Basic.Card import Card
 import unittest
 
 class testBlackjackHand(unittest.TestCase):

@@ -4,8 +4,8 @@
 #
 ####################
 
-from src.Basic.Shoe import *
-from src.Basic.Card import *
+from src.Basic.Shoe import Shoe
+from src.Basic.Card import Card
 import unittest
 
 def alg(cards):
