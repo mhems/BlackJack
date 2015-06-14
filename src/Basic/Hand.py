@@ -4,7 +4,7 @@
 #
 ####################
 
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod
 
 class Hand(metaclass=ABCMeta):
     """Abstract base class for card hands"""

@@ -3,7 +3,6 @@
 # Shoe.py
 #
 ####################
-
 from math import floor
 
 from src.Basic.Card import Card
@@ -58,3 +57,19 @@ class Shoe:
         """Returns True iff all cards in shoe have been dealt"""
         """This is only possible if cut index == len(self.__cards)"""
         return self.__index >= self.numDecks * Card.NUM_CARDS_PER_DECK
+
+
+def faro_shuffle(deck):
+    N = len(deck)
+    ret = []
+    for (a,b) in zip(deck[:N], deck[N:]):
+        ret.extend( (a, b) )
+    return ret
+
+def fisher_yates_shuffle(deck):
+    for i in range(len(deck), 1, -1):
+        j = randint(0, i)
+        temp    = deck[i]
+        deck[i] = deck[j]
+        deck[j] = temp
+    return deck
