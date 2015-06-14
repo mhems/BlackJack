@@ -39,6 +39,9 @@ class Configuration:
         # must be * or comma separated list of card ranks
         'CARDS_ALLOWED_FOR_DOUBLE'       : '*',
 
+        # True | False
+        'SPLIT_BY_VALUE'                 : True,
+        # > 0
         'RESPLIT_UP_TO'                  : 4,
         # True | False
         'RESPLIT_ACES'                   : True,
@@ -94,7 +97,7 @@ class Configuration:
         Configuration.__checkRatio('INSURANCE_PAYOUT_RATIO')
 
         resplit_num = Configuration.configuration['RESPLIT_UP_TO']
-        if resplit_num < 0:
+        if resplit_num < 1:
             Utilities.error('RESPLIT_UP_TO: (%d) Number of times to resplit must be positive' % resplit_num)
         Configuration.__checkCardRange('CARDS_ALLOWED_FOR_DOUBLE')
         if Configuration.configuration['LATE_SURRENDER']:
@@ -142,6 +145,7 @@ class Configuration:
         Configuration.configuration['INSURANCE_PAYOUT_RATIO']        = conf.get('payout_ratio','INSURANCE_PAYOUT_RATIO')
         Configuration.configuration['DOUBLE_AFTER_SPLIT_ALLOWED']    = conf.getboolean('double','DOUBLE_AFTER_SPLIT_ALLOWED')
         Configuration.configuration['CARDS_ALLOWED_FOR_DOUBLE']      = conf.get('double','CARDS_ALLOWED_FOR_DOUBLE')
+        Configuration.configuration['SPLIT_BY_VALUE']                = conf.getboolean('split','SPLIT_BY_VALUE')
         Configuration.configuration['RESPLIT_UP_TO']                 = conf.getint('split','RESPLIT_UP_TO')
         Configuration.configuration['RESPLIT_ACES']                  = conf.getboolean('split','RESPLIT_ACES')
         Configuration.configuration['HIT_SPLIT_ACES']                = conf.getboolean('split','HIT_SPLIT_ACES')
@@ -172,6 +176,7 @@ class Configuration:
         f.write(func('CARDS_ALLOWED_FOR_DOUBLE'))
         f.write('\n')
         f.write('[split]\n')
+        f.write(func('SPLIT_BY_VALUE'))
         f.write(func('RESPLIT_UP_TO'))
         f.write(func('RESPLIT_ACES'))
         f.write(func('HIT_SPLIT_ACES'))

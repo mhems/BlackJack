@@ -15,3 +15,11 @@ if __name__ == '__main__':
 
     # parse command line arguments
     # establish all parameters
+
+    """
+blackjack
+    -h (--help) : Display usage information
+    -f (--file) : Specify config file to use
+    
+
+    """
