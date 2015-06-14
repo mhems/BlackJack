@@ -1,0 +1,50 @@
+# Assumptions
+# 4 - 8 decks in shoe
+# Dealer stands on soft 17
+# Double after split
+# Only original bets are lost on dealer blackjack
+
+> Hard totals
+#     2  3  4  5  6  7  8  9 10  A
+ 20   S  S  S  S  S  S  S  S  S  S
+ 19   S  S  S  S  S  S  S  S  S  S
+ 18   S  S  S  S  S  S  S  S  S  S
+ 17   S  S  S  S  S  S  S  S  S  S
+ 16   S  S  S  S  S  H  H Su Su Su
+ 15   S  S  S  S  S  H  H  H Su  H
+ 14   S  S  S  S  S  H  H  H  H  H
+ 13   S  S  S  S  S  H  H  H  H  H
+ 12   H  H  S  S  S  H  H  H  H  H
+ 11  Dh Dh Dh Dh Dh Dh Dh Dh Dh  H
+ 10  Dh Dh Dh Dh Dh Dh Dh Dh  H  H
+  9   H Dh Dh Dh Dh  H  H  H  H  H
+  8   H  H  H  H  H  H  H  H  H  H
+  7   H  H  H  H  H  H  H  H  H  H
+  6   H  H  H  H  H  H  H  H  H  H
+  5   H  H  H  H  H  H  H  H  H  H
+
+
+> Soft totals
+#     2  3  4  5  6  7  8  9 10  A
+ 20   S  S  S  S  S  S  S  S  S  S
+ 19   S  S  S  S  S  S  S  S  S  S
+ 18   S Ds Ds Ds Ds  S  S  H  H  H
+ 17   H Dh Dh Dh Dh  H  H  H  H  H
+ 16   H  H Dh Dh Dh  H  H  H  H  H
+ 15   H  H Dh Dh Dh  H  H  H  H  H
+ 14   H  H  H Dh Dh  H  H  H  H  H
+ 13   H  H  H Dh Dh  H  H  H  H  H
+
+
+> Pairs
+#     2  3  4  5  6  7  8  9 10  A
+  A  Sp Sp Sp Sp Sp Sp Sp Sp Sp Sp
+ 10   S  S  S  S  S  S  S  S  S  S 
+  9  Sp Sp Sp Sp Sp  S Sp Sp  S  S
+  8  Sp Sp Sp Sp Sp Sp Sp Sp Sp Sp
+  7  Sp Sp Sp Sp Sp Sp  H  H  H  H
+  6  Sp Sp Sp Sp Sp  H  H  H  H  H
+  5  Dh Dh Dh Dh Dh Dh Dh Dh  H  H
+  4   H  H  H Sp Sp  H  H  H  H  H
+  3  Sp Sp Sp Sp Sp Sp  H  H  H  H
+  2  Sp Sp Sp Sp Sp Sp  H  H  H  H
