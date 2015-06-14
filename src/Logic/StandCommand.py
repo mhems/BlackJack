@@ -4,6 +4,6 @@
 #
 ####################
 
-class StandCommand:
+class StandCommand(Command):
     """Representation of the stand (stay) action"""
     pass

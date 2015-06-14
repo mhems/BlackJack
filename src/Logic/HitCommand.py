@@ -4,6 +4,6 @@
 #
 ####################
 
-class HitCommand:
+class HitCommand(Command):
     """Representation of hit action"""
     pass

@@ -4,6 +4,6 @@
 #
 ####################
 
-class EarlySurrenderCommand:
+class EarlySurrenderCommand(Command):
     """Representation of the early surrender action"""
     pass

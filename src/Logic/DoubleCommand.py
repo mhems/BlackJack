@@ -4,6 +4,6 @@
 #
 ####################
 
-class DoubleCommand:
+class DoubleCommand(Command):
     """Representation of the double down action"""
     pass
