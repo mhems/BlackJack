@@ -4,6 +4,26 @@
 #
 ####################
 
-class ChipStack:
+class ChipStack(Bank):
     """Representation of player's chip stack"""
-    pass
+
+    def __init__(self):
+        """Initializes ChipStack"""
+        self.__funds = 0
+
+    def withdraw(self, amt):
+        """Attempts to withdraw amt from funds"""
+        """If there are less than amt in funds, returns None"""
+        if amt <= self.__funds:
+            self.__funds -= amt
+            return amt
+        else:
+            return None
+
+    def deposit(self, amt):
+        """Deposits amt into funds"""
+        self.__funds += amt
+
+    def amount(self):
+        """Returns amount of funds"""
+        return self.__funds
