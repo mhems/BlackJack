@@ -10,8 +10,9 @@ class Card:
     HARD_ACE_VALUE = 11
     SOFT_ACE_VALUE = 1
     RANK_REGEX = '10|J(?:ack)?|Q(?:ueen)?|K(?:ing)?|A(?:ce)?|[2-9]'
-    ranks = [2,3,4,5,6,7,8,9,10,'J','Q','K','A']
-    suits = ['S','H','D','C']
+    ranks  = [2,3,4,5,6,7,8,9,10,'J','Q','K','A']
+    suits  = ['S','H','D','C']
+    values = [2,3,4,5,6,7,8,9,10,'A']
     NUM_CARDS_PER_DECK = len(ranks) * len(suits)
     
     __charToNameDict = {}

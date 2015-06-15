@@ -13,8 +13,6 @@ from src.Basic.Card          import Card
 
 class testStrategyChart(unittest.TestCase):
 
-    upcards = [2,3,4,5,6,7,8,9,10,'A']
-
     def setUp(self):
         pass
 
@@ -23,7 +21,7 @@ class testStrategyChart(unittest.TestCase):
 
     def assertRow(self, chart, hand, exp):
         ls = re.split(r' +', exp)
-        for (up, e) in zip(testStrategyChart.upcards, ls):
+        for (up, e) in zip(Card.values, ls):
             a = chart.advise(hand, up)
             self.assertEqual(a, e, 'Hand %s vs %s: Expected %s; Got %s' % (hand, up, e, a))
 
