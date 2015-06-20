@@ -62,7 +62,8 @@ class Configuration:
         # must be * or comma separated list of card ranks
         #'ALLOWED_EARLY_SURRENDER_RANGE'  : ''
 
-        'MINIMUM_BET'                    : 15
+        'MINIMUM_BET'                    : 15,
+        'MAXIMUM_BET'                    : 10000
     }
     
     @staticmethod
@@ -109,7 +110,10 @@ class Configuration:
 
         min_bet = Configuration.configuration['MINIMUM_BET']
         if min_bet <= 0:
-            Utilities.error('MINIMUM BET: (%d) Minimum amount to bet must be positive' * min_bet);
+            Utilities.error('MINIMUM BET: (%d) Minimum amount to bet must be positive' % min_bet);
+        max_bet = Configuration.configuration['MAXIMUM_BET']
+        if max_bet <= 0 or max_bet < min_bet:
+            Utilities.error('MAXIMUM BET: (%d) Maximum amount to bet must be positive number no less than minimum bet amount (%d)' % (max_bet, min_bet))
 
         if Utilities.numErrors > 0:
             Utilities.fatalError('Fatal semantic error in configuration options, exiting now')
@@ -163,6 +167,7 @@ class Configuration:
         Configuration.configuration['EARLY_SURRENDER']               = conf.getboolean('surrender','EARLY_SURRENDER')
         Configuration.configuration['ALLOWED_EARLY_SURRENDER_RANGE'] = conf.get('surrender','ALLOWED_EARLY_SURRENDER_RANGE')
         Configuration.configuration['MINIMUM_BET']                   = conf.getint('game','MINIMUM_BET')
+        Configuration.configuration['MAXIMUM_BET']                   = conf.getint('game','MAXIMUM_BET')
 
     @staticmethod
     def writeConfigFile(filename, dictionary):
@@ -201,6 +206,7 @@ class Configuration:
         f.write('\n')
         f.write('[game]\n')
         f.write(func('MINIMUM_BET'))
+        f.write(func('MAXIMUM_BET'))
         f.write('\n')
 
     @staticmethod
