@@ -61,6 +61,8 @@ class Configuration:
         'EARLY_SURRENDER'                : False,
         # must be * or comma separated list of card ranks
         #'ALLOWED_EARLY_SURRENDER_RANGE'  : ''
+
+        'MINIMUM_BET'                    : 15
     }
     
     @staticmethod
@@ -104,6 +106,11 @@ class Configuration:
             Configuration.__checkCardRange('ALLOWED_LATE_SURRENDER_RANGE')
         if Configuration.configuration['EARLY_SURRENDER']:
             Configuration.__checkCardRange('ALLOWED_EARLY_SURRENDER_RANGE')
+
+        min_bet = Configuration.configuration['MINIMUM_BET']
+        if min_bet <= 0:
+            Utilities.error('MINIMUM BET: (%d) Minimum amount to bet must be positive' * min_bet);
+
         if Utilities.numErrors > 0:
             Utilities.fatalError('Fatal semantic error in configuration options, exiting now')
 
@@ -155,6 +162,7 @@ class Configuration:
         Configuration.configuration['ALLOWED_LATE_SURRENDER_RANGE']  = conf.get('surrender','ALLOWED_LATE_SURRENDER_RANGE')
         Configuration.configuration['EARLY_SURRENDER']               = conf.getboolean('surrender','EARLY_SURRENDER')
         Configuration.configuration['ALLOWED_EARLY_SURRENDER_RANGE'] = conf.get('surrender','ALLOWED_EARLY_SURRENDER_RANGE')
+        Configuration.configuration['MINIMUM_BET']                   = conf.getint('game','MINIMUM_BET')
 
     @staticmethod
     def writeConfigFile(filename, dictionary):
@@ -191,7 +199,10 @@ class Configuration:
         f.write(func('EARLY_SURRENDER'))
         f.write(func('ALLOWED_EARLY_SURRENDER_RANGE'))
         f.write('\n')
-        
+        f.write('[game]\n')
+        f.write(func('MINIMUM_BET'))
+        f.write('\n')
+
     @staticmethod
     def parseConfigFile(filename):
         """Parses configuration data from file"""
