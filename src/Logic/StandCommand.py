@@ -7,9 +7,9 @@
 class StandCommand(Command):
     """Representation of the stand (stay) action"""
 
-    def perform(self):
+    def execute(self):
         """Perform Stand command"""
-        pass
+        self.__player.stand()
         
     def __str__(self):
         """Returns string representing Stand Command"""

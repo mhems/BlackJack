@@ -13,4 +13,4 @@ class BasicStrategyAction(Action):
     def act(self, hand, upcard):
         """Acts based on basic strategy"""
         advice = self.strategy.advise(self, hand, upcard)
-        return Command.command_map[advice.upper()]
+        return Command.getCommand(advice.upper())

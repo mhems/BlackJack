@@ -7,9 +7,9 @@
 class EarlySurrenderCommand(Command):
     """Representation of the early surrender action"""
 
-    def perform(self):
+    def execute(self):
         """Perform Early Surrender command"""
-        pass
+        self.__player.early_surrender()
         
     def __str__(self):
         """Returns string representing Early Surrender Command"""

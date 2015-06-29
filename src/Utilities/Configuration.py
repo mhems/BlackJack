@@ -18,7 +18,7 @@ class Configuration:
     BLACKJACK_VALUE = 21
     RANGE_ALL = 42
     
-    configuration = {
+    __configuration = {
         # > 0
         'NUM_DECKS'                      : 6,
         # True | False
@@ -79,17 +79,17 @@ class Configuration:
         # override any options with present command line flags
 
         # check semantics
-        num_decks = Configuration.configuration['NUM_DECKS']
+        num_decks = Configuration.__configuration['NUM_DECKS']
         if num_decks < 1:
             Utilities.error('NUM_DECKS: (%d) Expected number to be at least 1' % num_decks)
-        num_cards = Configuration.configuration['NUM_DECKS'] * Card.NUM_CARDS_PER_DECK
-        cut_index = Configuration.configuration['CUT_INDEX']
+        num_cards = Configuration.__configuration['NUM_DECKS'] * Card.NUM_CARDS_PER_DECK
+        cut_index = Configuration.__configuration['CUT_INDEX']
         if abs(cut_index) > num_cards:
             Utilities.error('CUT_INDEX: (%d) Cut index cannot be greater than number of cards in shoe (%d)' % (cut_index, num_cards))
             
         if cut_index < 0:
-            Configuration.configuration['CUT_INDEX'] = num_cards - abs(cut_index)
-        num_burn = Configuration.configuration['NUM_CARDS_BURN_ON_SHUFFLE']
+            Configuration.__configuration['CUT_INDEX'] = num_cards - abs(cut_index)
+        num_burn = Configuration.__configuration['NUM_CARDS_BURN_ON_SHUFFLE']
         if num_burn < 0:
             Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be positive' % num_burn) 
         if num_burn > num_cards:
@@ -99,19 +99,19 @@ class Configuration:
         Configuration.__checkRatio('BLACKJACK_PAYOUT_RATIO')
         Configuration.__checkRatio('INSURANCE_PAYOUT_RATIO')
 
-        resplit_num = Configuration.configuration['RESPLIT_UP_TO']
+        resplit_num = Configuration.__configuration['RESPLIT_UP_TO']
         if resplit_num < 1:
             Utilities.error('RESPLIT_UP_TO: (%d) Number of times to resplit must be positive' % resplit_num)
         Configuration.__checkCardRange('CARDS_ALLOWED_FOR_DOUBLE')
-        if Configuration.configuration['LATE_SURRENDER']:
+        if Configuration.__configuration['LATE_SURRENDER']:
             Configuration.__checkCardRange('ALLOWED_LATE_SURRENDER_RANGE')
-        if Configuration.configuration['EARLY_SURRENDER']:
+        if Configuration.__configuration['EARLY_SURRENDER']:
             Configuration.__checkCardRange('ALLOWED_EARLY_SURRENDER_RANGE')
 
-        min_bet = Configuration.configuration['MINIMUM_BET']
+        min_bet = Configuration.__configuration['MINIMUM_BET']
         if min_bet <= 0:
             Utilities.error('MINIMUM BET: (%d) Minimum amount to bet must be positive' % min_bet);
-        max_bet = Configuration.configuration['MAXIMUM_BET']
+        max_bet = Configuration.__configuration['MAXIMUM_BET']
         if max_bet <= 0 or max_bet < min_bet:
             Utilities.error('MAXIMUM BET: (%d) Maximum amount to bet must be positive number no less than minimum bet amount (%d)' % (max_bet, min_bet))
 
@@ -121,58 +121,62 @@ class Configuration:
     @staticmethod
     def __checkRatio(flagname):
         """Semantic check of options with ratio values"""
-        value = Configuration.configuration[flagname]
+        value = Configuration.__configuration[flagname]
         if isinstance(value, float):
-            Configuration.configuration[flagname] = float(value)
+            Configuration.__configuration[flagname] = float(value)
         else:
             match = re.match('([1-9][0-9]*)/([1-9][0-9]*)', value)
             if isinstance(value, str) and match:
-                Configuration.configuration[flagname] = float(int(match.group(1))/int(match.group(2)))
+                Configuration.__configuration[flagname] = float(int(match.group(1))/int(match.group(2)))
             else:
                 Utilities.error('%s: (%s) Ratio must be either a decimal or fraction' % (flagname, value))
 
     @staticmethod
     def __checkCardRange(flagname):
         """Semantic check of options with range values"""
-        value = Configuration.configuration[flagname]
+        value = Configuration.__configuration[flagname]
         if value == '*':
-            Configuration.configuration[flagname] = Configuration.RANGE_ALL
+            Configuration.__configuration[flagname] = Configuration.RANGE_ALL
         else:
             ls = list(set(re.findall('10|J|Q|K|A|[2-9]', value, re.I)))
             for idx, elem in enumerate(ls):
                 if re.match('10|[2-9]', elem):
                     ls[idx] = int(elem)
-            Configuration.configuration[flagname] = ls
+            Configuration.__configuration[flagname] = ls
             
     @staticmethod
     def __assign(conf):
         """Assigns values from configuration file into dictionary"""
-        Configuration.configuration['NUM_DECKS']                     = conf.getint('general','NUM_DECKS')
-        Configuration.configuration['PUSH_ON_BLACKJACK']             = conf.getboolean('general','PUSH_ON_BLACKJACK')
-        Configuration.configuration['CUT_INDEX']                     = conf.getint('general','CUT_INDEX')
-        Configuration.configuration['NUM_CARDS_BURN_ON_SHUFFLE']     = conf.getint('general','NUM_CARDS_BURN_ON_SHUFFLE')
-        Configuration.configuration['PAYOUT_RATIO']                  = conf.get('payout_ratio','PAYOUT_RATIO')
-        Configuration.configuration['BLACKJACK_PAYOUT_RATIO']        = conf.get('payout_ratio','BLACKJACK_PAYOUT_RATIO')
-        Configuration.configuration['INSURANCE_PAYOUT_RATIO']        = conf.get('payout_ratio','INSURANCE_PAYOUT_RATIO')
-        Configuration.configuration['DOUBLE_AFTER_SPLIT_ALLOWED']    = conf.getboolean('double','DOUBLE_AFTER_SPLIT_ALLOWED')
-        Configuration.configuration['CARDS_ALLOWED_FOR_DOUBLE']      = conf.get('double','CARDS_ALLOWED_FOR_DOUBLE')
-        Configuration.configuration['SPLIT_BY_VALUE']                = conf.getboolean('split','SPLIT_BY_VALUE')
-        Configuration.configuration['RESPLIT_UP_TO']                 = conf.getint('split','RESPLIT_UP_TO')
-        Configuration.configuration['RESPLIT_ACES']                  = conf.getboolean('split','RESPLIT_ACES')
-        Configuration.configuration['HIT_SPLIT_ACES']                = conf.getboolean('split','HIT_SPLIT_ACES')
-        Configuration.configuration['DEALER_HITS_ON_SOFT_17']        = conf.getboolean('dealer','DEALER_HITS_ON_SOFT_17')
-        Configuration.configuration['DEALER_CHECKS_FOR_BLACKJACK']   = conf.getboolean('dealer','DEALER_CHECKS_FOR_BLACKJACK')
-        Configuration.configuration['LATE_SURRENDER']                = conf.getboolean('surrender','LATE_SURRENDER')
-        Configuration.configuration['ALLOWED_LATE_SURRENDER_RANGE']  = conf.get('surrender','ALLOWED_LATE_SURRENDER_RANGE')
-        Configuration.configuration['EARLY_SURRENDER']               = conf.getboolean('surrender','EARLY_SURRENDER')
-        Configuration.configuration['ALLOWED_EARLY_SURRENDER_RANGE'] = conf.get('surrender','ALLOWED_EARLY_SURRENDER_RANGE')
-        Configuration.configuration['MINIMUM_BET']                   = conf.getint('game','MINIMUM_BET')
-        Configuration.configuration['MAXIMUM_BET']                   = conf.getint('game','MAXIMUM_BET')
+        Configuration.__configuration['NUM_DECKS']                     = conf.getint('general','NUM_DECKS')
+        Configuration.__configuration['PUSH_ON_BLACKJACK']             = conf.getboolean('general','PUSH_ON_BLACKJACK')
+        Configuration.__configuration['CUT_INDEX']                     = conf.getint('general','CUT_INDEX')
+        Configuration.__configuration['NUM_CARDS_BURN_ON_SHUFFLE']     = conf.getint('general','NUM_CARDS_BURN_ON_SHUFFLE')
+        Configuration.__configuration['PAYOUT_RATIO']                  = conf.get('payout_ratio','PAYOUT_RATIO')
+        Configuration.__configuration['BLACKJACK_PAYOUT_RATIO']        = conf.get('payout_ratio','BLACKJACK_PAYOUT_RATIO')
+        Configuration.__configuration['INSURANCE_PAYOUT_RATIO']        = conf.get('payout_ratio','INSURANCE_PAYOUT_RATIO')
+        Configuration.__configuration['DOUBLE_AFTER_SPLIT_ALLOWED']    = conf.getboolean('double','DOUBLE_AFTER_SPLIT_ALLOWED')
+        Configuration.__configuration['CARDS_ALLOWED_FOR_DOUBLE']      = conf.get('double','CARDS_ALLOWED_FOR_DOUBLE')
+        Configuration.__configuration['SPLIT_BY_VALUE']                = conf.getboolean('split','SPLIT_BY_VALUE')
+        Configuration.__configuration['RESPLIT_UP_TO']                 = conf.getint('split','RESPLIT_UP_TO')
+        Configuration.__configuration['RESPLIT_ACES']                  = conf.getboolean('split','RESPLIT_ACES')
+        Configuration.__configuration['HIT_SPLIT_ACES']                = conf.getboolean('split','HIT_SPLIT_ACES')
+        Configuration.__configuration['DEALER_HITS_ON_SOFT_17']        = conf.getboolean('dealer','DEALER_HITS_ON_SOFT_17')
+        Configuration.__configuration['DEALER_CHECKS_FOR_BLACKJACK']   = conf.getboolean('dealer','DEALER_CHECKS_FOR_BLACKJACK')
+        Configuration.__configuration['LATE_SURRENDER']                = conf.getboolean('surrender','LATE_SURRENDER')
+        Configuration.__configuration['ALLOWED_LATE_SURRENDER_RANGE']  = conf.get('surrender','ALLOWED_LATE_SURRENDER_RANGE')
+        Configuration.__configuration['EARLY_SURRENDER']               = conf.getboolean('surrender','EARLY_SURRENDER')
+        Configuration.__configuration['ALLOWED_EARLY_SURRENDER_RANGE'] = conf.get('surrender','ALLOWED_EARLY_SURRENDER_RANGE')
+        Configuration.__configuration['MINIMUM_BET']                   = conf.getint('game','MINIMUM_BET')
+        Configuration.__configuration['MAXIMUM_BET']                   = conf.getint('game','MAXIMUM_BET')
 
+    @staticmethod
+    def get(key):
+        return Configuration.__configuration[key] if key in Configuration.__configuration[key] else None
+        
     @staticmethod
     def writeConfigFile(filename, dictionary):
         """Outputs dictionary to file"""
-        func = lambda arg: "%s: Configuration.configuration['%s']\n"
+        func = lambda arg: "%s: %s\n" % (arg, Configuration.__configuration[arg])
         f = open(filename, 'w')
         f.write('[general]\n')
         f.write(func('NUM_DECKS'))
@@ -212,7 +216,7 @@ class Configuration:
     @staticmethod
     def parseConfigFile(filename):
         """Parses configuration data from file"""
-        conf = ConfigParser(defaults=Configuration.configuration)
+        conf = ConfigParser(defaults=Configuration.__configuration)
         num_read = conf.read(filename)
         if len(num_read) == 1:
             return conf
@@ -221,4 +225,4 @@ class Configuration:
 
 if __name__ == '__main__':
     Configuration.loadConfiguration()
-    print(Configuration.configuration)
+    print(Configuration.__configuration)

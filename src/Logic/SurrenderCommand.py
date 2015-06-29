@@ -7,9 +7,9 @@
 class SurrenderCommand(Command):
     """Representation of the (late) surrender action"""
 
-    def perform(self):
+    def execute(self):
         """Perform Surrender command"""
-        pass
+        self.__player.surrender()
         
     def __str__(self):
         """Returns string representing Surrender Command"""

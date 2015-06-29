@@ -27,8 +27,12 @@ class Command(metaclass=ABCMeta):
         'ES' : Command.EARLY_SURRENDER
     }
     
+    def __init__(self, player):
+        """Initializes command for player"""
+        self.__player = player
+
     @abstractmethod
-    def perform(self):
+    def execute(self):
         """Perform command"""
         pass
 
@@ -45,4 +49,5 @@ class Command(metaclass=ABCMeta):
     @staticmethod
     def getCommand(string):
         """Returns Command number from string representation"""
-        return Command.__command_map[string] if string in Command.__command_map else None
+        s = string.upper()
+        return Command.__command_map[s] if s in Command.__command_map else None

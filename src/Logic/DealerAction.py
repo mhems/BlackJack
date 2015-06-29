@@ -15,7 +15,7 @@ class DealerAction(Action):
             return Command.STAND
         else:
             if hand.hasAce():
-                if Configuration.configuration['DEALER_HITS_ON_SOFT_17']:
+                if Configuration.get('DEALER_HITS_ON_SOFT_17'):
                     return Command.HIT
                 else:
                     return Command.STAND

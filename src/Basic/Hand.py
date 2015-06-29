@@ -20,7 +20,7 @@ class Hand(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def addCards(self,cards):
+    def addCards(self, cards):
         """Adds list of cards to hand"""
         pass
 

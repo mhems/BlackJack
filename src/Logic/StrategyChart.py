@@ -105,7 +105,7 @@ class StrategyChart:
     def advise(self, player_hand, dealer_up_card):
         """Advise action given player's hand and dealer's up card"""
         value = player_hand.value()
-        if Configuration.configuration['SPLIT_BY_VALUE']:
+        if Configuration.get('SPLIT_BY_VALUE'):
             func = player_hand.isPairByValue
         else:
             func = player_hand.isPairByRank

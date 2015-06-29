@@ -58,7 +58,7 @@ class BlackjackHand(Hand):
         """Returns True iff hand has at least one ace"""
         return self.numAces() >= 1
 
-    def addCards(self,cards):
+    def addCards(self, *cards):
         """Adds args to hand"""
         self.__cards.extend(cards)
 

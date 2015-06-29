@@ -7,9 +7,9 @@
 class HitCommand(Command):
     """Representation of hit action"""
 
-    def perform(self):
+    def execute(self):
         """Perform Hit command"""
-        pass
+        self.__player.hit()
         
     def __str__(self):
         """Returns string representing Hit Command"""

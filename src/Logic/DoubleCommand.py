@@ -7,9 +7,9 @@
 class DoubleCommand(Command):
     """Representation of the double down action"""
 
-    def perform(self):
+    def execute(self):
         """Perform Double command"""
-        pass
+        self.__player.double()
         
     def __str__(self):
         """Returns string representing Double Command"""

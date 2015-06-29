@@ -7,9 +7,9 @@
 class SplitCommand(Command):
     """Representation of the split command"""
 
-    def perform(self):
+    def execute(self):
         """Perform Split command"""
-        pass
+        self.__player.split()
         
     def __str__(self):
         """Returns string representing Split Command"""

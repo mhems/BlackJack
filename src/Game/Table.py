@@ -12,11 +12,11 @@ class Table:
     def __init__(self, num_slots = 6):
         self.__dealer    = Dealer()
         self.__bank      = HouseBank()
-        self.__num_slots = num_slots # tuple of (player, bet)
-        self.__slots     = []
-        self.__shoe      = Shoe(Configuration.configuration['NUM_DECKS'],
+        self.__num_slots = num_slots
+        self.__slots     = [TableSlot() for _ in xrange(self.__num_slots)]
+        self.__shoe      = Shoe(Configuration.get('NUM_DECKS'),
                                 None, # FIX
-                                Configuration.configuration['CUT_INDEX'])
+                                Configuration.get('CUT_INDEX'))
         
         
     def register_player(self, player):
