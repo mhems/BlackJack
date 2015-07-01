@@ -14,9 +14,9 @@ from src.Basic.Card              import Card
 # H  - Hit
 # S  - Stand
 # Sp - Split
-# Ds - Double, stand if not allowed
-# Dh - Double, hit if not allowed
-# Su - Surrender, hit if not allowed
+# Ds - Double,    stand if not allowed
+# Dh - Double,    hit   if not allowed
+# Su - Surrender, hit   if not allowed
 
 class StrategyChart:
     """Mechanism for strategy advice"""
@@ -49,7 +49,7 @@ class StrategyChart:
 
         def access(self, value, upcard):
             """Accesses chart entry at the value row and upcard column"""
-            return chart[(value, upcard)] if (value, upcard) in chart else None
+            return self.__chart[(value, upcard)] if (value, upcard) in self.__chart else None
 
         def __len__(self):
             return len(self.__chart)
@@ -80,9 +80,9 @@ class StrategyChart:
                         re.match(r'^[ \t]*#', line))
         File = open(filename, 'r')
         lines = [line.rstrip() for line in File.readlines() if hasContent(line)]
-        hard_chart = {}
-        soft_chart = {}
-        pair_chart = {}
+        hard_chart = None
+        soft_chart = None
+        pair_chart = None
         while len(lines) > 0:
             line = lines[0]
             if re.match(r'^[ \t]*>', line):
@@ -110,18 +110,21 @@ class StrategyChart:
         else:
             func = player_hand.isPairByRank
         # check for pair
-        if func():
-            arg = 'A' if player_had.hasAce() else value/2
-            advice = self.__pair_chart.access('A', dealer_up_card)
+        if func() and self.__pair_chart:
+            arg = 'A' if player_hand.hasAce() else int(value/2)
+            advice = self.__pair_chart.access(arg, dealer_up_card)
             if advice:
                 return advice
         # check for soft
-        if player_hand.hasAce():
+        if player_hand.hasAce() and self.__soft_chart:
             advice = self.__soft_chart.access(value, dealer_up_card)
             if advice:
                 return advice
         # default to hard    
-        return self.__hard_chart.access(value, dealer_up_card)
+        if self.__hard_chart:
+            return self.__hard_chart.access(value, dealer_up_card)
+        else:
+            return None
 
     def toFile(self, filename):
         """Writes chart(s) to file in parse-expected format"""
@@ -141,6 +144,3 @@ class StrategyChart:
             result += '> Pairs\n'
             result += repr(self.__pair_chart)
         return result
-
-sc = StrategyChart.fromFile('three_chart.txt')
-print(repr(sc))

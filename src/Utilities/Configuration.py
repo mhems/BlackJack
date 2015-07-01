@@ -171,7 +171,7 @@ class Configuration:
 
     @staticmethod
     def get(key):
-        return Configuration.__configuration[key] if key in Configuration.__configuration[key] else None
+        return Configuration.__configuration[key] if key in Configuration.__configuration else None
         
     @staticmethod
     def writeConfigFile(filename, dictionary):

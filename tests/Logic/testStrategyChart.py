@@ -336,17 +336,17 @@ class testStrategyChart(unittest.TestCase):
 
 def makePair(rank):
     hand = BlackjackHand()
-    hand.addCards([Card(rank, 'H'), Card(rank, 'D')])
+    hand.addCards(Card(rank, 'H'), Card(rank, 'C'))
     return hand
 
 def makeSoft(rank):
     hand = BlackjackHand()
-    hand.addCards([Card('A', 'H'), Card(rank, 'D')])
+    hand.addCards(Card('A', 'H'), Card(rank, 'D'))
     return hand
 
 def makeHand(r1, r2):
     hand = BlackjackHand()
-    hand.addCards([Card(r1, 'H'), Card(r2, 'D')])
+    hand.addCards(Card(r1, 'H'), Card(r2, 'S'))
     return hand
         
 if __name__ == '__main__':
