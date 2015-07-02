@@ -29,3 +29,6 @@ class Player:
 
     def act(self, upcard):
         return self.__policy.act(self.hands[self.__hand_index], upcard)
+
+    def __eq__(self, other):
+        return self.id == other.id
