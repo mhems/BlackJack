@@ -18,8 +18,7 @@
 
 
 MAINTENANCE
-* More aggressive use of properties
-
+* ...
 
 CLASSES
 
