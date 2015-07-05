@@ -17,46 +17,14 @@
   - manipulate payout ratios, minimum bets, play policies to see how strategy changes
 
 
+MAINTENANCE
+* More aggressive use of properties
+
+
 CLASSES
 
-Basic
-* Card
-* HandInterface
-* BlackjackHand
-* Deck
-* Shoe
-
-Logic
-* ActionStrategy
-* ShufflerStrategy
-* CountingStrategy
-* HumanAction
-* DealerAction
-* HiLoCounting
-* ShuffleTracking
-* Action
-* HitCommand
-* SplitCommand
-* DoubleCommand
-* StandCommand
-* SurrenderCommand
-* EarlySurrenderCommand
-* 
-
-Game
-* Player
-* Dealer
-* Bank
-* Bankroll (players stack)
-* Table
-* 
-
-Utilities
-* Driver
-  - command-line
-* StrategyParser
-* ConfigurationParser
-* Logger
+Application
+* ...
 
 Simulation
 * ...
@@ -66,4 +34,3 @@ GUI
 
 MLDP
 * ...
-
