@@ -50,20 +50,30 @@ class StrategyChart:
 
         def access(self, value, upcard):
             """Accesses chart entry at the value row and upcard column"""
-            return self.__chart[(value, upcard)] if (value, upcard) in self.__chart else None
+            if (value, upcard) in self.__chart:
+                return self.__chart[(value, upcard)]
+            else:
+                return None
 
         def __len__(self):
             return len(self.__chart)
 
         def __repr__(self):
             """Returns string representation of chart"""
-            result = '#    %s\n' % ' '.join(str(e).rjust(2,' ') for e in Card.values)
+
+            def sort(value):
+                """Function to sort card rank characters"""
+                return value if value != 'A' value else Card.HARD_ACE_VALUE
+            
+            result = '#    %s\n' %
+                ' '.join((str(e).rjust(2,' ') for e in Card.values))
             vals = sorted(set(t[0] for t in self.__chart.keys()),
-                          key = lambda value: value if value != 'A' else Card.HARD_ACE_VALUE,
-                          reverse=True)
+                          key = sort,
+                          reverse = True)
             for value in vals:
                 result += ' %s  %s\n' % (str(value).rjust(2, ' '),
-                                         ' '.join(str(self.__chart[(value, up)]).rjust(2, ' ') for up in Card.values))
+                    ' '.join(str(self.__chart[(value, up)]).rjust(2, ' ')
+                             for up in Card.values))
             return result
 
     # END CHART CLASS
@@ -84,17 +94,18 @@ class StrategyChart:
         hard_chart = None
         soft_chart = None
         pair_chart = None
+        fromFileContents = StrategyChart.Chart.fromFileContents
         while len(lines) > 0:
             line = lines[0]
             if re.match(r'^[ \t]*>', line):
                 if re.search(r'hard', line, re.I):
-                    hard_chart, index = StrategyChart.Chart.fromFileContents(lines[1:])
+                    hard_chart, index = fromFileContents(lines[1:])
                     lines = lines[index+1:]
                 elif re.search(r'soft', line, re.I):
-                    soft_chart, index = StrategyChart.Chart.fromFileContents(lines[1:])
+                    soft_chart, index = fromFileContents(lines[1:])
                     lines = lines[index+1:]
                 elif re.search(r'pair', line, re.I):
-                    pair_chart, index = StrategyChart.Chart.fromFileContents(lines[1:])
+                    pair_chart, index = fromFileContents(lines[1:])
                     lines = lines[index+1:]
                 else:
                     print('Unknown line: %s' % line)

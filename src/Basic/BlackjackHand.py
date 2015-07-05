@@ -71,16 +71,18 @@ class BlackjackHand(Hand):
     @property
     def isPairByRank(self):
         """Returns True iff initial two cards are equal in rank"""
-        return self.numCards == 2 and self.__cards[0].rankEquivalent(self.__cards[1])
+        return (self.numCards == 2 and
+                self.__cards[0].rankEquivalent(self.__cards[1]))
 
     @property
     def isPairByValue(self):
         """Returns True iff initial two cards are equal in value"""
-        return self.numCards == 2 and self.__cards[0].valueEquivalent(self.__cards[1])
+        return (self.numCards == 2 and
+                self.__cards[0].valueEquivalent(self.__cards[1]))
     
     @property
     def isBust(self):
-        """Returns True iff no hand variant is less than or equal to blackjack value"""
+        """Returns True iff hand value is greater than blackjack value"""
         return self.value > Configuration.get('BLACKJACK_VALUE')
 
     @property

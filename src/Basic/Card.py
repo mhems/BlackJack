@@ -37,9 +37,13 @@ class Card:
         self.__rank = rank if isinstance(rank,int) else rank[0].upper()
         self.__suit = suit[0].upper()
         if self.__rank not in Card.ranks:
-            raise TypeError("Rank must be a number 2-10 or J, Q, K, A (Jack, Queen, King, or Ace)")
+            raise TypeError(
+                'Rank must be a number 2-10 or J, Q, K, A'
+                ' (Jack, Queen, King, or Ace)')
         if self.__suit not in Card.suits:
-            raise TypeError("Suit must be one of S, H, D, C (Spades, Hearts, Diamonds, Clubs)")
+            raise TypeError(
+                'Suit must be one of S, H, D, C'
+                ' (Spades, Hearts, Diamonds, Clubs)')
         
     @property
     def rank(self):

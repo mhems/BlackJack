@@ -19,7 +19,9 @@ class HumanInputPolicy(DecisionPolicy):
                              (', '.join((str(c) for c in availableCommands))))
             return Command.getCommand(response), response
 
-        print('Your hand (%s) has value %d, Dealer shows %s' % (hand, hand.value, upcard))
+        print('Your hand (%s) has value %d, Dealer shows %s' % (hand,
+                                                                hand.value,
+                                                                upcard))
         command, response = self.__prompt(availableCommands)
         while not command:
             print('Unknown or unavailable action: %s' % response)

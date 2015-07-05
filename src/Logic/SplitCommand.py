@@ -16,7 +16,9 @@ class SplitCommand(Command):
     
     def __perform(self, slot, **kwargs):
         """Perform Split command"""
-        done = slot.handIsAcePair and not Configuration.get('HIT_SPLIT_ACES') and not Configuration.get('RESPLIT_ACES')
+        done = (slot.handIsAcePair and
+                not Configuration.get('HIT_SPLIT_ACES') and
+                not Configuration.get('RESPLIT_ACES'))
         slot.doublePot()
         slot.splitHand()
         self.__hit_command.execute(slot, **kwargs)

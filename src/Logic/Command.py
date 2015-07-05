@@ -27,14 +27,17 @@ class Command(metaclass=ABCMeta):
     }
     
     def execute(self, slot, **kwargs):
-        """Executes the command on slot, Return True iff player is done with turn"""
+        """Executes the command on slot,
+           Return True iff player is done with turn"""
         if not self.isAvailable():
-            raise UnavailableCommandException('%s command is unavailable' % str(self))
+            raise UnavailableCommandException(
+                '%s command is unavailable' % str(self))
         return self.__perform(slot, **kwargs)
 
     @abstractmethod
     def __perform(self, slot, **kwargs):
-        """Perform command on slot, Return True iff player is done with turn"""
+        """Perform command on slot,
+           Return True iff player is done with turn"""
         raise NotImplementedError(
             'Command implementations must implement the __perform method')
 

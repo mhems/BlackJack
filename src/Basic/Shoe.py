@@ -12,15 +12,18 @@ class Shoe:
     """Represents a shoe of decks for dealing purposes"""
 
     def __init__(self,n,algorithm,cutIndex=0):
-        """Initializes shoe to have n decks, algorithm function for shuffling, and cutIndex"""
+        """Initializes shoe to have n decks,
+               algorithm function for shuffling, and cutIndex"""
         self.__cards = []
         self.numDecks = n
         self.__algorithm = algorithm
         self.__index = 0
         if isinstance(cutIndex,float):
             self.cutIndex = int(floor(n * Card.NUM_CARDS_PER_DECK * cutIndex))
+        elif cutIndex < 0:
+            self.cutIndex = n * Card.NUM_CARDS_PER_DECK + cutIndex
         else:
-            self.cutIndex = cutIndex if cutIndex > 0 else n * Card.NUM_CARDS_PER_DECK - Card.NUM_CARDS_PER_DECK/2
+            self.cutIndex = cutIndex
         for _ in range(n):
             self.__cards.extend(Card.makeDeck())
 
