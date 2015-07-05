@@ -31,6 +31,8 @@ class SplitCommand(Command):
         """Returns True iff Split command is available"""
         if not slot.playerCanDoubleBet:
             return False
+        if not slot.firstAction:
+            return False
         if slot.numSplits + 1 >= Configuration.get('RESPLIT_UP_TO'):
             return False
         if (slot.handWasSplit and slot.handIsAcePair and

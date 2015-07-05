@@ -90,26 +90,28 @@ class Table:
         
     def play(self):
         """Plays one round of blackjack"""
-        # Initializations ...
         for slot in self.occupied_slots:
             slot.promptBet()
+        for slot in self.active_slots:
+            slot.beginRound()
         upcard = self.__dealCards()
         if upcard.isAce:
             pass # offer insurance ...
-        # offer surrender ... 
+        # offer surrender(s) ... 
         for slot in self.active_slots:
             self.__dealToSlot(slot, upcard)
         # pay out each player
-        # clear hands
+        for slot in self.active_slots:
+            slot.endRound()
 
     def __dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
         for hand in slot.hands:
             done = False
             while not done:
-                if self.hand.isBlackjack:
+                if hand.isBlackjack:
                     break
-                if self.hand.isBust:
+                if hand.isBust:
                     break
                 response = slot.promptAction(upcard)
                 done = self.__commands[response].execute(slot)
@@ -118,12 +120,12 @@ class Table:
         """Deals hands to all active players
            Returns dealer's up card"""
         for slot in self.active_slots:
-            slot.addCard(self.__shoe.dealOneCard())
+            slot.addCards(self.__shoe.dealOneCard())
         self.__dealer_slot.addCard(self.__shoe.dealOneCard())
         for slot in self.active_slots:
-            slot.addCard(self.__shoe.dealOneCard())
+            slot.addCards(self.__shoe.dealOneCard())
         upcard = self.__shoe.dealOneCard()
-        self.__dealer_slot.addCard(upcard)
+        self.__dealer_slot.addCards(upcard)
         return upcard
         
     def unregister_player(self, player):

@@ -32,6 +32,11 @@ class TableSlot:
         return self.hand.isPairByRank and self.hand.hasAce
 
     @property
+    def firstAction(self):
+        """Return True iff player is on first action for hand"""
+        return self.hand.numCards == 2
+    
+    @property
     def numSplits(self):
         """Returns number of times player has split this round"""
         return len(self.__hands)
@@ -74,10 +79,21 @@ class TableSlot:
         """Removes player from table slot"""
         self.__player = None
 
-    def addCard(self, card):
+    def addCards(self, *cards):
         """Adds card to hand"""
-        self.hand.addCards(card)
+        self.hand.addCards(*cards)
 
+    def beginRound(self):
+        """Executes any actions necessary to begin turn"""
+        self.__hands     = [BlackjackHand()]
+        self.__pot       = 0
+        self.__insurance = 0
+        self.index       = 0
+        
+    def endRound(self):
+        """Executes any actions necessary to end turn"""
+        pass        
+        
     def promptAction(self, upcard):
         """Prompts player to act"""
         # Need to have bet to act
@@ -98,8 +114,15 @@ class TableSlot:
 
     def doublePot(self):
         """Doubles player's pot"""
-        pass
+        self.__pot += player.wager(self.__pot)
 
     def splitHand(self):
         """Splits player's hand into 2 new hands"""
-        pass
+        (card1, card2) = self.hand.splitCards
+        self.hand = BlackjackHand()
+        self.hand.addCards(card1)
+        self.hand.wasSplit = True
+        self.__hands.insert(self.index + 1)
+        self.__hands[self.index + 1] = BlackjackHand()
+        self.__hands[self.index + 1].addCards(card2)
+        self.__hands[self.index + 1].wasSplit = True

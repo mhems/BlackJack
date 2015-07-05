@@ -90,6 +90,13 @@ class BlackjackHand(Hand):
         """Returns True iff hand has at least one ace"""
         return self.numAces >= 1
 
+    @property
+    def splitCards(self):
+        """Returns cards as tuple"""
+        if self.numCards > 2:
+            raise Exception('Cannot split hand of more than 2 cards')
+        return tuple(self.__cards)
+    
     def addCards(self, *cards):
         """Adds args to hand"""
         self.__cards.extend(cards)

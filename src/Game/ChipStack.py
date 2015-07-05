@@ -25,7 +25,8 @@ class ChipStack(Bank):
             self.__funds -= amt
             return amt
         else:
-            return None
+            raise InsufficientFundsError(
+                'ChipStack has insufficient funds to withdraw $%d' % amt
 
     def deposit(self, amt):
         """Deposits amt into funds"""

@@ -23,11 +23,11 @@ class Player:
         
     def wager(self, amt):
         """Attempts to wager amt"""
-        pass
+        return self.__stack.withdraw(amt)
 
     def receive_payment(self, amt):
         """Adds amt to chip stack"""
-        pass
+        self.__stack.deposit(amt)
     
     def act(self, upcard):
         """Returns command player wishes to execute based on its policy"""
