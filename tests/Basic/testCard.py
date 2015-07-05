@@ -56,12 +56,21 @@ class testCard(unittest.TestCase):
         c1 = Card(4,'hearts')
         c2 = Card(4,'h')
         c3 = Card(4,'Hearts')
-        self.assertEqual(c,c1,'testCard:testEq:Cards should be equal')
-        self.assertEqual(c1,c2,'testCard:testEq:Cards should be equal')
-        self.assertEqual(c2,c3,'testCard:testEq:Cards should be equal')
+        self.assertTrue(c  == c1,'testCard:testEq:Cards should be equal')
+        self.assertTrue(c1 == c2,'testCard:testEq:Cards should be equal')
+        self.assertTrue(c2 == c3,'testCard:testEq:Cards should be equal')
         a = Card('A','S')
-        self.assertNotEqual(c,a,'testCard:testEq:Cards should not be equal')
+        self.assertFalse(c == a,'testCard:testEq:Cards should not be equal')
 
+    def testNE(self):
+        c  = Card(4, 'H')
+        c1 = Card(4, 'C')
+        self.assertTrue(c != c1,'testCard:testNe:Cards should not be equal')
+        c3 = Card(5, 'H')
+        self.assertTrue(c != c3,'testCard:testNe:Cards should not be equal')
+        c4 = Card(4, 'h')
+        self.assertFalse(c != c4,'testCard:testNe:Cards should be equal')
+        
     def testRankEquivalent(self):
         c = Card(4,'H')
         c1 = Card(4, 'D')

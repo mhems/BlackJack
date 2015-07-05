@@ -16,7 +16,8 @@ class BlackjackHand(Hand):
     def __init__(self):
         """Initializes hand to have no cards"""
         self.__cards = []
-
+        self.wasSplit = False
+        
     def value(self):
         """Returns largest non-bust value if possible, else largest value"""
         val = sum([c.value for c in self.__cards if not c.isAce()])
@@ -24,12 +25,33 @@ class BlackjackHand(Hand):
         if nAces > 0:
             if nAces > 1:
                 val += (nAces - 1) * Card.SOFT_ACE_VALUE
-            if val + Card.HARD_ACE_VALUE <= Configuration.BLACKJACK_VALUE:
+            if val + Card.HARD_ACE_VALUE <= Configuration.get('BLACKJACK_VALUE'):
                 val += Card.HARD_ACE_VALUE
             else:
                 val += Card.SOFT_ACE_VALUE
         return val
+
+    @property
+    def isAcePair(self):
+        """Return True iff hand is pair of Aces"""
+        return self.numAces() == 2 and self.numCards == 2
     
+    @property
+    def isSoft17(self):
+        """Return True iff hand is soft 17"""
+        return self.value == 17 and self.isSoft
+
+    @property
+    def isSoft(self):
+        """Return True iff hand is soft (i.e. contains hard-valued ace)"""
+        val = sum((c.value for c in self.__cards if not c.isAce()))
+        numAces = self.numAces()
+        if numAces > 0:
+            val += (numAces - 1) * Card.SOFT_ACE_VALUE
+            if val + Card.HARD_ACE_VALUE <= Configuration.get('BLACKJACK_VALUE'):
+                return True
+        return False
+
     def numCards(self):
         """Returns number of cards in hand"""
         return len(self.__cards)
@@ -40,7 +62,8 @@ class BlackjackHand(Hand):
 
     def isBlackjack(self):
         """Returns True iff initial two cards sum to blackjack value"""
-        return self.numCards() == 2 and self.value() == Configuration.BLACKJACK_VALUE
+        return (self.numCards() == 2 and
+                self.value() == Configuration.get('BLACKJACK_VALUE'))
     
     def isPairByRank(self):
         """Returns True iff initial two cards are equal in rank"""
@@ -52,7 +75,7 @@ class BlackjackHand(Hand):
     
     def isBust(self):
         """Returns True iff no hand variant is less than or equal to blackjack value"""
-        return self.value() > Configuration.BLACKJACK_VALUE
+        return self.value() > Configuration.get('BLACKJACK_VALUE')
 
     def hasAce(self):
         """Returns True iff hand has at least one ace"""

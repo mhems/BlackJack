@@ -12,24 +12,29 @@ class Hand(metaclass=ABCMeta):
     @abstractmethod
     def value(self):
         """Returns largest value of hand"""
-        pass
+        raise NotImplementedError(
+            'Hand implementations must implement the value method')
 
     @abstractmethod
     def numCards(self):
         """Returns number of cards in hand"""
-        pass
+        raise NotImplementedError(
+            'Hand implementations must implement the numCards method')
 
     @abstractmethod
     def addCards(self, cards):
         """Adds list of cards to hand"""
-        pass
+        raise NotImplementedError(
+            'Hand implementations must implement the addCards method')
 
     @abstractmethod
     def reset(self):
         """Resets hand to have no cards"""
-        pass
+        raise NotImplementedError(
+            'Hand implementations must implement the reset method')
 
     @abstractmethod
     def __str__(self):
         """Returns canonical representation of hand"""
-        pass
+        raise NotImplementedError(
+            'Hand implementations must implement the __str__ method')
