@@ -10,6 +10,7 @@ import unittest
 from src.Logic.StrategyChart import StrategyChart
 from src.Basic.BlackjackHand import BlackjackHand
 from src.Basic.Card          import Card
+from src.Logic.Command       import Command
 
 class testStrategyChart(unittest.TestCase):
 
@@ -22,8 +23,13 @@ class testStrategyChart(unittest.TestCase):
     def assertRow(self, chart, hand, exp):
         ls = re.split(r' +', exp)
         for (up, e) in zip(Card.values, ls):
-            a = chart.advise(hand, up)
-            self.assertEqual(a, e, 'Hand %s vs %s: Expected %s; Got %s' % (hand, up, e, a))
+            advise = chart.advise(hand, up)
+            expect = Command.getCommand(e)
+            self.assertEqual(advise, expect,
+                             'Hand %s vs %s: Expected %s; Got %s' % (hand,
+                                                                     up,
+                                                                     expect,
+                                                                     advise))
 
     def testThreeCompleteCharts(self):
         chart = StrategyChart.fromFile('tests/Logic/test_files/three_chart.txt')

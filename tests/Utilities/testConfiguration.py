@@ -1,20 +1,21 @@
 ####################
 #
-# testShuffleTracking.py
+# testConfiguration.py
 #
 ####################
 
 import unittest
 
-class testShuffleTracking(unittest.TestCase):
+class testConfiguration(unittest.TestCase):
+
     def setUp(self):
         pass
 
     def tearDown(self):
         pass
 
-    def test(self):
-        self.fail('Implement test ShuffleTracking')
+    def testLoadConfiguration(self):
+        self.fail('Implement test configuration')
 
 if __name__ == '__main__':
     unittest.main()

@@ -14,7 +14,7 @@ class testDealerAction(unittest.TestCase):
         pass
 
     def test(self):
-        pass
+        self.fail('Implement test Dealer action')
 
 if __name__ == '__main__':
     unittest.main()

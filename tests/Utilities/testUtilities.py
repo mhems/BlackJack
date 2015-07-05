@@ -1,12 +1,13 @@
 ####################
 #
-# testShuffleTracking.py
+# testUtilities.py
 #
 ####################
 
 import unittest
 
-class testShuffleTracking(unittest.TestCase):
+class testUtilities(unittest.TestCase):
+
     def setUp(self):
         pass
 
@@ -14,7 +15,7 @@ class testShuffleTracking(unittest.TestCase):
         pass
 
     def test(self):
-        self.fail('Implement test ShuffleTracking')
+        self.fail('Implement test utilities')
 
 if __name__ == '__main__':
     unittest.main()

@@ -14,7 +14,7 @@ class testHiLoCounting(unittest.TestCase):
         pass
 
     def test(self):
-        pass
+        self.fail('Implement test HiLoCounting')
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,12 +1,12 @@
 ####################
 #
-# testShuffleTracking.py
+# testMinBettingStrategy.py
 #
 ####################
 
 import unittest
 
-class testShuffleTracking(unittest.TestCase):
+class testMinBettingStrategy(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -14,7 +14,7 @@ class testShuffleTracking(unittest.TestCase):
         pass
 
     def test(self):
-        self.fail('Implement test ShuffleTracking')
+        self.fail('Implement test MinBettingStrategy')
 
 if __name__ == '__main__':
     unittest.main()
