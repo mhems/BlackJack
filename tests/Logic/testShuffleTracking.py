@@ -16,6 +16,6 @@ class testShuffleTracking(unittest.TestCase):
     def test(self):
         #self.fail('Implement test ShuffleTracking')
         pass
-        
+
 if __name__ == '__main__':
     unittest.main()
