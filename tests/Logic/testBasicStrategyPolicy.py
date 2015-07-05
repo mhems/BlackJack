@@ -1,12 +1,12 @@
 ####################
 #
-# testDriver.py
+# testBasicStrategyPolicy.py
 #
 ####################
 
 import unittest
 
-class testDriver(unittest.TestCase):
+class testBasicStrategyPolicy(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -14,7 +14,7 @@ class testDriver(unittest.TestCase):
         pass
 
     def test(self):
-        pass
+        self.fail('Implement test BasicStrategyPolicy')
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,12 +1,12 @@
 ####################
 #
-# testBasicStrategyAction.py
+# testHumanInputPolicy.py
 #
 ####################
 
 import unittest
 
-class testBasicStrategyAction(unittest.TestCase):
+class testHumanInputPolicy(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -14,7 +14,7 @@ class testBasicStrategyAction(unittest.TestCase):
         pass
 
     def test(self):
-        self.fail('Implement test basic strategy')
+        self.fail('Implement test HumanInputPolicy')
 
 if __name__ == '__main__':
     unittest.main()
