@@ -11,17 +11,19 @@ from src.Utilities.Configuration import Configuration
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""
 
-    def __init__(self,n,algorithm,cutIndex=0):
+    def __init__(self,n,algorithm,cutIndex=None):
         """Initializes shoe to have n decks,
                algorithm function for shuffling, and cutIndex"""
         self.__cards = []
         self.numDecks = n
         self.__algorithm = algorithm
         self.__index = 0
-        if isinstance(cutIndex,float):
+        if not cutIndex:
+            self.cutIndex = int((n - 1/2) * Card.NUM_CARDS_PER_DECK)
+        elif isinstance(cutIndex,float):
             self.cutIndex = int(floor(n * Card.NUM_CARDS_PER_DECK * cutIndex))
         elif cutIndex < 0:
-            self.cutIndex = n * Card.NUM_CARDS_PER_DECK + cutIndex
+            raise Exception('Cut index must be positive')
         else:
             self.cutIndex = cutIndex
         for _ in range(n):
@@ -51,7 +53,7 @@ class Shoe:
     def deal(self,n=1):
         """Remove and return n cards from beginning of shoe"""
         c = []
-        for i in range(n):
+        for _ in range(n):
             c.append(self.dealOneCard())
         return c
     
