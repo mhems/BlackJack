@@ -4,6 +4,8 @@
 #
 ####################
 
+from src.Game.Bank import Bank
+
 class HouseBank(Bank):
     """Representation of Casino House Bank"""
 
