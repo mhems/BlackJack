@@ -4,13 +4,19 @@
 #
 ####################
 
+from src.Logic.Command import Command
+
 class StandCommand(Command):
     """Representation of the stand (stay) action"""
 
-    def execute(self):
+    def __perform(self, table):
         """Perform Stand command"""
-        self.__player.stand()
-        
+        return True
+
+    def isAvailable(self, _):
+        """Stand is always available"""
+        return True
+    
     def __str__(self):
         """Returns string representing Stand Command"""
         return 'Stand'
