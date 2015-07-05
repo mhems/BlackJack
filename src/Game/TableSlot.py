@@ -29,7 +29,7 @@ class TableSlot:
     @property
     def handIsAcePair(self):
         """Return True iff hand is pair of Aces"""
-        return self.hand.isPairByRank() and self.hand.hasAce()
+        return self.hand.isPairByRank and self.hand.hasAce
 
     @property
     def numSplits(self):
@@ -46,18 +46,26 @@ class TableSlot:
         """Returns True iff hand is pair of Aces"""
         return self.hand.isAcePair
     
+    @property
     def playerCanDoubleBet(self):
         """Return True iff player has adequate funds to double bet"""
         return player.stackAmount >= self.__pot
 
+    @property
     def isActive(self):
         """Return True iff seated player has placed money to play"""
         return self.__pot > 0
 
+    @property
     def isOccupied(self):
         """Return True iff slot has seated player"""
         return self.__player != None
 
+    @property
+    def hasBlackjack(self):
+        """Returns True iff hand is natural blackjack"""
+        return self.hand.isBlackjack
+    
     def seatPlayer(self, player):
         """Seats player at table slot"""
         self.__player = player
@@ -73,13 +81,13 @@ class TableSlot:
     def promptAction(self, upcard):
         """Prompts player to act"""
         # Need to have bet to act
-        if self.isActive():
+        if self.isActive:
             return self.__player.act(self.hand, upcard)
 
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
         # Need to have a player to bet
-        if self.isOccupied():
+        if self.isOccupied:
             self.__pot = self.__player.bet(**kwargs)
 
     def rakePot(self):
@@ -87,10 +95,6 @@ class TableSlot:
         amt = self.__pot
         self.__pot = 0
         return amt
-
-    def hasBlackjack(self):
-        """Returns True iff hand is natural blackjack"""
-        return self.hand.isBlackjack()
 
     def doublePot(self):
         """Doubles player's pot"""

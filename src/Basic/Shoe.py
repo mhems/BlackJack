@@ -21,8 +21,29 @@ class Shoe:
             self.cutIndex = int(floor(n * Card.NUM_CARDS_PER_DECK * cutIndex))
         else:
             self.cutIndex = cutIndex if cutIndex > 0 else n * Card.NUM_CARDS_PER_DECK - Card.NUM_CARDS_PER_DECK/2
-        for i in range(n):
+        for _ in range(n):
             self.__cards.extend(Card.makeDeck())
+
+    @property
+    def numCardsRemainingToBeDealt(self):
+        """Returns number of cards remaining to be dealt from shoe"""
+        return self.cutIndex - self.__index
+
+    @property
+    def numCardsRemainingInShoe(self):
+        """Returns number of cards remaining in shoe"""
+        return self.numDecks * Card.NUM_CARDS_PER_DECK - self.__index
+    
+    @property
+    def isExhausted(self):
+        """Returns True iff all cards that will be dealt have been dealt"""
+        return self.__index >= self.cutIndex
+
+    @property
+    def isEmpty(self):
+        """Returns True iff all cards in shoe have been dealt"""
+        """This is only possible if cut index == len(self.__cards)"""
+        return self.__index >= self.numDecks * Card.NUM_CARDS_PER_DECK
 
     def deal(self,n=1):
         """Remove and return n cards from beginning of shoe"""
@@ -33,31 +54,13 @@ class Shoe:
     
     def dealOneCard(self):
         """Convenience method to deal one card"""
-        if self.isExhausted():
+        if self.isExhausted:
             self.__cards = self.__algorithm(self.__cards)
             self.__index = 0
             self.deal(Configuration.get('NUM_CARDS_BURN_ON_SHUFFLE'))
         c = self.__cards[self.__index]
         self.__index += 1
         return c
-    
-    def numCardsRemainingToBeDealt(self):
-        """Returns number of cards remaining to be dealt from shoe"""
-        return self.cutIndex - self.__index
-
-    def numCardsRemainingInShoe(self):
-        """Returns number of cards remaining in shoe"""
-        return self.numDecks * Card.NUM_CARDS_PER_DECK - self.__index
-    
-    def isExhausted(self):
-        """Returns True iff all cards that will be dealt have been dealt"""
-        return self.__index >= self.cutIndex
-
-    def isEmpty(self):
-        """Returns True iff all cards in shoe have been dealt"""
-        """This is only possible if cut index == len(self.__cards)"""
-        return self.__index >= self.numDecks * Card.NUM_CARDS_PER_DECK
-
 
 def faro_shuffle(deck):
     N = len(deck)

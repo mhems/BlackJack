@@ -31,7 +31,7 @@ class Table:
             Command.HIT_ENUM    : hitCmd,
             Command.STAND_ENUM  : standCmd,
             Command.DOUBLE_ENUM : DoubleCommand(hitCmd, standCmd),
-            Command.SPLIT_ENUM  : SplitCommand(hitCmd, standCmd)
+            Command.SPLIT_ENUM  : SplitCommand(hitCmd,  standCmd)
         }
 
     @property
@@ -47,79 +47,17 @@ class Table:
     @property
     def occupied_slots(self):
         """Returns generator for all slots with players at table"""
-        return (slot for slot in self.slots if slot.isOccupied())
+        return (slot for slot in self.slots if slot.isOccupied)
 
     @property
     def active_slots(self):
         """Returns generator for all slots with active players at table"""
-        return (slot for slot in self.slots if slot.isActive())
+        return (slot for slot in self.slots if slot.isActive)
 
-    def register_player(self, player, pos=-1):
-        """Register player to table, provided there is room"""
-        if pos < 0:
-            # Look from dealer's left to right for opening
-            for slot in self.slots:
-                if not slot.isOccupied():
-                    slot.seatPlayer(player)
-                    return True
-            return False
-        elif pos > self.__num_slots:
-            return False
-        else:
-            return self.__slots[pos].isOccupied()
-
+    @property
     def dealerHasBlackjack(self):
         """Returns True iff dealer has natural blackjack"""
-        return self.__dealer_slot.hasBlackjack()
-        
-    def play(self):
-        """Plays one round of blackjack"""
-        # Initializations ...
-        for slot in self.occupied_slots():
-            slot.promptBet()
-        upcard = self.__dealCards()
-        if upcard.isAce():
-            pass # offer insurance ...
-        # offer surrender ... 
-        for slot in self.active_slots():
-            self.__dealToSlot(slot, upcard)
-        # pay out each player
-        # clear hands
-
-    def __dealToSlot(self, slot, upcard):
-        """Manages turn for active slot"""
-        for hand in slot.hands:
-            done = False
-            while not done:
-                if self.hand.isBlackjack():
-                    break
-                if self.hand.isBust():
-                    break
-                response = slot.promptAction(upcard)
-                done = self.__commands[response].execute(slot)
-
-    def __dealCards(self):
-        """Deals hands to all active players
-           Returns dealer's up card"""
-        for slot in self.active_slots():
-            slot.addCard(self.__shoe.dealOneCard())
-        self.__dealer_slot.addCard(self.__shoe.dealOneCard())
-        for slot in self.active_slots():
-            slot.addCard(self.__shoe.dealOneCard())
-        upcard = self.__shoe.dealOneCard()
-        self.__dealer_slot.addCard(upcard)
-        return upcard
-        
-    def unregister_player(self, player):
-        """Unregister player from table"""
-        for pos, slot in self.occupied_slots:
-            if slot.player == player:
-                self.unregister_player_from_slot(pos)
-                    
-    def unregister_player_from_slot(self, pos):
-        """Unregister player from slot, if present"""
-        if self.__slots[pos].isOccupied():
-            self.__slots[pos].unseatPlayer()
+        return self.__dealer_slot.hasBlackjack
 
     @property
     def num_vacancies(self):
@@ -134,4 +72,67 @@ class Table:
     @property
     def num_active_players(self):
         """Number of players with placed bets"""
-        return len(s for s in self.__slots if s.isActive())
+        return len(s for s in self.__slots if s.isActive)
+    
+    def register_player(self, player, pos=-1):
+        """Register player to table, provided there is room"""
+        if pos < 0:
+            # Look from dealer's left to right for opening
+            for slot in self.slots:
+                if not slot.isOccupied:
+                    slot.seatPlayer(player)
+                    return True
+            return False
+        elif pos > self.__num_slots:
+            return False
+        else:
+            return self.__slots[pos].isOccupied
+        
+    def play(self):
+        """Plays one round of blackjack"""
+        # Initializations ...
+        for slot in self.occupied_slots:
+            slot.promptBet()
+        upcard = self.__dealCards()
+        if upcard.isAce:
+            pass # offer insurance ...
+        # offer surrender ... 
+        for slot in self.active_slots:
+            self.__dealToSlot(slot, upcard)
+        # pay out each player
+        # clear hands
+
+    def __dealToSlot(self, slot, upcard):
+        """Manages turn for active slot"""
+        for hand in slot.hands:
+            done = False
+            while not done:
+                if self.hand.isBlackjack:
+                    break
+                if self.hand.isBust:
+                    break
+                response = slot.promptAction(upcard)
+                done = self.__commands[response].execute(slot)
+
+    def __dealCards(self):
+        """Deals hands to all active players
+           Returns dealer's up card"""
+        for slot in self.active_slots:
+            slot.addCard(self.__shoe.dealOneCard())
+        self.__dealer_slot.addCard(self.__shoe.dealOneCard())
+        for slot in self.active_slots:
+            slot.addCard(self.__shoe.dealOneCard())
+        upcard = self.__shoe.dealOneCard()
+        self.__dealer_slot.addCard(upcard)
+        return upcard
+        
+    def unregister_player(self, player):
+        """Unregister player from table"""
+        for pos, slot in self.occupied_slots:
+            if slot.player == player:
+                self.unregister_player_from_slot(pos)
+                    
+    def unregister_player_from_slot(self, pos):
+        """Unregister player from slot, if present"""
+        if self.__slots[pos].isOccupied:
+            self.__slots[pos].unseatPlayer()

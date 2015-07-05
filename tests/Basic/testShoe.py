@@ -55,51 +55,51 @@ class testShoe(unittest.TestCase):
         
     def testNumCardsRemainingToBeDealt(self):
         s = Shoe(3,alg)
-        self.assertEqual(s.numCardsRemainingToBeDealt(),3*52-26,'testShoe:testNumCardsRemainingToBeDealt:Undealt deck should have all cards remaining to be dealt')
+        self.assertEqual(s.numCardsRemainingToBeDealt,3*52-26,'testShoe:testNumCardsRemainingToBeDealt:Undealt deck should have all cards remaining to be dealt')
         for _ in range(6):
             s.dealOneCard()
-        self.assertEqual(s.numCardsRemainingToBeDealt(),3*52-26-6,'testShoe:testNumCardsRemainingToBeDealt:Partially dealt deck should have most cards remaining to be dealt')
+        self.assertEqual(s.numCardsRemainingToBeDealt,3*52-26-6,'testShoe:testNumCardsRemainingToBeDealt:Partially dealt deck should have most cards remaining to be dealt')
         for _ in range(3*52-26-6):
             s.dealOneCard()
-        self.assertEqual(s.numCardsRemainingToBeDealt(),0,'testShoe:testNumCardsRemainingToBeDealt:Fully dealt deck should have no cards remaining to be dealt')
+        self.assertEqual(s.numCardsRemainingToBeDealt,0,'testShoe:testNumCardsRemainingToBeDealt:Fully dealt deck should have no cards remaining to be dealt')
         s.dealOneCard()
-        self.assertEqual(s.numCardsRemainingToBeDealt(),3*52-26-2,'testShoe:testNumCardsRemainingToBeDealt:Newly shuffled deck should have all but one card remaining to be dealt')
+        self.assertEqual(s.numCardsRemainingToBeDealt,3*52-26-2,'testShoe:testNumCardsRemainingToBeDealt:Newly shuffled deck should have all but one card remaining to be dealt')
 
     def testNumCardsRemainingInShoe(self):
         s = Shoe(3,alg)
-        self.assertEqual(s.numCardsRemainingInShoe(),3*52,'testShoe:testNumCardsRemainingInShoe:Undealt deck should have all cards remaining in shoe')
+        self.assertEqual(s.numCardsRemainingInShoe,3*52,'testShoe:testNumCardsRemainingInShoe:Undealt deck should have all cards remaining in shoe')
         for _ in range(6):
             s.dealOneCard()
-        self.assertEqual(s.numCardsRemainingInShoe(),3*52-6,'testShoe:testNumCardsRemainingInShoe:Partially dealt deck should have most cards plus cut cards remaining in shoe')
+        self.assertEqual(s.numCardsRemainingInShoe,3*52-6,'testShoe:testNumCardsRemainingInShoe:Partially dealt deck should have most cards plus cut cards remaining in shoe')
         for _ in range(3*52-26-6):
             s.dealOneCard()
-        self.assertEqual(s.numCardsRemainingInShoe(),26,'testShoe:testNumCardsRemainingInShoe:Fully dealt deck should have only cut cards left in shoe')
+        self.assertEqual(s.numCardsRemainingInShoe,26,'testShoe:testNumCardsRemainingInShoe:Fully dealt deck should have only cut cards left in shoe')
         s.dealOneCard()
-        self.assertEqual(s.numCardsRemainingInShoe(),3*52-2,'testShoe:testNumCardsRemainingInShoe:Newly shuffled deck should have all but one card remaining in shoe')        
+        self.assertEqual(s.numCardsRemainingInShoe,3*52-2,'testShoe:testNumCardsRemainingInShoe:Newly shuffled deck should have all but one card remaining in shoe')        
 
     def testIsExhausted(self):
         s = Shoe(3,alg)
-        self.assertFalse(s.isExhausted(),'testShoe:testIsExhausted:Fresh deck should not be exhausted')
+        self.assertFalse(s.isExhausted,'testShoe:testIsExhausted:Fresh deck should not be exhausted')
         for _ in range(6):
             s.dealOneCard()
-        self.assertFalse(s.isExhausted(),'testShoe:testIsExhausted:Partially dealt deck should not be exhausted')
+        self.assertFalse(s.isExhausted,'testShoe:testIsExhausted:Partially dealt deck should not be exhausted')
         for _ in range(3*52-26-6):
             s.dealOneCard()
-        self.assertTrue(s.isExhausted(),'testShoe:testIsExhausted:Dealt deck should be exhausted')
+        self.assertTrue(s.isExhausted,'testShoe:testIsExhausted:Dealt deck should be exhausted')
         s.dealOneCard()
-        self.assertFalse(s.isExhausted(),'testShoe:testIsExhausted:New deck should not be exhausted')
+        self.assertFalse(s.isExhausted,'testShoe:testIsExhausted:New deck should not be exhausted')
 
     def testIsEmpty(self):
         s = Shoe(3,alg,3*52)
-        self.assertFalse(s.isEmpty(),'testShoe:testIsEmpty:Fresh deck should not be empty')
+        self.assertFalse(s.isEmpty,'testShoe:testIsEmpty:Fresh deck should not be empty')
         for _ in range(6):
             s.dealOneCard()
-        self.assertFalse(s.isEmpty(),'testShoe:testIsEmpty:Partially dealt deck should not be empty')
+        self.assertFalse(s.isEmpty,'testShoe:testIsEmpty:Partially dealt deck should not be empty')
         for _ in range(3*52-6):
             s.dealOneCard()
-        self.assertTrue(s.isEmpty(),'testShoe:testIsEmpty:Dealt deck should be empty')
+        self.assertTrue(s.isEmpty,'testShoe:testIsEmpty:Dealt deck should be empty')
         s.dealOneCard()
-        self.assertFalse(s.isEmpty(),'testShoe:testIsEmpty:New deck should not be empty')        
+        self.assertFalse(s.isEmpty,'testShoe:testIsEmpty:New deck should not be empty')        
         
 if __name__ == '__main__':
     unittest.main()

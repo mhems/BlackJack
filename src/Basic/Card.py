@@ -27,6 +27,11 @@ class Card:
     __charToNameDict['D'] = 'Diamonds'
     __charToNameDict['C'] = 'Clubs'
     
+    @staticmethod
+    def makeDeck():
+        """Returns list of 52 cards over all ranks and suits"""
+        return [Card(r,s) for r in Card.ranks for s in Card.suits]
+
     def __init__(self, rank, suit):
         """Initializes card's rank and suit to rank and suit respectively"""
         self.__rank = rank if isinstance(rank,int) else rank[0].upper()
@@ -49,13 +54,31 @@ class Card:
     @property
     def value(self):
         """Returns integer value of card"""
-        if self.isAce():
+        if self.isAce:
             return Card.HARD_ACE_VALUE
-        elif self.isFaceCard():
+        elif self.isFaceCard:
             return 10
         else:
             return self.rank
 
+    @property
+    def isAce(self):
+        """Returns True iff card is an Ace"""
+        return self.__rank == 'A'
+
+    @property
+    def isFaceCard(self):
+        """Returns True iff card is a face card"""
+        return self.__rank in ['J','Q','K','A']
+    
+    def rankEquivalent(self, other):
+        """Returns True iff other has equivalent rank"""
+        return self.rank == other.rank
+
+    def valueEquivalent(self, other):
+        """Returns True iff other has equivalent value"""
+        return self.value == other.value
+    
     def __str__(self):
         """Returns canonical representation of card"""
         return str(self.rank) + ' of ' + self.suit
@@ -64,31 +87,10 @@ class Card:
         """Returns canonical representation of card"""
         return str(self.rank) + ' of ' + self.suit
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         """Returns True if self has equal rank and suit to that of other"""
         return self.__rank == other.__rank and self.__suit == other.__suit
 
-    def __ne__(self,other):
+    def __ne__(self, other):
         """Returns True iff self is not equal to other"""
         return not self == other
-    
-    def rankEquivalent(self,other):
-        """Returns True iff other has equivalent rank"""
-        return self.rank == other.rank
-
-    def valueEquivalent(self,other):
-        """Returns True iff other has equivalent value"""
-        return self.value == other.value
-    
-    def isAce(self):
-        """Returns True iff card is an Ace"""
-        return self.__rank == 'A'
-
-    def isFaceCard(self):
-        """Returns True iff card is a face card"""
-        return self.__rank in ['J','Q','K','A']
-
-    @staticmethod
-    def makeDeck():
-        """Returns list of 52 cards over all ranks and suits"""
-        return [Card(r,s) for r in Card.ranks for s in Card.suits]

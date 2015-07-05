@@ -92,17 +92,17 @@ class testCard(unittest.TestCase):
 
     def testIsAce(self):
         c = Card('A','H')
-        self.assertTrue(c.isAce(),'testCard:testIsAce:Ace should return True')
+        self.assertTrue(c.isAce,'testCard:testIsAce:Ace should return True')
         n = Card(9,'H')
-        self.assertFalse(n.isAce(),'testCard:testIsAce:Non-ace should return False')
+        self.assertFalse(n.isAce,'testCard:testIsAce:Non-ace should return False')
 
     def testIsFaceCard(self):
         k = Card('K','C')
-        self.assertTrue(k.isFaceCard(),'testCard:testFaceCard:King should return True')
+        self.assertTrue(k.isFaceCard,'testCard:testFaceCard:King should return True')
         a = Card('A','C')
-        self.assertTrue(a.isFaceCard(),'testCard:testFaceCard:Ace should return True')
+        self.assertTrue(a.isFaceCard,'testCard:testFaceCard:Ace should return True')
         t = Card(10,'C')
-        self.assertFalse(t.isFaceCard(),'testCard:testFaceCard:Non-face card should return False')
+        self.assertFalse(t.isFaceCard,'testCard:testFaceCard:Non-face card should return False')
 
     def testMakeDeck(self):
         d = Card.makeDeck()

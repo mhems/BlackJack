@@ -13,6 +13,11 @@ class HouseBank(Bank):
         """Initializes funds"""
         self.__funds = 0
 
+    @property
+    def amount(self):
+        """Returns amount of funds"""
+        return self.__funds
+        
     def withdraw(self, amt):
         """Withdraws amt from funds"""
         # The House has "infinite" bankroll
@@ -22,7 +27,3 @@ class HouseBank(Bank):
     def deposit(self, amt):
         """Deposits amt into funds"""
         self.__funds += amt
-
-    def amount(self):
-        """Returns amount of funds"""
-        return self.__funds

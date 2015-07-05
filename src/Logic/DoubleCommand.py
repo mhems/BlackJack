@@ -23,15 +23,15 @@ class DoubleCommand(Command):
 
     def isAvailable(self, slot):
         """Double available depending on configuration"""
-        if not slot.playerCanDouble():
+        if not slot.playerCanDouble:
             return False
-        if not slot.isFirstCommand():
+        if not slot.isFirstCommand:
             return False
         double_range = Configuration.get('CARDS_ALLOWED_FOR_DOUBLE')
         if not double_range == Configuration.RANGE_ALL:
             if not slot.handValue in double_range:
                 return False
-        if (slot.handWasSplit() and
+        if (slot.handWasSplit and
             not Configuration.get('DOUBLE_AFTER_SPLIT_ALLOWED')):
             return False
         return True

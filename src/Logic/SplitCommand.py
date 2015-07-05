@@ -27,11 +27,11 @@ class SplitCommand(Command):
 
     def isAvailable(self, slot):
         """Returns True iff Split command is available"""
-        if not slot.playerCanDoubleBet():
+        if not slot.playerCanDoubleBet:
             return False
         if slot.numSplits + 1 >= Configuration.get('RESPLIT_UP_TO'):
             return False
-        if (slot.handWasSplit() and slot.handIsAcePair and
+        if (slot.handWasSplit and slot.handIsAcePair and
             not Configuration.get('RESPLIT_ACES')):
             return False
         return True
