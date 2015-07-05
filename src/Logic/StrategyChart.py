@@ -9,6 +9,7 @@ import re
 from src.Utilities.Configuration import Configuration
 from src.Basic.BlackjackHand     import BlackjackHand
 from src.Basic.Card              import Card
+from src.Logic.Command           import Command
 
 # Actions:
 # H  - Hit
@@ -105,6 +106,7 @@ class StrategyChart:
     def advise(self, player_hand, dealer_up_card):
         """Advise action given player's hand and dealer's up card"""
         value = player_hand.value()
+        advice = None
         if Configuration.get('SPLIT_BY_VALUE'):
             func = player_hand.isPairByValue
         else:
@@ -113,16 +115,14 @@ class StrategyChart:
         if func() and self.__pair_chart:
             arg = 'A' if player_hand.hasAce() else int(value/2)
             advice = self.__pair_chart.access(arg, dealer_up_card)
-            if advice:
-                return advice
         # check for soft
-        if player_hand.hasAce() and self.__soft_chart:
+        if not advice and player_hand.hasAce() and self.__soft_chart:
             advice = self.__soft_chart.access(value, dealer_up_card)
-            if advice:
-                return advice
         # default to hard    
-        if self.__hard_chart:
-            return self.__hard_chart.access(value, dealer_up_card)
+        if not advice and self.__hard_chart:
+            advice = self.__hard_chart.access(value, dealer_up_card)
+        if advice:
+            return Command.getCommand(advice)
         else:
             return None
 

@@ -10,6 +10,7 @@ class BettingStrategy(metaclass=ABCMeta):
     """Base class for betting policies"""
 
     @abstractmethod
-    def bet(self):
+    def bet(self, **kwargs):
         """Returns amount to wager"""
-        pass
+        raise NotImplementedError(
+            'BettingStrategy implentations must implement the bet method')
