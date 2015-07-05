@@ -1,12 +1,12 @@
 ####################
 #
-# testDealerAction.py
+# testDealerPolicy.py
 #
 ####################
 
 import unittest
 
-class testDealerAction(unittest.TestCase):
+class testDealerPolicy(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -14,7 +14,7 @@ class testDealerAction(unittest.TestCase):
         pass
 
     def test(self):
-        self.fail('Implement test Dealer action')
+        self.fail('Implement test DealerPolicy')
 
 if __name__ == '__main__':
     unittest.main()
