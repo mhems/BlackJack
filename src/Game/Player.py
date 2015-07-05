@@ -24,11 +24,14 @@ class Player:
         """Adds amt to chip stack"""
         pass
 
-    def receiveCard(self, card):
-        self.__hands[self.__hand_index].addCards(card)
-
+    def stackAmount(self):
+        """Returns amount of chips in player's stack"""
+        return self.__stack.amount
+    
     def act(self, upcard):
+        """Returns command player wishes to execute based on its policy"""
         return self.__policy.act(self.hands[self.__hand_index], upcard)
 
     def __eq__(self, other):
+        """Returns True iff player is other"""
         return self.id == other.id
