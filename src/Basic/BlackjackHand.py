@@ -104,7 +104,16 @@ class BlackjackHand(Hand):
     def reset(self):
         """Removes all cards from hand"""
         self.__cards = []
-            
+
+    def __eq__(self, other):
+        """Returns True iff cards in self are same as in other"""
+        if self.numCards != other.numCards:
+            return False
+        for c1 in self.__cards:
+            if not c1 in other.__cards:
+                return False
+        return True
+        
     def __str__(self):
         """Returns comma delimited list of cards' representations"""
         return '[' + ', '.join((str(c) for c in self.__cards)) +']'

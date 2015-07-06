@@ -4,6 +4,7 @@
 #
 ####################
 
+from src.Basic.BlackjackHand import BlackjackHand
 from src.Logic.Command import Command
 
 class TableSlot:
@@ -11,7 +12,7 @@ class TableSlot:
 
     def __init__(self):
         self.__player    = None
-        self.__hands     = []
+        self.__hands     = [BlackjackHand()]
         self.__pot       = 0
         self.__insurance = 0
         self.index       = 0
@@ -27,10 +28,10 @@ class TableSlot:
         return self.__hands[self.index]
 
     @property
-    def handIsAcePair(self):
-        """Return True iff hand is pair of Aces"""
-        return self.hand.isPairByRank and self.hand.hasAce
-
+    def hands(self):
+        """Return all hands in play for slot"""
+        return self.__hands
+    
     @property
     def firstAction(self):
         """Return True iff player is on first action for hand"""
@@ -39,7 +40,7 @@ class TableSlot:
     @property
     def numSplits(self):
         """Returns number of times player has split this round"""
-        return len(self.__hands)
+        return len(self.__hands) - 1
 
     @property
     def handWasSplit(self):
@@ -54,7 +55,7 @@ class TableSlot:
     @property
     def playerCanDoubleBet(self):
         """Return True iff player has adequate funds to double bet"""
-        return player.stackAmount >= self.__pot
+        return self.player.stackAmount >= self.__pot
 
     @property
     def isActive(self):
@@ -94,11 +95,11 @@ class TableSlot:
         """Executes any actions necessary to end turn"""
         pass        
         
-    def promptAction(self, upcard):
+    def promptAction(self, upcard, availableCommands):
         """Prompts player to act"""
         # Need to have bet to act
         if self.isActive:
-            return self.__player.act(self.hand, upcard)
+            return self.__player.act(self.hand, upcard, availableCommands)
 
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
@@ -119,10 +120,9 @@ class TableSlot:
     def splitHand(self):
         """Splits player's hand into 2 new hands"""
         (card1, card2) = self.hand.splitCards
-        self.hand = BlackjackHand()
-        self.hand.addCards(card1)
-        self.hand.wasSplit = True
-        self.__hands.insert(self.index + 1)
-        self.__hands[self.index + 1] = BlackjackHand()
+        self.__hands[self.index] = BlackjackHand()
+        self.__hands[self.index].addCards(card1)
+        self.__hands[self.index].wasSplit = True
+        self.__hands.insert(self.index + 1, BlackjackHand())
         self.__hands[self.index + 1].addCards(card2)
         self.__hands[self.index + 1].wasSplit = True

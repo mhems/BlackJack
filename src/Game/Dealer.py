@@ -4,6 +4,8 @@
 #
 ####################
 
+from src.Logic.DealerPolicy import DealerPolicy
+
 class Dealer:
     """Representation of blackjack dealer"""
 
@@ -12,4 +14,4 @@ class Dealer:
         self.name   = name
         self.__hand = None
         self.__isActive = True
-        self.__policy = DealerAction()
+        self.__policy = DealerPolicy()

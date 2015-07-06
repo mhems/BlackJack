@@ -6,6 +6,10 @@
 
 from abc import ABCMeta, abstractmethod, abstractproperty
 
+class InsufficientFundsError(Exception):
+    """Error class to represent error of overwithdrawing from bank"""
+    pass
+
 class Bank:
     """Abstract mechanism for Bank transactions"""
 

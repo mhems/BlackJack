@@ -13,7 +13,7 @@ class HumanInputPolicy(DecisionPolicy):
     def decide(self, hand, upcard, availableCommands, **kwargs):
         """Decides according to human input"""
 
-        def __prompt(self, availableCommands):
+        def prompt(availableCommands):
             """Prompts for response"""
             response = input('How will you act? Options = %s\n' %
                              (', '.join((str(c) for c in availableCommands))))
@@ -22,8 +22,8 @@ class HumanInputPolicy(DecisionPolicy):
         print('Your hand (%s) has value %d, Dealer shows %s' % (hand,
                                                                 hand.value,
                                                                 upcard))
-        command, response = self.__prompt(availableCommands)
+        command, response = prompt(availableCommands)
         while not command:
             print('Unknown or unavailable action: %s' % response)
-            command, response = self.__prompt(availableCommands)
+            command, response = prompt(availableCommands)
         return command

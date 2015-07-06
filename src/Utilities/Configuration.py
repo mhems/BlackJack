@@ -93,9 +93,6 @@ class Configuration:
         cut_index = Configuration.__configuration['CUT_INDEX']
         if abs(cut_index) > num_cards:
             Utilities.error('CUT_INDEX: (%d) Cut index cannot be greater than number of cards in shoe (%d)' % (cut_index, num_cards))
-            
-        if cut_index < 0:
-            Configuration.__configuration['CUT_INDEX'] = num_cards - abs(cut_index)
         num_burn = Configuration.__configuration['NUM_CARDS_BURN_ON_SHUFFLE']
         if num_burn < 0:
             Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be positive' % num_burn) 

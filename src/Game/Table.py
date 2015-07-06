@@ -4,12 +4,17 @@
 #
 ####################
 
-import src.Utilities.Configuration
-
+from src.Utilities.Configuration import Configuration
 from src.Basic.Shoe import Shoe
 from src.Basic.Shoe import faro_shuffle
+from src.Logic.Command       import Command
+from src.Logic.HitCommand    import HitCommand
+from src.Logic.StandCommand  import StandCommand
+from src.Logic.DoubleCommand import DoubleCommand
+from src.Logic.SplitCommand  import SplitCommand
 from src.Game.TableSlot import TableSlot
 from src.Game.HouseBank import HouseBank
+from src.Game.Dealer    import Dealer
 
 class Table:
     """Representation of Blackjack Table"""
@@ -90,20 +95,21 @@ class Table:
         
     def play(self):
         """Plays one round of blackjack"""
-        for slot in self.occupied_slots:
-            slot.promptBet()
         for slot in self.active_slots:
             slot.beginRound()
+        for slot in self.occupied_slots:
+            slot.promptBet()
         upcard = self.__dealCards()
         if upcard.isAce:
             pass # offer insurance ...
         # offer surrender(s) ... 
         for slot in self.active_slots:
+            print(slot.hand)
             self.__dealToSlot(slot, upcard)
         # pay out each player
         for slot in self.active_slots:
             slot.endRound()
-
+            
     def __dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
         for hand in slot.hands:
@@ -113,7 +119,8 @@ class Table:
                     break
                 if hand.isBust:
                     break
-                response = slot.promptAction(upcard)
+                a = [cmd for (_, cmd) in self.__commands.items() if cmd.isAvailable(slot)]
+                response = slot.promptAction(upcard, a)
                 done = self.__commands[response].execute(slot)
 
     def __dealCards(self):
@@ -121,7 +128,7 @@ class Table:
            Returns dealer's up card"""
         for slot in self.active_slots:
             slot.addCards(self.__shoe.dealOneCard())
-        self.__dealer_slot.addCard(self.__shoe.dealOneCard())
+        self.__dealer_slot.addCards(self.__shoe.dealOneCard())
         for slot in self.active_slots:
             slot.addCards(self.__shoe.dealOneCard())
         upcard = self.__shoe.dealOneCard()

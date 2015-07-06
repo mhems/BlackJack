@@ -25,7 +25,7 @@ class DoubleCommand(Command):
         """Double available depending on configuration"""
         if not slot.playerCanDoubleBet:
             return False
-        if not slot.firstAction
+        if not slot.firstAction:
             return False
         double_range = Configuration.get('CARDS_ALLOWED_FOR_DOUBLE')
         if not double_range == Configuration.RANGE_ALL:

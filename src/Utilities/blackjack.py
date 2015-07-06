@@ -7,6 +7,11 @@
 import os
 import argparse
 
+from src.Game.Player import Player
+from src.Game.Table  import Table
+from src.Logic.HumanInputPolicy import HumanInputPolicy
+from src.Logic.MinBettingStrategy import MinBettingStrategy
+
 """Drives program execution"""
 
 def parseCommandLine():
@@ -26,3 +31,8 @@ if __name__ == '__main__':
 #    os.environ['PYTHONPATH'] += ':' + abspath[:len(abspath)-len(__file__)]
 
     nspace = parseCommandLine()
+
+    player = Player("ME", HumanInputPolicy(), MinBettingStrategy())
+    table  = Table()
+    table.register_player(player)
+    table.play()

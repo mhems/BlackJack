@@ -11,7 +11,15 @@ class Utilities:
     """Provides general utilities such as centralized error handling"""
 
     numErrors = 0
+    __count   = 0
 
+    @staticmethod
+    def uniqueNumber():
+        """Return previously unseen number"""
+        c = Utilities.__count
+        Utilities.__count += 1
+        return c
+    
     @staticmethod
     def error(msg):
         stderr.write(msg)

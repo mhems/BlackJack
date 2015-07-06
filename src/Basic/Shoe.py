@@ -23,7 +23,7 @@ class Shoe:
         elif isinstance(cutIndex,float):
             self.cutIndex = int(floor(n * Card.NUM_CARDS_PER_DECK * cutIndex))
         elif cutIndex < 0:
-            raise Exception('Cut index must be positive')
+            self.cutIndex = n * Card.NUM_CARDS_PER_DECK + cutIndex
         else:
             self.cutIndex = cutIndex
         for _ in range(n):

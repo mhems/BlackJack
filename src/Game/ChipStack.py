@@ -5,6 +5,7 @@
 ####################
 
 from src.Game.Bank import Bank
+from src.Game.Bank import InsufficientFundsError
 
 class ChipStack(Bank):
     """Representation of player's chip stack"""
@@ -23,11 +24,11 @@ class ChipStack(Bank):
         """If there are less than amt in funds, returns None"""
         if amt <= self.__funds:
             self.__funds -= amt
-            return amt
         else:
             raise InsufficientFundsError(
-                'ChipStack has insufficient funds to withdraw $%d' % amt
+                'ChipStack has insufficient funds to withdraw $%d' % amt)
 
     def deposit(self, amt):
         """Deposits amt into funds"""
-        self.__funds += amt
+        if amt > 0:
+            self.__funds += amt
