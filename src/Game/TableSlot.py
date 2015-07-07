@@ -11,7 +11,7 @@ class TableSlot:
 
     def __init__(self):
         self.__player    = None
-        self.__hands     = []
+        self.__hands     = [BlackjackHand()]
         self.__pot       = 0
         self.__insurance = 0
         self.index       = 0

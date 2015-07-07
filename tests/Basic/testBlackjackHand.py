@@ -37,6 +37,15 @@ class testBlackjackHand(unittest.TestCase):
         h.addCards(Card(9,'D'))
         self.assertEqual(h.value,21,'testBlackjackHand:testValue:21 should have value 21')
 
+    def testRanks(self):
+        h = BlackjackHand()
+        h.addCards(Card(9,'D'), Card(10,'H'))
+        self.assertEqual(h.ranks,[9,10],'testBlackjackHand:testRanks:Hand with 9 and 10 should have ranks 9 and 10')
+        h = BlackjackHand()
+        h.addCards(Card('K','H'), Card('A','C'))
+        self.assertEqual(h.ranks,['King','Ace'],'testBlackjackHand:testRanks:Hand with King and Ace should have ranks King and Ace')
+        self.assertNotEqual(h.ranks,[10,'Ace'],'testBlackjackHand:testRanks:Ranks should not return values')
+        
     def testSoft(self):
         h = BlackjackHand()
         h.addCards(Card('A','D'), Card(10,'D'))
