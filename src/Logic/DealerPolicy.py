@@ -4,7 +4,9 @@
 #
 ####################
 
+from src.Logic.Command        import Command
 from src.Logic.DecisionPolicy import DecisionPolicy
+from src.Utilities.Configuration import Configuration
 
 class DealerPolicy(DecisionPolicy):
     """Class for blackjack Dealer's decision policy"""

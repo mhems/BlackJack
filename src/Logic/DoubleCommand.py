@@ -5,6 +5,7 @@
 ####################
 
 from src.Logic.Command import Command
+from src.Utilities.Configuration import Configuration
 
 class DoubleCommand(Command):
     """Representation of the double down action"""
@@ -14,7 +15,7 @@ class DoubleCommand(Command):
         self.__hit_command   = hitCommand
         self.__stand_command = standCommand
 
-    def __perform(self, slot, **kwargs):
+    def perform(self, slot, **kwargs):
         """Perform Double command"""
         slot.doublePot()
         self.__hit_command.execute(slot, **kwargs)
@@ -28,9 +29,8 @@ class DoubleCommand(Command):
         if not slot.firstAction:
             return False
         double_range = Configuration.get('CARDS_ALLOWED_FOR_DOUBLE')
-        if not double_range == Configuration.RANGE_ALL:
-            if not slot.handValue in double_range:
-                return False
+        if not slot.handValue in double_range:
+            return False
         if (slot.handWasSplit and
             not Configuration.get('DOUBLE_AFTER_SPLIT_ALLOWED')):
             return False

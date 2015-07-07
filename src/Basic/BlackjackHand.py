@@ -32,6 +32,11 @@ class BlackjackHand(Hand):
         return val
 
     @property
+    def ranks(self):
+        """Returns list of ranks in hand"""
+        return [c.rank for c in self.__cards]
+    
+    @property
     def isAcePair(self):
         """Return True iff hand is pair of Aces"""
         return self.numAces == 2 and self.numCards == 2

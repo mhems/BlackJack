@@ -13,9 +13,9 @@ class HitCommand(Command):
         """Initializes members"""
         self.__shoe = shoe
 
-    def __perform(self, slot, **kwargs):
+    def perform(self, slot, **kwargs):
         """Perform Hit command"""
-        slot.addCard(self.__shoe.dealOneCard())
+        slot.addCards(self.__shoe.dealOneCard())
         return False
 
     def isAvailable(self, slot):

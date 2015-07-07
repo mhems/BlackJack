@@ -42,29 +42,29 @@ class Command(metaclass=ABCMeta):
         if not self.isAvailable(slot):
             raise UnavailableCommandError(
                 '%s command is unavailable' % str(self))
-        return self.__perform(slot, **kwargs)
+        return self.perform(slot, **kwargs)
 
-    # @abstractmethod
-    # def __perform(self, slot, **kwargs):
-    #     """Perform command on slot,
-    #        Return True iff player is done with turn"""
-    #     raise NotImplementedError(
-    #         'Command implementations must implement the __perform method')
+    @abstractmethod
+    def perform(self, slot, **kwargs):
+        """Perform command on slot,
+           Return True iff player is done with turn"""
+        raise NotImplementedError(
+            'Command implementations must implement the __perform method')
 
-    # @abstractmethod
-    # def isAvailable(self, slot):
-    #     """Returns True iff command is permitted for slot's player and hand"""
-    #     raise NotImplementedError(
-    #         'Command implementations must implement the isAvailable method')
+    @abstractmethod
+    def isAvailable(self, slot):
+        """Returns True iff command is permitted for slot's player and hand"""
+        raise NotImplementedError(
+            'Command implementations must implement the isAvailable method')
         
-    # @abstractmethod
-    # def __str__(self):
-    #     """Returns string representing Command"""
-    #     raise NotImplementedError(
-    #         'Command implementations must implement the __str__ method')
+    @abstractmethod
+    def __str__(self):
+        """Returns string representing Command"""
+        raise NotImplementedError(
+            'Command implementations must implement the __str__ method')
 
-    # @abstractmethod
-    # def __repr__(self):
-    #     """Returns representation of Command"""
-    #     raise NotImplementedError(
-    #         'Command implementations must implement the __repr__ method')
+    @abstractmethod
+    def __repr__(self):
+        """Returns representation of Command"""
+        raise NotImplementedError(
+            'Command implementations must implement the __repr__ method')

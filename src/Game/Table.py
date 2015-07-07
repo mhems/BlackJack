@@ -7,6 +7,7 @@
 from src.Utilities.Configuration import Configuration
 from src.Basic.Shoe import Shoe
 from src.Basic.Shoe import faro_shuffle
+from src.Basic.Shoe import fisher_yates_shuffle
 from src.Logic.Command       import Command
 from src.Logic.HitCommand    import HitCommand
 from src.Logic.StandCommand  import StandCommand
@@ -27,8 +28,10 @@ class Table:
         # Index 0 is dealer's leftmost slot
         self.__slots       = [TableSlot() for _ in range(self.__num_slots)]
         self.__shoe        = Shoe(Configuration.get('NUM_DECKS'),
-                                  faro_shuffle,
+                                  fisher_yates_shuffle,
+                                  #                                  faro_shuffle,
                                   Configuration.get('CUT_INDEX'))
+        self.__shoe.shuffle()
         self.__dealer_slot.seatPlayer(Dealer())
         hitCmd   = HitCommand(self.__shoe)
         standCmd = StandCommand()
@@ -95,8 +98,9 @@ class Table:
         
     def play(self):
         """Plays one round of blackjack"""
-        for slot in self.active_slots:
+        for slot in self.__slots:
             slot.beginRound()
+        self.__dealer_slot.beginRound()
         for slot in self.occupied_slots:
             slot.promptBet()
         upcard = self.__dealCards()
@@ -104,11 +108,13 @@ class Table:
             pass # offer insurance ...
         # offer surrender(s) ... 
         for slot in self.active_slots:
-            print(slot.hand)
             self.__dealToSlot(slot, upcard)
+        self.__dealToSlot(self.__dealer_slot, upcard)
+        print('Dealer has', self.__dealer_slot.handValue)
         # pay out each player
-        for slot in self.active_slots:
+        for slot in self.__slots:
             slot.endRound()
+        self.__dealer_slot.endRound()            
             
     def __dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
@@ -122,7 +128,7 @@ class Table:
                 a = [cmd for (_, cmd) in self.__commands.items() if cmd.isAvailable(slot)]
                 response = slot.promptAction(upcard, a)
                 done = self.__commands[response].execute(slot)
-
+                
     def __dealCards(self):
         """Deals hands to all active players
            Returns dealer's up card"""

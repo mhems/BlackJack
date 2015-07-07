@@ -9,8 +9,9 @@ import argparse
 
 from src.Game.Player import Player
 from src.Game.Table  import Table
-from src.Logic.HumanInputPolicy import HumanInputPolicy
+from src.Logic.HumanInputPolicy   import HumanInputPolicy
 from src.Logic.MinBettingStrategy import MinBettingStrategy
+from src.Utilities.Configuration  import Configuration
 
 """Drives program execution"""
 
@@ -32,6 +33,8 @@ if __name__ == '__main__':
 
     nspace = parseCommandLine()
 
+    Configuration.loadConfiguration()
+    
     player = Player("ME", HumanInputPolicy(), MinBettingStrategy())
     table  = Table()
     table.register_player(player)

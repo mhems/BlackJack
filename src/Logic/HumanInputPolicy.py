@@ -19,11 +19,11 @@ class HumanInputPolicy(DecisionPolicy):
                              (', '.join((str(c) for c in availableCommands))))
             return Command.getCommand(response), response
 
-        print('Your hand (%s) has value %d, Dealer shows %s' % (hand,
+        print('Your hand (%s) has value %d, Dealer shows %s' % (hand.ranks,
                                                                 hand.value,
                                                                 upcard))
         command, response = prompt(availableCommands)
-        while not command:
+        while command == None:
             print('Unknown or unavailable action: %s' % response)
             command, response = prompt(availableCommands)
         return command

@@ -5,14 +5,13 @@
 ####################
 
 from src.Basic.BlackjackHand import BlackjackHand
-from src.Logic.Command import Command
 
 class TableSlot:
     "Representation of one seat at the table (player, pot, hand)"""
 
     def __init__(self):
         self.__player    = None
-        self.__hands     = [BlackjackHand()]
+        self.__hands     = []
         self.__pot       = 0
         self.__insurance = 0
         self.index       = 0
@@ -27,6 +26,11 @@ class TableSlot:
         """Return current hand being acted upon"""
         return self.__hands[self.index]
 
+    @property
+    def handValue(self):
+        """Return value of current hand"""
+        return self.hand.value
+    
     @property
     def hands(self):
         """Return all hands in play for slot"""
@@ -97,15 +101,11 @@ class TableSlot:
         
     def promptAction(self, upcard, availableCommands):
         """Prompts player to act"""
-        # Need to have bet to act
-        if self.isActive:
-            return self.__player.act(self.hand, upcard, availableCommands)
+        return self.__player.act(self.hand, upcard, availableCommands)
 
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
-        # Need to have a player to bet
-        if self.isOccupied:
-            self.__pot = self.__player.bet(**kwargs)
+        self.__pot = self.__player.bet(**kwargs)
 
     def rakePot(self):
         """Rakes pot, setting it to zero"""

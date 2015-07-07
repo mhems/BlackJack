@@ -9,14 +9,13 @@ import re
 
 from src.Basic.Card          import Card
 from src.Utilities.Utilities import Utilities
-from src.Utilities.Enum      import Enum
 
 # Make silent parsing errors notify user
 
 class Configuration:
     """Provides handling and access of configuration files"""
     
-    RANGE_ALL = Enum()
+    UNRESTRICTED = Utilities.uniqueNumber()
     
     __configuration = {
         # > 0
@@ -105,8 +104,8 @@ class Configuration:
 
         resplit_num = Configuration.__configuration['RESPLIT_UP_TO']
         if resplit_num == '*':
-            Configuration.__configuration['RESPLIT_UP_TO'] = Configuration.RANGE_ALL
-        elif not re.match('0|[1-9][0-9]*', resplit_num):
+            Configuration.__configuration['RESPLIT_UP_TO'] = Configuration.UNRESTRICTED
+        elif not re.match('0|[1-9][0-9]*', str(resplit_num)):
             Utilities.error('RESPLIT_UP_TO: (%d) Number of times to resplit must be non-negative integer' % resplit_num)
         Configuration.__checkCardRange('CARDS_ALLOWED_FOR_DOUBLE')
         if Configuration.__configuration['LATE_SURRENDER']:
@@ -142,7 +141,7 @@ class Configuration:
         """Semantic check of options with range values"""
         value = Configuration.__configuration[flagname]
         if value == '*':
-            Configuration.__configuration[flagname] = Configuration.RANGE_ALL
+            Configuration.__configuration[flagname] = Card.ranks
         else:
             ls = list(set(re.findall('10|J|Q|K|A|[2-9]', value, re.I)))
             for idx, elem in enumerate(ls):

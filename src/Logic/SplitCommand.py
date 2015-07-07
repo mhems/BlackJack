@@ -5,6 +5,7 @@
 ####################
 
 from src.Logic.Command import Command
+from src.Utilities.Configuration import Configuration
 
 class SplitCommand(Command):
     """Representation of the split command"""
@@ -14,7 +15,7 @@ class SplitCommand(Command):
         self.__hit_command   = hitCommand
         self.__stand_command = standCommand
     
-    def __perform(self, slot, **kwargs):
+    def perform(self, slot, **kwargs):
         """Perform Split command"""
         done = (slot.handIsAcePair and
                 not Configuration.get('HIT_SPLIT_ACES') and
@@ -33,7 +34,9 @@ class SplitCommand(Command):
             return False
         if not slot.firstAction:
             return False
-        if slot.numSplits + 1 >= Configuration.get('RESPLIT_UP_TO'):
+        num_splits_allowed = Configuration.get('RESPLIT_UP_TO')
+        if (num_splits_allowed != Configuration.UNRESTRICTED and
+            slot.numSplits + 1 >= num_splits_allowed):
             return False
         if (slot.handWasSplit and slot.handIsAcePair and
             not Configuration.get('RESPLIT_ACES')):

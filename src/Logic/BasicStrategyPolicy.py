@@ -4,6 +4,7 @@
 #
 ####################
 
+from src.Logic.Command        import Command
 from src.Logic.DecisionPolicy import DecisionPolicy
 
 class BasicStrategyPolicy(DecisionPolicy):

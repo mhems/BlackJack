@@ -3,7 +3,9 @@
 # Shoe.py
 #
 ####################
-from math import floor
+
+from math   import floor
+from random import Random
 
 from src.Basic.Card import Card
 from src.Utilities.Configuration import Configuration
@@ -60,23 +62,29 @@ class Shoe:
     def dealOneCard(self):
         """Convenience method to deal one card"""
         if self.isExhausted:
-            self.__cards = self.__algorithm(self.__cards)
-            self.__index = 0
-            self.deal(Configuration.get('NUM_CARDS_BURN_ON_SHUFFLE'))
+            self.shuffle()
         c = self.__cards[self.__index]
         self.__index += 1
         return c
 
+    def shuffle(self):
+        """Shuffles the deck using specified algorithm"""
+        self.__cards = self.__algorithm(self.__cards)
+        self.__index = 0
+        self.deal(Configuration.get('NUM_CARDS_BURN_ON_SHUFFLE'))        
+    
 def faro_shuffle(deck):
-    N = len(deck)
+    N = len(deck)//2
     ret = []
     for (a,b) in zip(deck[:N], deck[N:]):
-        ret.extend( (a, b) )
+        ret.append(a)
+        ret.append(b)
     return ret
 
 def fisher_yates_shuffle(deck):
-    for i in range(len(deck), 1, -1):
-        j = randint(0, i)
+    rand = Random()
+    for i in range(len(deck) - 1, 1, -1):
+        j = rand.randint(0, i)
         temp    = deck[i]
         deck[i] = deck[j]
         deck[j] = temp

@@ -7,7 +7,6 @@
 import re
 
 from src.Utilities.Configuration import Configuration
-from src.Basic.BlackjackHand     import BlackjackHand
 from src.Basic.Card              import Card
 from src.Logic.Command           import Command
 
