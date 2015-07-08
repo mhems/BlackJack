@@ -19,8 +19,7 @@ class DoubleCommand(Command):
         """Perform Double command"""
         slot.doublePot()
         self.__hit_command.execute(slot, **kwargs)
-        self.__stand_command.execute(slot, **kwargs)
-        return False
+        return self.__stand_command.execute(slot, **kwargs)
 
     def isAvailable(self, slot):
         """Double available depending on configuration"""
@@ -28,8 +27,9 @@ class DoubleCommand(Command):
             return False
         if not slot.firstAction:
             return False
-        double_range = Configuration.get('CARDS_ALLOWED_FOR_DOUBLE')
-        if not slot.handValue in double_range:
+        double_range = Configuration.get('TOTALS_ALLOWED_FOR_DOUBLE')
+        if (double_range != Configuration.UNRESTRICTED and
+            not slot.handValue in double_range):
             return False
         if (slot.handWasSplit and
             not Configuration.get('DOUBLE_AFTER_SPLIT_ALLOWED')):

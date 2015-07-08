@@ -38,7 +38,7 @@ class Configuration:
         # True | False
         'DOUBLE_AFTER_SPLIT_ALLOWED'     : True,
         # must be * or comma separated list of card ranks
-        'CARDS_ALLOWED_FOR_DOUBLE'       : '*',
+        'TOTALS_ALLOWED_FOR_DOUBLE'      : '*',
 
         # True | False
         'SPLIT_BY_VALUE'                 : True,
@@ -107,7 +107,7 @@ class Configuration:
             Configuration.__configuration['RESPLIT_UP_TO'] = Configuration.UNRESTRICTED
         elif not re.match('0|[1-9][0-9]*', str(resplit_num)):
             Utilities.error('RESPLIT_UP_TO: (%d) Number of times to resplit must be non-negative integer' % resplit_num)
-        Configuration.__checkCardRange('CARDS_ALLOWED_FOR_DOUBLE')
+        Configuration.__checkCardRange('TOTALS_ALLOWED_FOR_DOUBLE')
         if Configuration.__configuration['LATE_SURRENDER']:
             Configuration.__checkCardRange('ALLOWED_LATE_SURRENDER_RANGE')
         if Configuration.__configuration['EARLY_SURRENDER']:
@@ -141,7 +141,7 @@ class Configuration:
         """Semantic check of options with range values"""
         value = Configuration.__configuration[flagname]
         if value == '*':
-            Configuration.__configuration[flagname] = Card.ranks
+            Configuration.__configuration[flagname] = Configuration.UNRESTRICTED
         else:
             ls = list(set(re.findall('10|J|Q|K|A|[2-9]', value, re.I)))
             for idx, elem in enumerate(ls):
@@ -161,7 +161,7 @@ class Configuration:
         Configuration.__configuration['BLACKJACK_PAYOUT_RATIO']        = conf.get('payout_ratio','BLACKJACK_PAYOUT_RATIO')
         Configuration.__configuration['INSURANCE_PAYOUT_RATIO']        = conf.get('payout_ratio','INSURANCE_PAYOUT_RATIO')
         Configuration.__configuration['DOUBLE_AFTER_SPLIT_ALLOWED']    = conf.getboolean('double','DOUBLE_AFTER_SPLIT_ALLOWED')
-        Configuration.__configuration['CARDS_ALLOWED_FOR_DOUBLE']      = conf.get('double','CARDS_ALLOWED_FOR_DOUBLE')
+        Configuration.__configuration['TOTALS_ALLOWED_FOR_DOUBLE']      = conf.get('double','TOTALS_ALLOWED_FOR_DOUBLE')
         Configuration.__configuration['SPLIT_BY_VALUE']                = conf.getboolean('split','SPLIT_BY_VALUE')
         Configuration.__configuration['RESPLIT_UP_TO']                 = conf.get('split','RESPLIT_UP_TO')
         Configuration.__configuration['RESPLIT_ACES']                  = conf.getboolean('split','RESPLIT_ACES')
@@ -198,7 +198,7 @@ class Configuration:
         f.write('\n')
         f.write('[double]\n')
         f.write(func('DOUBLE_AFTER_SPLIT_ALLOWED'))
-        f.write(func('CARDS_ALLOWED_FOR_DOUBLE'))
+        f.write(func('TOTALS_ALLOWED_FOR_DOUBLE'))
         f.write('\n')
         f.write('[split]\n')
         f.write(func('SPLIT_BY_VALUE'))

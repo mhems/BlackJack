@@ -55,6 +55,16 @@ class TableSlot:
     def handIsAcePair(self):
         """Returns True iff hand is pair of Aces"""
         return self.hand.isAcePair
+
+    @property
+    def handIsPairByValue(self):
+        """Returns True iff hand is pair by value"""
+        return self.hand.isPairByValue
+
+    @property
+    def handIsPairByRank(self):
+        """Returns True iff hand is pair by rank"""
+        return self.hand.isPairByRank
     
     @property
     def playerCanDoubleBet(self):
@@ -97,8 +107,8 @@ class TableSlot:
         
     def endRound(self):
         """Executes any actions necessary to end turn"""
-        pass        
-        
+        pass
+
     def promptAction(self, upcard, availableCommands):
         """Prompts player to act"""
         return self.__player.act(self.hand, upcard, availableCommands)
@@ -115,7 +125,7 @@ class TableSlot:
 
     def doublePot(self):
         """Doubles player's pot"""
-        self.__pot += player.wager(self.__pot)
+        self.__pot += self.__player.wager(self.__pot)
 
     def splitHand(self):
         """Splits player's hand into 2 new hands"""

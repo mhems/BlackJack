@@ -30,6 +30,12 @@ class SplitCommand(Command):
 
     def isAvailable(self, slot):
         """Returns True iff Split command is available"""
+        if Configuration.get('SPLIT_BY_VALUE'):
+            toTest = slot.handIsPairByValue
+        else:
+            toTest = slot.handIsPairByRank
+        if not toTest:
+                return False
         if not slot.playerCanDoubleBet:
             return False
         if not slot.firstAction:

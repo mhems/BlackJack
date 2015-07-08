@@ -110,7 +110,10 @@ class Table:
         for slot in self.active_slots:
             self.__dealToSlot(slot, upcard)
         self.__dealToSlot(self.__dealer_slot, upcard)
-        print('Dealer has', self.__dealer_slot.handValue)
+        dealer_value = self.__dealer_slot.handValue
+        for slot in self.active_slots:
+            if not slot.hand.isBust and (dealer_value > Configuration.get('BLACKJACK_VALUE') or slot.handValue > dealer_value):
+                print('Player', str(slot.player), 'wins')
         # pay out each player
         for slot in self.__slots:
             slot.endRound()
@@ -118,16 +121,18 @@ class Table:
             
     def __dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
-        for hand in slot.hands:
+        for index,hand in enumerate(slot.hands):
+            slot.index = index
             done = False
             while not done:
                 if hand.isBlackjack:
-                    break
+                     break
                 if hand.isBust:
                     break
                 a = [cmd for (_, cmd) in self.__commands.items() if cmd.isAvailable(slot)]
                 response = slot.promptAction(upcard, a)
                 done = self.__commands[response].execute(slot)
+        print('Player', str(slot.player), 'ends with', slot.handValue)
                 
     def __dealCards(self):
         """Deals hands to all active players

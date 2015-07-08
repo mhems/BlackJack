@@ -36,6 +36,7 @@ if __name__ == '__main__':
     Configuration.loadConfiguration()
     
     player = Player("ME", HumanInputPolicy(), MinBettingStrategy())
+    player.receive_payment(100)
     table  = Table()
     table.register_player(player)
     table.play()

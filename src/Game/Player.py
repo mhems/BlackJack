@@ -38,7 +38,7 @@ class Player:
 
     def bet(self):
         """Returns amount player wishes to bet"""
-        return self.__bet_policy.bet()
+        return self.__stack.withdraw(self.__bet_policy.bet())
     
     def __eq__(self, other):
         """Returns True iff player is other"""

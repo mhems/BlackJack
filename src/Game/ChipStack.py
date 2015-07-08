@@ -24,6 +24,7 @@ class ChipStack(Bank):
         """If there are less than amt in funds, returns None"""
         if amt <= self.__funds:
             self.__funds -= amt
+            return amt
         else:
             raise InsufficientFundsError(
                 'ChipStack has insufficient funds to withdraw $%d' % amt)
