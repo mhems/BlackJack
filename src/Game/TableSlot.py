@@ -14,6 +14,7 @@ class TableSlot:
         self.__hands     = [BlackjackHand()]
         self.__pot       = 0
         self.__insurance = 0
+        self.__insured   = False
         self.index       = 0
 
     @property
@@ -82,6 +83,11 @@ class TableSlot:
         return self.__player != None
 
     @property
+    def isInsured(self):
+        """Return True iff player is insured"""
+        return self.__insured
+    
+    @property
     def hasBlackjack(self):
         """Returns True iff hand is natural blackjack"""
         return self.hand.isBlackjack
@@ -109,9 +115,14 @@ class TableSlot:
         """Executes any actions necessary to end turn"""
         pass
 
-    def promptAction(self, upcard, availableCommands):
+    def promptAction(self, upcard, availableCommands, **kwargs):
         """Prompts player to act"""
-        return self.__player.act(self.hand, upcard, availableCommands)
+        return self.__player.act(self.hand, upcard, availableCommands, **kwargs)
+
+    def promptInsurance(self, **kwargs):
+        """Prompts player for insurance"""
+        if self.__player.insure(self.hand, **kwargs):
+            self.__insured = True
 
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
@@ -123,6 +134,10 @@ class TableSlot:
         self.__pot = 0
         return amt
 
+    def payout(self, amt):
+        """Pays seated player amt"""
+        self.__player.receive_payment(amt)
+    
     def doublePot(self):
         """Doubles player's pot"""
         self.__pot += self.__player.wager(self.__pot)

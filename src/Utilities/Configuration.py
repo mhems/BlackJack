@@ -29,7 +29,9 @@ class Configuration:
         'CUT_INDEX'                      : -26,
         # > 0 and < number cards in shoe
         'NUM_CARDS_BURN_ON_SHUFFLE'      : 1,
-
+        # True | False
+        'OFFER_INSURANCE'                : True,
+        
         # ratios must be floats or fractions
         'PAYOUT_RATIO'                   : '1/1',
         'BLACKJACK_PAYOUT_RATIO'         : '3/2',
@@ -157,6 +159,7 @@ class Configuration:
         Configuration.__configuration['PUSH_ON_BLACKJACK']             = conf.getboolean('general','PUSH_ON_BLACKJACK')
         Configuration.__configuration['CUT_INDEX']                     = conf.getint('general','CUT_INDEX')
         Configuration.__configuration['NUM_CARDS_BURN_ON_SHUFFLE']     = conf.getint('general','NUM_CARDS_BURN_ON_SHUFFLE')
+        Configuration.__configuration['OFFER_INSURANCE']               = conf.getboolean('general','OFFER_INSURANCE')
         Configuration.__configuration['PAYOUT_RATIO']                  = conf.get('payout_ratio','PAYOUT_RATIO')
         Configuration.__configuration['BLACKJACK_PAYOUT_RATIO']        = conf.get('payout_ratio','BLACKJACK_PAYOUT_RATIO')
         Configuration.__configuration['INSURANCE_PAYOUT_RATIO']        = conf.get('payout_ratio','INSURANCE_PAYOUT_RATIO')
@@ -190,6 +193,7 @@ class Configuration:
         f.write(func('PUSH_ON_BLACKJACK'))
         f.write(func('CUT_INDEX'))
         f.write(func('NUM_CARDS_BURN_ON_SHUFFLE'))
+        f.write(func('OFFER_INSURANCE'))
         f.write('\n')
         f.write('[payout_ratio]\n')
         f.write(func('PAYOUT_RATIO'))

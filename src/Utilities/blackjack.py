@@ -10,6 +10,7 @@ import argparse
 from src.Game.Player import Player
 from src.Game.Table  import Table
 from src.Logic.HumanInputPolicy   import HumanInputPolicy
+from src.Logic.HumanInputInsurancePolicy import HumanInputInsurancePolicy
 from src.Logic.MinBettingStrategy import MinBettingStrategy
 from src.Utilities.Configuration  import Configuration
 
@@ -35,7 +36,7 @@ if __name__ == '__main__':
 
     Configuration.loadConfiguration()
     
-    player = Player("ME", HumanInputPolicy(), MinBettingStrategy())
+    player = Player("ME", HumanInputPolicy(), HumanInputInsurancePolicy(), MinBettingStrategy())
     player.receive_payment(100)
     table  = Table()
     table.register_player(player)

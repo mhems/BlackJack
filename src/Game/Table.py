@@ -29,7 +29,6 @@ class Table:
         self.__slots       = [TableSlot() for _ in range(self.__num_slots)]
         self.__shoe        = Shoe(Configuration.get('NUM_DECKS'),
                                   fisher_yates_shuffle,
-                                  #                                  faro_shuffle,
                                   Configuration.get('CUT_INDEX'))
         self.__shoe.shuffle()
         self.__dealer_slot.seatPlayer(Dealer())
@@ -104,17 +103,25 @@ class Table:
         for slot in self.occupied_slots:
             slot.promptBet()
         upcard = self.__dealCards()
-        if upcard.isAce:
-            pass # offer insurance ...
-        # offer surrender(s) ... 
+        if Configuration.get('OFFER_INSURANCE') and upcard.isAce:
+            print('Dealer shows Ace')
+            for slot in self.active_slots:
+                slot.promptInsurance()
+            if self.__dealer_slot.hasBlackjack:
+                for slot in self.active_slots:
+                    if slot.isInsured:
+                        print('Dealer has blackjack but you\'re insured')
+                    else:
+                        print('Dealer has blackjack and you\'re not insured')
+                # end round
+            else:
+                pass
+        if Configuration.get('LATE_SURRENDER'):
+            self.__offer_late_surrender()
         for slot in self.active_slots:
             self.__dealToSlot(slot, upcard)
         self.__dealToSlot(self.__dealer_slot, upcard)
-        dealer_value = self.__dealer_slot.handValue
-        for slot in self.active_slots:
-            if not slot.hand.isBust and (dealer_value > Configuration.get('BLACKJACK_VALUE') or slot.handValue > dealer_value):
-                print('Player', str(slot.player), 'wins')
-        # pay out each player
+        self.__settle_bets()
         for slot in self.__slots:
             slot.endRound()
         self.__dealer_slot.endRound()            
@@ -133,7 +140,20 @@ class Table:
                 response = slot.promptAction(upcard, a)
                 done = self.__commands[response].execute(slot)
         print('Player', str(slot.player), 'ends with', slot.handValue)
-                
+
+    def __offer_late_surrender(self):
+        """Offers late surrender to each active player"""
+        pass
+
+    def __settle_bets(self):
+        """Settles each active player's bet"""
+        dealer_value = self.__dealer_slot.handValue
+        for slot in self.active_slots:
+            if (not slot.hand.isBust and
+            (dealer_value > Configuration.get('BLACKJACK_VALUE')
+             or slot.handValue > dealer_value)):
+                print('Player', str(slot.player), 'wins')
+        
     def __dealCards(self):
         """Deals hands to all active players
            Returns dealer's up card"""
