@@ -14,20 +14,23 @@ class UnavailableCommandError(Exception):
 class Command(metaclass=ABCMeta):
     """Base class for Blackjack commands"""
 
-    HIT_ENUM    = Utilities.uniqueNumber()
-    STAND_ENUM  = Utilities.uniqueNumber()
-    DOUBLE_ENUM = Utilities.uniqueNumber()
-    SPLIT_ENUM  = Utilities.uniqueNumber()
-
+    HIT_ENUM       = Utilities.uniqueNumber()
+    STAND_ENUM     = Utilities.uniqueNumber()
+    DOUBLE_ENUM    = Utilities.uniqueNumber()
+    SPLIT_ENUM     = Utilities.uniqueNumber()
+    SURRENDER_ENUM = Utilities.uniqueNumber()
+    
     __command_map = {
-        'HIT'    : HIT_ENUM,
-        'H'      : HIT_ENUM,
-        'STAND'  : STAND_ENUM,
-        'S'      : STAND_ENUM,
-        'DOUBLE' : DOUBLE_ENUM,
-        'D'      : DOUBLE_ENUM,
-        'SPLIT'  : SPLIT_ENUM,
-        'SP'     : SPLIT_ENUM
+        'HIT'       : HIT_ENUM,
+        'H'         : HIT_ENUM,
+        'STAND'     : STAND_ENUM,
+        'S'         : STAND_ENUM,
+        'DOUBLE'    : DOUBLE_ENUM,
+        'D'         : DOUBLE_ENUM,
+        'SPLIT'     : SPLIT_ENUM,
+        'SP'        : SPLIT_ENUM,
+        'SURRENDER' : SURRENDER_ENUM,
+        'SU'        : SURRENDER_ENUM
     }
     
     @staticmethod

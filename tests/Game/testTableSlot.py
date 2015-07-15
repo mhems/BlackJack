@@ -12,7 +12,6 @@ from src.Game.Player              import Player
 from src.Game.TableSlot           import TableSlot
 from src.Logic.BettingStrategy    import BettingStrategy
 from src.Logic.MinBettingStrategy import MinBettingStrategy
-from src.Utilities.Configuration  import Configuration
 
 class testTableSlot(unittest.TestCase):
     def setUp(self):
@@ -77,7 +76,8 @@ class testTableSlot(unittest.TestCase):
         pass
 
     def testIsActive(self):
-        player = Player('Tim', None, MinBettingStrategy())
+        player = Player('Tim', None, None, MinBettingStrategy())
+        player.receive_payment(1000)
         slot = TableSlot()
         slot.seatPlayer(player)
         slot.promptBet()
@@ -87,7 +87,7 @@ class testTableSlot(unittest.TestCase):
             def bet(self, **kwargs):
                 return 0
         
-        player = Player('Jack',None, NoBettingStrategy())
+        player = Player('Jack',None, None, NoBettingStrategy())
         slot = TableSlot()
         slot.seatPlayer(player)
         slot.promptBet()
@@ -96,7 +96,7 @@ class testTableSlot(unittest.TestCase):
         self.assertFalse(slot.isActive,'testTableSlot:testIsActive:Empty slot should not be active')
 
     def testIsOccupied(self):
-        player = Player('John', None, None)
+        player = Player('John', None, None, None)
         slot = TableSlot()
         self.assertFalse(slot.isOccupied,'testTableSlot:testIsOccupied:Empty slot should not be occupied')
         slot.seatPlayer(player)

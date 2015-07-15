@@ -13,6 +13,7 @@ from src.Logic.HitCommand    import HitCommand
 from src.Logic.StandCommand  import StandCommand
 from src.Logic.DoubleCommand import DoubleCommand
 from src.Logic.SplitCommand  import SplitCommand
+from src.Logic.SurrenderCommand  import SurrenderCommand
 from src.Game.TableSlot import TableSlot
 from src.Game.HouseBank import HouseBank
 from src.Game.Dealer    import Dealer
@@ -35,10 +36,11 @@ class Table:
         hitCmd   = HitCommand(self.__shoe)
         standCmd = StandCommand()
         self.__commands    = {
-            Command.HIT_ENUM    : hitCmd,
-            Command.STAND_ENUM  : standCmd,
-            Command.DOUBLE_ENUM : DoubleCommand(hitCmd, standCmd),
-            Command.SPLIT_ENUM  : SplitCommand(hitCmd,  standCmd)
+            Command.HIT_ENUM       : hitCmd,
+            Command.STAND_ENUM     : standCmd,
+            Command.DOUBLE_ENUM    : DoubleCommand(hitCmd, standCmd),
+            Command.SPLIT_ENUM     : SplitCommand(hitCmd,  standCmd),
+            Command.SURRENDER_ENUM : SurrenderCommand()
         }
 
     @property
@@ -103,6 +105,8 @@ class Table:
         for slot in self.occupied_slots:
             slot.promptBet()
         upcard = self.__dealCards()
+        if Configuration.get('EARLY_SURRENDER'):
+            self.__offer_early_surrender()
         if Configuration.get('OFFER_INSURANCE') and upcard.isAce:
             print('Dealer shows Ace')
             for slot in self.active_slots:
@@ -116,8 +120,6 @@ class Table:
                 # end round
             else:
                 pass
-        if Configuration.get('LATE_SURRENDER'):
-            self.__offer_late_surrender()
         for slot in self.active_slots:
             self.__dealToSlot(slot, upcard)
         self.__dealToSlot(self.__dealer_slot, upcard)
@@ -141,9 +143,15 @@ class Table:
                 done = self.__commands[response].execute(slot)
         print('Player', str(slot.player), 'ends with', slot.handValue)
 
+    def __offer_early_surrender(self):
+        """Offers early surrender to each active player"""
+        for slot in self.active_slots:
+            slot.promptEarlySurrender()
+
     def __offer_late_surrender(self):
         """Offers late surrender to each active player"""
-        pass
+        for slot in self.active_slots:
+            slot.promptLateSurrender()
 
     def __settle_bets(self):
         """Settles each active player's bet"""
@@ -151,6 +159,7 @@ class Table:
         for slot in self.active_slots:
             if (not slot.hand.isBust and
             (dealer_value > Configuration.get('BLACKJACK_VALUE')
+
              or slot.handValue > dealer_value)):
                 print('Player', str(slot.player), 'wins')
         

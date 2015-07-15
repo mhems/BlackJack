@@ -36,7 +36,7 @@ class SplitCommand(Command):
             toTest = slot.handIsPairByRank
         if not toTest:
                 return False
-        if not slot.playerCanDoubleBet:
+        if not slot.playerCanAffordSplit:
             return False
         if not slot.firstAction:
             return False

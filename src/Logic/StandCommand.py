@@ -9,7 +9,7 @@ from src.Logic.Command import Command
 class StandCommand(Command):
     """Representation of the stand (stay) action"""
 
-    def perform(self, table):
+    def perform(self, slot, **kwargs):
         """Perform Stand command"""
         return True
 

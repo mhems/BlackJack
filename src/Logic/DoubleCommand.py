@@ -23,7 +23,7 @@ class DoubleCommand(Command):
 
     def isAvailable(self, slot):
         """Double available depending on configuration"""
-        if not slot.playerCanDoubleBet:
+        if not slot.playerCanAffordDouble:
             return False
         if not slot.firstAction:
             return False

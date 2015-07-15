@@ -5,6 +5,7 @@
 ####################
 
 from src.Basic.BlackjackHand import BlackjackHand
+from src.Utilities.Configuration import Configuration
 
 class TableSlot:
     "Representation of one seat at the table (player, pot, hand)"""
@@ -16,6 +17,7 @@ class TableSlot:
         self.__insurance = 0
         self.__insured   = False
         self.index       = 0
+        self.surrendered = False
 
     @property
     def player(self):
@@ -26,6 +28,11 @@ class TableSlot:
     def hand(self):
         """Return current hand being acted upon"""
         return self.__hands[self.index]
+
+    @property
+    def pot(self):
+        """Return amount of money in pot"""
+        return self.__pot
 
     @property
     def handValue(self):
@@ -68,10 +75,23 @@ class TableSlot:
         return self.hand.isPairByRank
     
     @property
-    def playerCanDoubleBet(self):
-        """Return True iff player has adequate funds to double bet"""
-        return self.player.stackAmount >= self.__pot
+    def playerCanAffordDouble(self):
+        """Return True iff player has adequate funds to double"""
+        return (self.player.stackAmount >=
+                Configuration.get('DOUBLE_RATIO') * self.__pot)
 
+    @property
+    def playerCanAffordSplit(self):
+        """Return True iff player has adequate funds to split"""
+        return (self.player.stackAmount >=
+                Configuration.get('SPLIT_RATIO') * self.__pot)
+
+    @property
+    def playerCanAffordInsurance(self):
+        """Return True iff player has adequate funds to insurance"""
+        return (self.player.stackAmount >=
+                Configuration.get('INSURANCE_RATIO') * self.__pot)
+    
     @property
     def isActive(self):
         """Return True iff seated player has placed money to play"""
@@ -121,13 +141,23 @@ class TableSlot:
 
     def promptInsurance(self, **kwargs):
         """Prompts player for insurance"""
-        if self.__player.insure(self.hand, **kwargs):
+        if self.playerCanAffordInsurance and self.__player.insure(self.hand, **kwargs):
             self.__insured = True
 
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
         self.__pot = self.__player.bet(**kwargs)
 
+    def promptEarlySurrender(self, upcard, **kwargs):
+        """Prompts player for early surrender"""
+        if self.__player.earlySurrender(self.hand, upcard, **kwargs):
+            pass
+
+    def promptLateSurrender(self, upcard, **kwargs):
+        """Prompts player for late surrender"""
+        if self.__player.lateSurrender(self.hand, upcard, **kwargs):
+            pass
+        
     def rakePot(self):
         """Rakes pot, setting it to zero"""
         amt = self.__pot

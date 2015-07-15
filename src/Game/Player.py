@@ -39,7 +39,7 @@ class Player:
 
     def insure(self, hand, **kwargs):
         """Returns True iff player wishes to insure based on its policy"""
-        return self.__insurance_policy.accept_insurance(hand, **kwargs)
+        return self.__insurance_policy.insure(hand, **kwargs)
 
     def bet(self):
         """Returns amount player wishes to bet"""
