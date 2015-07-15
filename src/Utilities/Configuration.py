@@ -18,6 +18,7 @@ class Configuration:
     UNRESTRICTED = Utilities.uniqueNumber()
     
     __configuration = {
+        # general
         # > 0
         'BLACKJACK_VALUE'                : 21,
         # > 0
@@ -29,19 +30,28 @@ class Configuration:
         'CUT_INDEX'                      : -26,
         # > 0 and < number cards in shoe
         'NUM_CARDS_BURN_ON_SHUFFLE'      : 1,
-        # True | False
-        'OFFER_INSURANCE'                : True,
         
+        # payout_ratio
         # ratios must be floats or fractions
         'PAYOUT_RATIO'                   : '1/1',
         'BLACKJACK_PAYOUT_RATIO'         : '3/2',
         'INSURANCE_PAYOUT_RATIO'         : '2/1',
 
+        # dealer
+        # True | False
+        'DEALER_HITS_ON_SOFT_17'         : True,
+        # True | False
+        'DEALER_CHECKS_FOR_BLACKJACK'    : True,
+        
+        # double
         # True | False
         'DOUBLE_AFTER_SPLIT_ALLOWED'     : True,
         # must be * or comma separated list of card ranks
         'TOTALS_ALLOWED_FOR_DOUBLE'      : '*',
+        # must be float or fraction
+        'DOUBLE_RATIO'                   : '1',
 
+        # split
         # True | False
         'SPLIT_BY_VALUE'                 : True,
         # > 0 or * to denote unlimited
@@ -50,21 +60,24 @@ class Configuration:
         'RESPLIT_ACES'                   : True,
         # True | False
         'HIT_SPLIT_ACES'                 : False,
+        # must be float or fraction
+        'SPLIT_RATIO'                    : '1',
 
+        # surrender
         # True | False
-        'DEALER_HITS_ON_SOFT_17'         : True,
-        # True | False
-        'DEALER_CHECKS_FOR_BLACKJACK'    : True,
-
-        # True | False
-        'LATE_SURRENDER'                 : False,
-        # must be * or comma separated list of card ranks
-        #'ALLOWED_LATE_SURRENDER_RANGE'   : '',
+        'LATE_SURRENDER'                 : True,
+        # must be float or fraction
+        'LATE_SURRENDER_RATIO'           : '1/2',
         # True | False
         'EARLY_SURRENDER'                : False,
-        # must be * or comma separated list of card ranks
-        #'ALLOWED_EARLY_SURRENDER_RANGE'  : ''
 
+        # insurance
+        # True | False
+        'OFFER_INSURANCE'                : True,
+        # must be float or fraction
+        'INSURANCE_RATIO'                : '1/2',
+        
+        # game
         # > 0
         'MINIMUM_BET'                    : 15,
         # >= MINIMUM_BET
@@ -99,22 +112,19 @@ class Configuration:
             Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be positive' % num_burn) 
         if num_burn > num_cards:
             Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be at most the number of cards in the deck (%d)' % (num_burn, num_cards))
-
         Configuration.__checkRatio('PAYOUT_RATIO')
         Configuration.__checkRatio('BLACKJACK_PAYOUT_RATIO')
         Configuration.__checkRatio('INSURANCE_PAYOUT_RATIO')
-
+        Configuration.__checkCardRange('TOTALS_ALLOWED_FOR_DOUBLE')
+        Configuration.__checkRatio('DOUBLE_RATIO')
         resplit_num = Configuration.__configuration['RESPLIT_UP_TO']
         if resplit_num == '*':
             Configuration.__configuration['RESPLIT_UP_TO'] = Configuration.UNRESTRICTED
         elif not re.match('0|[1-9][0-9]*', str(resplit_num)):
             Utilities.error('RESPLIT_UP_TO: (%d) Number of times to resplit must be non-negative integer' % resplit_num)
-        Configuration.__checkCardRange('TOTALS_ALLOWED_FOR_DOUBLE')
-        if Configuration.__configuration['LATE_SURRENDER']:
-            Configuration.__checkCardRange('ALLOWED_LATE_SURRENDER_RANGE')
-        if Configuration.__configuration['EARLY_SURRENDER']:
-            Configuration.__checkCardRange('ALLOWED_EARLY_SURRENDER_RANGE')
-
+        Configuration.__checkRatio('SPLIT_RATIO')
+        Configuration.__checkRatio('LATE_SURRENDER_RATIO')
+        Configuration.__checkRatio('INSURANCE_RATIO')
         min_bet = Configuration.__configuration['MINIMUM_BET']
         if min_bet <= 0:
             Utilities.error('MINIMUM BET: (%d) Minimum amount to bet must be positive' % min_bet);
@@ -129,11 +139,11 @@ class Configuration:
     def __checkRatio(flagname):
         """Semantic check of options with ratio values"""
         value = Configuration.__configuration[flagname]
-        if isinstance(value, float):
+        try:
             Configuration.__configuration[flagname] = float(value)
-        else:
+        except ValueError:
             match = re.match('([1-9][0-9]*)/([1-9][0-9]*)', value)
-            if isinstance(value, str) and match:
+            if match:
                 Configuration.__configuration[flagname] = float(int(match.group(1))/int(match.group(2)))
             else:
                 Utilities.error('%s: (%s) Ratio must be either a decimal or fraction' % (flagname, value))
@@ -159,22 +169,24 @@ class Configuration:
         Configuration.__configuration['PUSH_ON_BLACKJACK']             = conf.getboolean('general','PUSH_ON_BLACKJACK')
         Configuration.__configuration['CUT_INDEX']                     = conf.getint('general','CUT_INDEX')
         Configuration.__configuration['NUM_CARDS_BURN_ON_SHUFFLE']     = conf.getint('general','NUM_CARDS_BURN_ON_SHUFFLE')
-        Configuration.__configuration['OFFER_INSURANCE']               = conf.getboolean('general','OFFER_INSURANCE')
         Configuration.__configuration['PAYOUT_RATIO']                  = conf.get('payout_ratio','PAYOUT_RATIO')
         Configuration.__configuration['BLACKJACK_PAYOUT_RATIO']        = conf.get('payout_ratio','BLACKJACK_PAYOUT_RATIO')
         Configuration.__configuration['INSURANCE_PAYOUT_RATIO']        = conf.get('payout_ratio','INSURANCE_PAYOUT_RATIO')
+        Configuration.__configuration['DEALER_HITS_ON_SOFT_17']        = conf.getboolean('dealer','DEALER_HITS_ON_SOFT_17')
+        Configuration.__configuration['DEALER_CHECKS_FOR_BLACKJACK']   = conf.getboolean('dealer','DEALER_CHECKS_FOR_BLACKJACK')
         Configuration.__configuration['DOUBLE_AFTER_SPLIT_ALLOWED']    = conf.getboolean('double','DOUBLE_AFTER_SPLIT_ALLOWED')
-        Configuration.__configuration['TOTALS_ALLOWED_FOR_DOUBLE']      = conf.get('double','TOTALS_ALLOWED_FOR_DOUBLE')
+        Configuration.__configuration['TOTALS_ALLOWED_FOR_DOUBLE']     = conf.get('double','TOTALS_ALLOWED_FOR_DOUBLE')
+        Configuration.__configuration['DOUBLE_RATIO']                  = conf.get('double','DOUBLE_RATIO')
         Configuration.__configuration['SPLIT_BY_VALUE']                = conf.getboolean('split','SPLIT_BY_VALUE')
         Configuration.__configuration['RESPLIT_UP_TO']                 = conf.get('split','RESPLIT_UP_TO')
         Configuration.__configuration['RESPLIT_ACES']                  = conf.getboolean('split','RESPLIT_ACES')
         Configuration.__configuration['HIT_SPLIT_ACES']                = conf.getboolean('split','HIT_SPLIT_ACES')
-        Configuration.__configuration['DEALER_HITS_ON_SOFT_17']        = conf.getboolean('dealer','DEALER_HITS_ON_SOFT_17')
-        Configuration.__configuration['DEALER_CHECKS_FOR_BLACKJACK']   = conf.getboolean('dealer','DEALER_CHECKS_FOR_BLACKJACK')
+        Configuration.__configuration['SPLIT_RATIO']                   = conf.get('split','SPLIT_RATIO')
         Configuration.__configuration['LATE_SURRENDER']                = conf.getboolean('surrender','LATE_SURRENDER')
-        Configuration.__configuration['ALLOWED_LATE_SURRENDER_RANGE']  = conf.get('surrender','ALLOWED_LATE_SURRENDER_RANGE')
+        Configuration.__configuration['LATE_SURRENDER_RATIO']          = conf.get('surrender','LATE_SURRENDER_RATIO')
         Configuration.__configuration['EARLY_SURRENDER']               = conf.getboolean('surrender','EARLY_SURRENDER')
-        Configuration.__configuration['ALLOWED_EARLY_SURRENDER_RANGE'] = conf.get('surrender','ALLOWED_EARLY_SURRENDER_RANGE')
+        Configuration.__configuration['OFFER_INSURANCE']               = conf.getboolean('insurance','OFFER_INSURANCE')
+        Configuration.__configuration['INSURANCE_RATIO']               = conf.get('insurance','INSURANCE_RATIO')
         Configuration.__configuration['MINIMUM_BET']                   = conf.getint('game','MINIMUM_BET')
         Configuration.__configuration['MAXIMUM_BET']                   = conf.getint('game','MAXIMUM_BET')
 
@@ -185,7 +197,8 @@ class Configuration:
     @staticmethod
     def writeConfigFile(filename, dictionary):
         """Outputs dictionary to file"""
-        func = lambda arg: "%s: %s\n" % (arg, Configuration.__configuration[arg])
+        def func(key):
+            return "%s: %s\n" % (key, Configuration.__configuration[key])
         f = open(filename, 'w')
         f.write('[general]\n')
         f.write(func('BLACKJACK_VALUE'))
@@ -193,37 +206,40 @@ class Configuration:
         f.write(func('PUSH_ON_BLACKJACK'))
         f.write(func('CUT_INDEX'))
         f.write(func('NUM_CARDS_BURN_ON_SHUFFLE'))
-        f.write(func('OFFER_INSURANCE'))
         f.write('\n')
         f.write('[payout_ratio]\n')
         f.write(func('PAYOUT_RATIO'))
         f.write(func('BLACKJACK_PAYOUT_RATIO'))
         f.write(func('INSURANCE_PAYOUT_RATIO'))
         f.write('\n')
+        f.write('[dealer]\n')
+        f.write(func('DEALER_HITS_ON_SOFT_17'))
+        f.write(func('DEALER_CHECKS_FOR_BLACKJACK'))
+        f.write('\n')
         f.write('[double]\n')
         f.write(func('DOUBLE_AFTER_SPLIT_ALLOWED'))
         f.write(func('TOTALS_ALLOWED_FOR_DOUBLE'))
+        f.write(func('DOUBLE_RATIO'))
         f.write('\n')
         f.write('[split]\n')
         f.write(func('SPLIT_BY_VALUE'))
         f.write(func('RESPLIT_UP_TO'))
         f.write(func('RESPLIT_ACES'))
         f.write(func('HIT_SPLIT_ACES'))
-        f.write('\n')
-        f.write('[dealer]\n')
-        f.write(func('DEALER_HITS_ON_SOFT_17'))
-        f.write(func('DEALER_CHECKS_FOR_BLACKJACK'))
+        f.write(func('SPLIT_RATIO'))
         f.write('\n')
         f.write('[surrender]\n')
         f.write(func('LATE_SURRENDER'))
-        f.write(func('ALLOWED_LATE_SURRENDER_RANGE'))
+        f.write(func('LATE_SURRENDER_RATIO'))
         f.write(func('EARLY_SURRENDER'))
-        f.write(func('ALLOWED_EARLY_SURRENDER_RANGE'))
+        f.write('\n')
+        f.write('[insurance]\n')
+        f.write(func('OFFER_INSURANCE'))
+        f.write(func('INSURANCE_RATIO'))
         f.write('\n')
         f.write('[game]\n')
         f.write(func('MINIMUM_BET'))
         f.write(func('MAXIMUM_BET'))
-        f.write('\n')
 
     @staticmethod
     def parseConfigFile(filename):
