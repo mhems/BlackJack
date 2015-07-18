@@ -51,4 +51,4 @@ class Player:
 
     def __str__(self):
         """Returns string representation of player"""
-        return '%s has $%d' % (self.name, self.stackAmount)
+        return '%s ($%d)' % (self.name, self.stackAmount)

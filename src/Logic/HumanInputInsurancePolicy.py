@@ -11,7 +11,9 @@ class HumanInputInsurancePolicy(InsurancePolicy):
 
     def insure(self, hand, **kwargs):
         """Returns True iff input indicates wish to insure"""
-        response = 'unitialized'
+        response = 'uninitialized'
         while response[0].lower() not in ['y', 'n']:
-            response = input('Take insurance? (Yes/No)')
+            response = input('Your hand (%s) has value %d, '
+                             'Take insurance? (Yes/No)' %
+                             (str(hand), hand.value))
         return response[0].lower() == 'y'

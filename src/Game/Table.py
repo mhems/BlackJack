@@ -56,12 +56,12 @@ class Table:
     @property
     def occupied_slots(self):
         """Returns generator for all slots with players at table"""
-        return (slot for slot in self.slots if slot.isOccupied)
+        return (slot for slot in self.__slots if slot.isOccupied)
 
     @property
     def active_slots(self):
         """Returns generator for all slots with active players at table"""
-        return (slot for slot in self.slots if slot.isActive)
+        return (slot for slot in self.__slots if slot.isActive)
 
     @property
     def dealerHasBlackjack(self):
@@ -99,6 +99,7 @@ class Table:
         
     def play(self):
         """Plays one round of blackjack"""
+        dealerHasBlackjack = False
         for slot in self.__slots:
             slot.beginRound()
         self.__dealer_slot.beginRound()
@@ -111,57 +112,85 @@ class Table:
             print('Dealer shows Ace')
             for slot in self.active_slots:
                 slot.promptInsurance()
-            if self.__dealer_slot.hasBlackjack:
-                for slot in self.active_slots:
-                    if slot.isInsured:
-                        print('Dealer has blackjack but you\'re insured')
-                    else:
-                        print('Dealer has blackjack and you\'re not insured')
-                # end round
-            else:
-                pass
-        for slot in self.active_slots:
-            self.__dealToSlot(slot, upcard)
-        self.__dealToSlot(self.__dealer_slot, upcard)
+            dealerHasBlackjack = self.__dealer_slot.hasNaturalBlackjack
+            buffer = "has" if dealerHasBlackjack else "doesn't have"
+            print('Dealer %s blackjack' % buffer)
+        if dealerHasBlackjack:
+            for slot in self.active_slots:
+                if not slot.hasNaturalBlackjack:
+                    self.__bank.deposit(slot.rakePot())
+                if slot.insured:
+                    slot.payout( self.__bank.withdraw(slot.insurance *
+                                 Configuration.get('INSURANCE_PAYOUT_RATIO') ) )
+                slot.settled = True
+        else:
+            for slot in self.active_slots:
+                self.__bank.deposit(slot.rakeInsurance())
+                if slot.hasNaturalBlackjack:
+                    slot.payout( self.__bank.withdraw(slot.pot *
+                                Configuration.get('BLACKJACK_PAYOUT_RATIO') ) )
+                    slot.settled = True
+                else:
+                    self.__dealToSlot(slot, upcard)
+            self.__dealToSlot(self.__dealer_slot, upcard)
         self.__settle_bets()
+        for slot in self.occupied_slots:
+            print(slot.player)
         for slot in self.__slots:
             slot.endRound()
         self.__dealer_slot.endRound()            
             
     def __dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
-        for index,hand in enumerate(slot.hands):
+        for index, hand in enumerate(slot.hands):
             slot.index = index
             done = False
             while not done:
-                if hand.isBlackjack:
+                if hand.isBlackjackValued:
                      break
                 if hand.isBust:
+                    self.__bank.deposit(slot.rakePot())
+                    slot.settled = True
                     break
-                a = [cmd for (_, cmd) in self.__commands.items() if cmd.isAvailable(slot)]
-                response = slot.promptAction(upcard, a)
+                actions = [cmd for (_, cmd) in self.__commands.items()
+                           if cmd.isAvailable(slot)]
+                response = slot.promptAction(upcard, actions)
                 done = self.__commands[response].execute(slot)
-        print('Player', str(slot.player), 'ends with', slot.handValue)
+        # print('Player', str(slot.player), 'ends with', slot.handValue)
 
     def __offer_early_surrender(self):
         """Offers early surrender to each active player"""
         for slot in self.active_slots:
             slot.promptEarlySurrender()
-
+            if slot.surrendered:
+                self.__bank.deposit(
+                    slot.rakePot(Configuration.get('EARLY_SURRENDER_RATIO')) )
     def __offer_late_surrender(self):
         """Offers late surrender to each active player"""
         for slot in self.active_slots:
             slot.promptLateSurrender()
-
+            if slot.surrendered:
+                self.__bank.deposit(
+                    slot.rakePot(Configuration.get('LATE_SURRENDER_RATIO')) )
+            
     def __settle_bets(self):
-        """Settles each active player's bet"""
+        """Settles each active player's 
+           Assumes:
+              * each player's hands are not bust, natural, or surrendered
+              * dealer does not have natural"""
         dealer_value = self.__dealer_slot.handValue
+        print('Dealer has', self.__dealer_slot.hand.ranks, '=>', dealer_value)
         for slot in self.active_slots:
-            if (not slot.hand.isBust and
-            (dealer_value > Configuration.get('BLACKJACK_VALUE')
-
-             or slot.handValue > dealer_value)):
-                print('Player', str(slot.player), 'wins')
+            for index, hand in enumerate(slot.hands):
+                slot.index = index
+                value = hand.value
+                if value > dealer_value or self.__dealer_slot.handIsBust:
+                    print('wins')
+                    slot.payout(self.__bank.withdraw(
+                        slot.pot * Configuration.get('PAYOUT_RATIO') ) )
+                elif value < dealer_value:
+                    print('loses')
+                    self.__bank.deposit(slot.rakePot())
         
     def __dealCards(self):
         """Deals hands to all active players

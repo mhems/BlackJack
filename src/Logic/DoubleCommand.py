@@ -17,7 +17,7 @@ class DoubleCommand(Command):
 
     def perform(self, slot, **kwargs):
         """Perform Double command"""
-        slot.doublePot()
+        slot.multiplyPot(Configuration.get('DOUBLE_RATIO'))
         self.__hit_command.execute(slot, **kwargs)
         return self.__stand_command.execute(slot, **kwargs)
 

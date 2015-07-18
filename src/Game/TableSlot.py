@@ -13,7 +13,9 @@ class TableSlot:
     def __init__(self):
         self.__player    = None
         self.__hands     = [BlackjackHand()]
-        self.__pot       = 0
+        # break to ensure correct usage
+        self.__p       = 0
+        self.__pots      = [0]
         self.__insurance = 0
         self.__insured   = False
         self.index       = 0
@@ -31,9 +33,14 @@ class TableSlot:
 
     @property
     def pot(self):
-        """Return amount of money in pot"""
-        return self.__pot
+        """Return amount of money in current pot"""
+        return self.__pots[self.index]
 
+    @property
+    def insurance(self):
+        """Return amount of insurance in side bet"""
+        return self.__insurance
+    
     @property
     def handValue(self):
         """Return value of current hand"""
@@ -43,6 +50,11 @@ class TableSlot:
     def hands(self):
         """Return all hands in play for slot"""
         return self.__hands
+
+    @property
+    def pots(self):
+        """Return all pots for slot"""
+        return self.__pots
     
     @property
     def firstAction(self):
@@ -53,6 +65,11 @@ class TableSlot:
     def numSplits(self):
         """Returns number of times player has split this round"""
         return len(self.__hands) - 1
+
+    @property
+    def handIsBust(self):
+        """Return True iff hand is bust"""
+        return self.hand.isBust
 
     @property
     def handWasSplit(self):
@@ -77,25 +94,27 @@ class TableSlot:
     @property
     def playerCanAffordDouble(self):
         """Return True iff player has adequate funds to double"""
+        print('afford double', self.index)
         return (self.player.stackAmount >=
-                Configuration.get('DOUBLE_RATIO') * self.__pot)
+                Configuration.get('DOUBLE_RATIO') * self.pot)
 
     @property
     def playerCanAffordSplit(self):
         """Return True iff player has adequate funds to split"""
+        print('afford split', self.index)
         return (self.player.stackAmount >=
-                Configuration.get('SPLIT_RATIO') * self.__pot)
+                Configuration.get('SPLIT_RATIO') * self.pot)
 
     @property
     def playerCanAffordInsurance(self):
         """Return True iff player has adequate funds to insurance"""
         return (self.player.stackAmount >=
-                Configuration.get('INSURANCE_RATIO') * self.__pot)
+                Configuration.get('INSURANCE_RATIO') * self.pot)
     
     @property
     def isActive(self):
         """Return True iff seated player has placed money to play"""
-        return self.__pot > 0
+        return self.pot > 0
 
     @property
     def isOccupied(self):
@@ -103,15 +122,20 @@ class TableSlot:
         return self.__player != None
 
     @property
-    def isInsured(self):
+    def insured(self):
         """Return True iff player is insured"""
         return self.__insured
     
     @property
-    def hasBlackjack(self):
+    def hasNaturalBlackjack(self):
         """Returns True iff hand is natural blackjack"""
-        return self.hand.isBlackjack
-    
+        return self.hand.isNaturalBlackjack
+
+    @property
+    def handIsBlackjackValued(self):
+        """Returns True iff hand is blackjack valued"""
+        return self.hand.isBlackjackValued
+
     def seatPlayer(self, player):
         """Seats player at table slot"""
         self.__player = player
@@ -127,7 +151,7 @@ class TableSlot:
     def beginRound(self):
         """Executes any actions necessary to begin turn"""
         self.__hands     = [BlackjackHand()]
-        self.__pot       = 0
+        self.__pots      = [0]
         self.__insurance = 0
         self.index       = 0
         
@@ -143,10 +167,12 @@ class TableSlot:
         """Prompts player for insurance"""
         if self.playerCanAffordInsurance and self.__player.insure(self.hand, **kwargs):
             self.__insured = True
-
+            self.__insurance = self.__player.wager(
+                self.pot * Configuration.get('INSURANCE_RATIO'))
+            
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
-        self.__pot = self.__player.bet(**kwargs)
+        self.__pots[self.index] = self.__player.bet(**kwargs)
 
     def promptEarlySurrender(self, upcard, **kwargs):
         """Prompts player for early surrender"""
@@ -158,20 +184,32 @@ class TableSlot:
         if self.__player.lateSurrender(self.hand, upcard, **kwargs):
             pass
         
-    def rakePot(self):
-        """Rakes pot, setting it to zero"""
-        amt = self.__pot
-        self.__pot = 0
+    def rakePot(self, fraction=1):
+        """Rakes and returns specified fraction of pot"""
+        amt = self.pot * fraction
+        self.__pots[self.index] -= amt
+        print('raking', amt)
+        return amt
+
+    def rakeInsurance(self):
+        """Rakes and empties insurance"""
+        amt = self.__insurance
+        self.__insurance = 0
         return amt
 
     def payout(self, amt):
         """Pays seated player amt"""
+        print('receiving', amt)
         self.__player.receive_payment(amt)
     
-    def doublePot(self):
-        """Doubles player's pot"""
-        self.__pot += self.__player.wager(self.__pot)
-
+    def multiplyPot(self, factor):
+        """Adds factor of current pot to pot"""
+        print('before')
+        print(self.pot, self.__player.stackAmount)
+        self.__pots[self.index] += self.__player.wager(self.pot * factor)
+        print('after')
+        print(self.pot, self.__player.stackAmount)
+        
     def splitHand(self):
         """Splits player's hand into 2 new hands"""
         (card1, card2) = self.hand.splitCards
@@ -179,5 +217,8 @@ class TableSlot:
         self.__hands[self.index].addCards(card1)
         self.__hands[self.index].wasSplit = True
         self.__hands.insert(self.index + 1, BlackjackHand())
+        self.__pots.insert(self.index + 1,
+                           (self.__pots[self.index] *
+                            Configuration.get('SPLIT_RATIO') ) )
         self.__hands[self.index + 1].addCards(card2)
         self.__hands[self.index + 1].wasSplit = True

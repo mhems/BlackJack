@@ -33,9 +33,9 @@ class Configuration:
         
         # payout_ratio
         # ratios must be floats or fractions
-        'PAYOUT_RATIO'                   : '1/1',
-        'BLACKJACK_PAYOUT_RATIO'         : '3/2',
-        'INSURANCE_PAYOUT_RATIO'         : '2/1',
+        'PAYOUT_RATIO'                   : 1,
+        'BLACKJACK_PAYOUT_RATIO'         : 1.5,
+        'INSURANCE_PAYOUT_RATIO'         : 2,
 
         # dealer
         # True | False
@@ -67,7 +67,7 @@ class Configuration:
         # True | False
         'LATE_SURRENDER'                 : True,
         # must be float or fraction
-        'LATE_SURRENDER_RATIO'           : '1/2',
+        'LATE_SURRENDER_RATIO'           : 0.5,
         # True | False
         'EARLY_SURRENDER'                : False,
 
@@ -75,7 +75,7 @@ class Configuration:
         # True | False
         'OFFER_INSURANCE'                : True,
         # must be float or fraction
-        'INSURANCE_RATIO'                : '1/2',
+        'INSURANCE_RATIO'                : 0.5,
         
         # game
         # > 0
@@ -195,8 +195,8 @@ class Configuration:
         return Configuration.__configuration[key] if key in Configuration.__configuration else None
         
     @staticmethod
-    def writeConfigFile(filename, dictionary):
-        """Outputs dictionary to file"""
+    def writeConfigFile(filename):
+        """Outputs configuration to file"""
         def func(key):
             return "%s: %s\n" % (key, Configuration.__configuration[key])
         f = open(filename, 'w')

@@ -68,10 +68,17 @@ class BlackjackHand(Hand):
         return len([c for c in self.__cards if c.isAce])
 
     @property
-    def isBlackjack(self):
-        """Returns True iff initial two cards sum to blackjack value"""
+    def isBlackjackValued(self):
+        """Returns True iff hand has value equal to Blackjack value"""
+        return self.value == Configuration.get('BLACKJACK_VALUE')
+
+    @property
+    def isNaturalBlackjack(self):
+        """Returns True iff hand is natural blackjack"""
+        """Note a blackjack after split is NOT considered natural"""
         return (self.numCards == 2 and
-                self.value == Configuration.get('BLACKJACK_VALUE'))
+                self.value == Configuration.get('BLACKJACK_VALUE') and
+                not self.wasSplit)
     
     @property
     def isPairByRank(self):
