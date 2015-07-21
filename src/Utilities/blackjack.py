@@ -57,4 +57,4 @@ if __name__ == '__main__':
             print('----------------------------------------'
                   '----------------------------------------')
     except InsufficientFundsError as e:
-        print(e, ' - you\'re out of money :(')
+        print(e)

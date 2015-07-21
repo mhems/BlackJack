@@ -12,6 +12,10 @@ from src.Utilities.Utilities import Utilities
 
 # Make silent parsing errors notify user
 
+class InvalidOptionError(KeyError):
+    """Represents error for unknown configuration option"""
+    pass
+
 class Configuration:
     """Provides handling and access of configuration files"""
     
@@ -32,7 +36,7 @@ class Configuration:
         'NUM_CARDS_BURN_ON_SHUFFLE'      : 1,
         
         # payout_ratio
-        # ratios must be floats or fractions
+        # ratios must be positive floats or fractions
         'PAYOUT_RATIO'                   : 1,
         'BLACKJACK_PAYOUT_RATIO'         : 1.5,
         'INSURANCE_PAYOUT_RATIO'         : 2,
@@ -48,8 +52,8 @@ class Configuration:
         'DOUBLE_AFTER_SPLIT_ALLOWED'     : True,
         # must be * or comma separated list of card ranks
         'TOTALS_ALLOWED_FOR_DOUBLE'      : '*',
-        # must be float or fraction
-        'DOUBLE_RATIO'                   : '1',
+        # must be positive float or fraction
+        'DOUBLE_RATIO'                   : 1,
 
         # split
         # True | False
@@ -60,13 +64,13 @@ class Configuration:
         'RESPLIT_ACES'                   : True,
         # True | False
         'HIT_SPLIT_ACES'                 : False,
-        # must be float or fraction
-        'SPLIT_RATIO'                    : '1',
+        # must be positive float or fraction
+        'SPLIT_RATIO'                    : 1,
 
         # surrender
         # True | False
         'LATE_SURRENDER'                 : True,
-        # must be float or fraction
+        # must be float or fraction between 0 and 1 inclusive
         'LATE_SURRENDER_RATIO'           : 0.5,
         # True | False
         'EARLY_SURRENDER'                : False,
@@ -74,16 +78,20 @@ class Configuration:
         # insurance
         # True | False
         'OFFER_INSURANCE'                : True,
-        # must be float or fraction
+        # must be float or fraction between 0 and 1 inclusive
         'INSURANCE_RATIO'                : 0.5,
         
         # game
         # > 0
         'MINIMUM_BET'                    : 15,
         # >= MINIMUM_BET
-        'MAXIMUM_BET'                    : 10000
+        'MAXIMUM_BET'                    : 10000,
+
+        # preferences
+        # True | False
+        'WINNINGS_REMAIN_IN_POT'         : False
     }
-    
+
     @staticmethod
     def loadConfiguration():
         """Loads configuration data"""
@@ -123,8 +131,8 @@ class Configuration:
         elif not re.match('0|[1-9][0-9]*', str(resplit_num)):
             Utilities.error('RESPLIT_UP_TO: (%d) Number of times to resplit must be non-negative integer' % resplit_num)
         Configuration.__checkRatio('SPLIT_RATIO')
-        Configuration.__checkRatio('LATE_SURRENDER_RATIO')
-        Configuration.__checkRatio('INSURANCE_RATIO')
+        Configuration.__checkRatio('LATE_SURRENDER_RATIO', False)
+        Configuration.__checkRatio('INSURANCE_RATIO', False)
         min_bet = Configuration.__configuration['MINIMUM_BET']
         if min_bet <= 0:
             Utilities.error('MINIMUM BET: (%d) Minimum amount to bet must be positive' % min_bet);
@@ -136,17 +144,29 @@ class Configuration:
             Utilities.fatalError('Fatal semantic error in configuration options, exiting now')
 
     @staticmethod
-    def __checkRatio(flagname):
+    def __checkRatio(flagname, allowImproper=True):
         """Semantic check of options with ratio values"""
         value = Configuration.__configuration[flagname]
+        ratio = None
         try:
-            Configuration.__configuration[flagname] = float(value)
+            ratio = float(value)
+            if ratio < 0:
+                Utilities.error('%s: (%s) Ratio must be positive' % (flagname, ratio))
         except ValueError:
-            match = re.match('([1-9][0-9]*)/([1-9][0-9]*)', value)
+            match = re.match('\+?([1-9][0-9]*)/([1-9][0-9]*)', value)
             if match:
-                Configuration.__configuration[flagname] = float(int(match.group(1))/int(match.group(2)))
+                ratio = float(int(match.group(1))/int(match.group(2)))
             else:
-                Utilities.error('%s: (%s) Ratio must be either a decimal or fraction' % (flagname, value))
+                Utilities.error(
+                    '%s: (%s) Ratio must be either a decimal or fraction' %
+                    (flagname, value) )
+        if ratio:
+            if not allowImproper and ratio > 1.0:
+                Utilities.error(
+                    '%s: (%s) Ratio must be between 0 and 1, inclusive' %
+                    (flagname, ratio))
+            else:
+                Configuration.__configuration[flagname] = ratio
 
     @staticmethod
     def __checkCardRange(flagname):
@@ -189,11 +209,15 @@ class Configuration:
         Configuration.__configuration['INSURANCE_RATIO']               = conf.get('insurance','INSURANCE_RATIO')
         Configuration.__configuration['MINIMUM_BET']                   = conf.getint('game','MINIMUM_BET')
         Configuration.__configuration['MAXIMUM_BET']                   = conf.getint('game','MAXIMUM_BET')
+        Configuration.__configuration['WINNINGS_REMAIN_IN_POT']        = conf.getboolean('preferences','WINNINGS_REMAIN_IN_POT')
 
     @staticmethod
     def get(key):
-        return Configuration.__configuration[key] if key in Configuration.__configuration else None
-        
+        if key in Configuration.__configuration:
+            return Configuration.__configuration[key]
+        else:
+            raise InvalidOptionError('Unknown configuration option:', key)
+
     @staticmethod
     def writeConfigFile(filename):
         """Outputs configuration to file"""
@@ -240,6 +264,9 @@ class Configuration:
         f.write('[game]\n')
         f.write(func('MINIMUM_BET'))
         f.write(func('MAXIMUM_BET'))
+        f.write('\n')
+        f.write('[preferences]\n')
+        f.write(func('WINNINGS_REMAIN_IN_POT'))
 
     @staticmethod
     def parseConfigFile(filename):

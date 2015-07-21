@@ -41,9 +41,9 @@ class Player:
         """Returns True iff player wishes to insure based on its policy"""
         return self.__insurance_policy.insure(hand, **kwargs)
 
-    def bet(self):
+    def amountToBet(self, **kwargs):
         """Returns amount player wishes to bet"""
-        return self.__stack.withdraw(self.__bet_policy.bet())
+        return self.__bet_policy.bet(**kwargs)
     
     def __eq__(self, other):
         """Returns True iff player is other"""
