@@ -110,16 +110,16 @@ class testBlackjackHand(unittest.TestCase):
         h.addCards(Card('A','H'))
         self.assertEqual(h.numAces,2,'testBlackjackHand:testNumAces:Hand with two aces should have two aces')
 
-    def testIsBlackjack(self):
+    def testIsNaturalBlackjack(self):
         h = BlackjackHand()
-        self.assertFalse(h.isBlackjack,'testBlackjackHand:testIsBlackjack:New hand is not a blackjack')
+        self.assertFalse(h.isNaturalBlackjack,'testBlackjackHandValued:testIsNaturalBlackjack:New hand is not a natural blackjack')
         h.addCards(Card('A','S'), Card(10,'H'))
-        self.assertTrue(h.isBlackjack,'testBlackjackHand:testIsBlackJack:Blackjack should be blackjack')
+        self.assertTrue(h.isNaturalBlackjack,'testBlackjackHand:testIsNaturalBlackJack:Blackjack should be a natural blackjack')
         h.addCards(Card('J','S'))
-        self.assertFalse(h.isBlackjack,'testBlackjackHand:testIsBlackjack:Non-initial blackjack should not be blackjack')
+        self.assertFalse(h.isNaturalBlackjack,'testBlackjackHand:testIsNaturalBlackjack:Non-initial blackjack should not be natural blackjack')
         h = BlackjackHand()
         h.addCards(Card('J','S'), Card(4,'D'))
-        self.assertFalse(h.isBlackjack,'testBlackjackHand:testIsBlackjack:Non-21 hand should not be blackjack')
+        self.assertFalse(h.isNaturalBlackjack,'testBlackjackHand:testIsNaturalBlackjack:Non-21 hand should not be natural blackjack')
         
     def testIsPairByRank(self):
         h = BlackjackHand()
