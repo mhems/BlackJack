@@ -5,6 +5,8 @@
 ####################
 
 from src.Utilities.Configuration import Configuration
+from src.Basic.Card import Card
+from src.Basic.BlackjackHand import BlackjackHand
 from src.Basic.Shoe import Shoe
 from src.Basic.Shoe import faro_shuffle
 from src.Basic.Shoe import fisher_yates_shuffle
@@ -106,8 +108,14 @@ class Table:
         for slot in self.occupied_slots:
             slot.promptBet()
         upcard = self.__dealCards()
+        print('Dealer shows', upcard.rank)
         if Configuration.get('EARLY_SURRENDER'):
             self.__offer_early_surrender()
+        if ( upcard.value == ( Configuration.get('BLACKJACK_VALUE') -
+                               Card.HARD_ACE_VALUE ) and
+             self.__dealer_slot.hasNaturalBlackjack ):
+            dealerHasBlackjack = True
+            print('Dealer has blackjack')
         if Configuration.get('OFFER_INSURANCE') and upcard.isAce:
             print('Dealer shows Ace')
             for slot in self.active_slots:
@@ -118,27 +126,31 @@ class Table:
         if dealerHasBlackjack:
             for slot in self.active_slots:
                 if not slot.hasNaturalBlackjack:
-                    self.__bank.deposit(slot.rakePot())
+                    self.__bank.deposit(slot.takePot())
                 if slot.insured:
-                    slot.payout( self.__bank.withdraw(slot.insurance *
-                                 Configuration.get('INSURANCE_PAYOUT_RATIO') ) )
+                    print('You\'re insured though')
+                    slot.payToPot( self.__bank.withdraw(slot.insurance *
+                                   Configuration.get('INSURANCE_PAYOUT_RATIO') ) )
                 slot.settled = True
         else:
             for slot in self.active_slots:
-                self.__bank.deposit(slot.rakeInsurance())
+                dealerActs = False
+                self.__bank.deposit(slot.takeInsurance())
                 if slot.hasNaturalBlackjack:
-                    slot.payout( self.__bank.withdraw(slot.pot *
-                                Configuration.get('BLACKJACK_PAYOUT_RATIO') ) )
+                    print('BLACKJACK!')
+                    slot.payToPot( self.__bank.withdraw(slot.pot *
+                                   Configuration.get('BLACKJACK_PAYOUT_RATIO') ) )
                     slot.settled = True
                 else:
+                    dealerActs = True
                     self.__dealToSlot(slot, upcard)
-            self.__dealToSlot(self.__dealer_slot, upcard)
+            if dealerActs:
+                self.__dealToSlot(self.__dealer_slot, upcard)
         self.__settle_bets()
         for slot in self.occupied_slots:
-            print(slot.player)
-        for slot in self.__slots:
             slot.endRound()
-        self.__dealer_slot.endRound()            
+        for slot in self.occupied_slots:
+            print('%s plus $%d in pot' % (slot.player, slot.pot))
             
     def __dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
@@ -147,16 +159,20 @@ class Table:
             done = False
             while not done:
                 if hand.isBlackjackValued:
-                     break
+                    print('Blackjack')
+                    break
                 if hand.isBust:
-                    self.__bank.deposit(slot.rakePot())
+                    print('Bust at', hand.value)
+                    self.__bank.deposit(slot.takePot())
                     slot.settled = True
                     break
                 actions = [cmd for (_, cmd) in self.__commands.items()
                            if cmd.isAvailable(slot)]
                 response = slot.promptAction(upcard, actions)
+                if response == Command.SURRENDER_ENUM:
+                    self.__bank.deposit(
+                        slot.takePot(Configuration.get('LATE_SURRENDER_RATIO')) )
                 done = self.__commands[response].execute(slot)
-        # print('Player', str(slot.player), 'ends with', slot.handValue)
 
     def __offer_early_surrender(self):
         """Offers early surrender to each active player"""
@@ -164,14 +180,7 @@ class Table:
             slot.promptEarlySurrender()
             if slot.surrendered:
                 self.__bank.deposit(
-                    slot.rakePot(Configuration.get('EARLY_SURRENDER_RATIO')) )
-    def __offer_late_surrender(self):
-        """Offers late surrender to each active player"""
-        for slot in self.active_slots:
-            slot.promptLateSurrender()
-            if slot.surrendered:
-                self.__bank.deposit(
-                    slot.rakePot(Configuration.get('LATE_SURRENDER_RATIO')) )
+                    slot.takePot(Configuration.get('EARLY_SURRENDER_RATIO')) )
             
     def __settle_bets(self):
         """Settles each active player's 
@@ -181,16 +190,16 @@ class Table:
         dealer_value = self.__dealer_slot.handValue
         print('Dealer has', self.__dealer_slot.hand.ranks, '=>', dealer_value)
         for slot in self.active_slots:
-            for index, hand in enumerate(slot.hands):
-                slot.index = index
-                value = hand.value
-                if value > dealer_value or self.__dealer_slot.handIsBust:
-                    print('wins')
-                    slot.payout(self.__bank.withdraw(
-                        slot.pot * Configuration.get('PAYOUT_RATIO') ) )
-                elif value < dealer_value:
-                    print('loses')
-                    self.__bank.deposit(slot.rakePot())
+            if not slot.settled:
+                for index, hand in enumerate(slot.hands):
+                    slot.index = index
+                    value = hand.value
+                    if value > dealer_value or self.__dealer_slot.handIsBust:
+                        slot.payToPot( self.__bank.withdraw(
+                                       slot.pot *
+                                       Configuration.get('PAYOUT_RATIO') ) )
+                    elif value < dealer_value:
+                        self.__bank.deposit(slot.takePot())
         
     def __dealCards(self):
         """Deals hands to all active players
