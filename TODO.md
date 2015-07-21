@@ -18,9 +18,12 @@
 
 
 MAINTENANCE
-* Command tests
-* Exceptions and Errors
+* TESTS!
 * Logging
+* Card Counting
+* Feedback Decision Policy
+* Count Betting Policy
+* Player statistics logging
 * Command line interface
 * Class decorator to ensure each method has corresponding test
 
