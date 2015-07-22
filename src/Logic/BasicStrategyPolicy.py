@@ -4,6 +4,7 @@
 #
 ####################
 
+from src.Logic.StrategyChart  import StrategyChart
 from src.Logic.Command        import Command
 from src.Logic.DecisionPolicy import DecisionPolicy
 
@@ -15,14 +16,8 @@ class BasicStrategyPolicy(DecisionPolicy):
 
     def decide(self, hand, upcard, availableCommands, **kwargs):
         """Decides command based on basic strategy"""
-        command = self.strategy.advise(self, hand, upcard)
-        if command[0].upper() == 'D'and len(command) == 2:
-            if Command.DOUBLE_ENUM in availableCommands:
-                return Command.DOUBLE_ENUM
-            else:
-                if command[1].upper() == 'H':
-                    return Command.HIT_ENUM
-                elif command[1].upper() == 'S':
-                    return Command.STAND_ENUM
-        else:
-            return command
+        upvalue = 'A' if upcard.isAce else upcard.value
+        print(upvalue)
+        p = self.strategy.advise(hand, upvalue, availableCommands)
+        print('decide',p)
+        return p

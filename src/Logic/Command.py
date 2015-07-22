@@ -20,7 +20,8 @@ class Command(metaclass=ABCMeta):
     SPLIT_ENUM     = Utilities.uniqueNumber()
     SURRENDER_ENUM = Utilities.uniqueNumber()
     
-    __command_map = {
+    __command_string_map = {
+        # Order duplicate entries by descending string length
         'HIT'       : HIT_ENUM,
         'H'         : HIT_ENUM,
         'STAND'     : STAND_ENUM,
@@ -32,12 +33,47 @@ class Command(metaclass=ABCMeta):
         'SURRENDER' : SURRENDER_ENUM,
         'SU'        : SURRENDER_ENUM
     }
+
+    # Thanks to Emil @ stackoverflow.com/questions/3318625
+    #   for his succinct approach to bidirectional mapping
+    # Note this assumes no commands are inserted dynamically
+    __command_enum_map = dict( ( reversed(item)
+                                 for item in
+                                 __command_string_map.items()
+                                 if len(item[0]) > 2 ) )
+
+    __past_tense_command_map = {
+        HIT_ENUM       : 'HIT',
+        STAND_ENUM     : 'STOOD',
+        DOUBLE_ENUM    : 'DOUBLED',
+        SPLIT_ENUM     : 'SPLIT',
+        SURRENDER_ENUM : 'SURRENDERED'
+    }
     
     @staticmethod
-    def getCommand(string):
-        """Returns Command number from string representation"""
+    def getCommandEnumFromString(string):
+        """Returns Command enum from string representation"""
         s = string.upper()
-        return Command.__command_map[s] if s in Command.__command_map else None
+        if s in Command.__command_string_map:
+            return Command.__command_string_map[s]
+        else:
+            return None
+
+    @staticmethod
+    def getCommandStringFromEnum(enum):
+        """Returns Command string from enum representation"""
+        if enum in Command.__command_enum_map:
+            return Command.__command_enum_map[enum]
+        else:
+            return None
+    
+    @staticmethod
+    def getPastTenseCommandName(enum):
+        """Returns past tense of command from enum"""
+        if enum in Command.__past_tense_command_map:
+            return Command.__past_tense_command_map[enum]
+        else:
+            return None
     
     def execute(self, slot, **kwargs):
         """Executes the command on slot,

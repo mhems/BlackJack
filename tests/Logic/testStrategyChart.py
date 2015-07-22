@@ -24,7 +24,7 @@ class testStrategyChart(unittest.TestCase):
         ls = re.split(r' +', exp)
         for (up, e) in zip(Card.values, ls):
             advise = chart.advise(hand, up)
-            expect = Command.getCommand(e)
+            expect = Command.getCommandEnumFromString(e)
             self.assertEqual(advise, expect,
                              'Hand %s vs %s: Expected %s; Got %s' % (hand,
                                                                      up,

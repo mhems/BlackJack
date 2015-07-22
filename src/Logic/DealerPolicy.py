@@ -15,6 +15,6 @@ class DealerPolicy(DecisionPolicy):
         """Decides command according to dealer rules"""
         hitS17 = hand.isSoft17 and Configuration.get('DEALER_HITS_ON_SOFT_17')
         if hand.value < 17 or hitS17:
-            return Command.getCommand('H')
+            return Command.getCommandEnumFromString('H')
         else:
-            return Command.getCommand('S')
+            return Command.getCommandEnumFromString('S')

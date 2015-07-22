@@ -112,7 +112,7 @@ class StrategyChart:
         File.close()
         return StrategyChart(hard_chart, soft_chart, pair_chart)
         
-    def advise(self, player_hand, dealer_up_card):
+    def advise(self, player_hand, dealer_up_card, availableCommands):
         """Advise action given player's hand and dealer's up card"""
         value = player_hand.value
         advice = None
@@ -130,8 +130,20 @@ class StrategyChart:
         # default to hard    
         if not advice and self.__hard_chart:
             advice = self.__hard_chart.access(value, dealer_up_card)
+        print('advice',advice, player_hand, dealer_up_card)
         if advice:
-            return Command.getCommand(advice)
+            if advice[0].upper() == 'D' and len(advice) == 2:
+                if Command.DOUBLE_ENUM in availableCommands:
+                    return Command.DOUBLE_ENUM
+                elif advice[1].upper() == 'H':
+                    return Command.HIT_ENUM
+                elif advice[1].upper() == 'S':
+                    return Command.STAND_ENUM
+            elif ( advice.upper() == 'SU' and
+                Command.SURRENDER_ENUM not in availableCommands):
+                return Command.HIT_ENUM
+            print('here',advice)
+            return Command.getCommandEnumFromString(advice)
         else:
             return None
 

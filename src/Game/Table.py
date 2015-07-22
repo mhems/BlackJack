@@ -45,7 +45,7 @@ class Table:
             Command.SPLIT_ENUM     : SplitCommand(hitCmd,  standCmd),
             Command.SURRENDER_ENUM : SurrenderCommand()
         }
-
+        
     @property
     def dealer(self):
         """Returns table dealer"""
@@ -167,13 +167,14 @@ class Table:
             slot.index = index
             done = False
             while not done:
+                print('deal:', hand.value)
                 if hand.isBlackjackValued:
                     break
                 if hand.isBust:
                     self.__bank.deposit(slot.takePot())
                     slot.settled = True
                     break
-                actions = [cmd for (_, cmd) in self.__commands.items()
+                actions = [key for (key, cmd) in self.__commands.items()
                            if cmd.isAvailable(slot)]
                 response = slot.promptAction(upcard, actions)
                 if response == Command.SURRENDER_ENUM:

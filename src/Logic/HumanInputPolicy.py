@@ -15,9 +15,10 @@ class HumanInputPolicy(DecisionPolicy):
 
         def prompt(availableCommands):
             """Prompts for response"""
-            response = input('How will you act? Options = %s\n' %
-                             (', '.join((str(c) for c in availableCommands))))
-            return Command.getCommand(response), response
+            response = input( 'How will you act? Options = %s\n' %
+                              ( ', '.join( ( Command.getCommandStringFromEnum(e)
+                                             for e in availableCommands ) ) ) )
+            return Command.getCommandEnumFromString(response), response
 
         print('Your hand (%s) has value %d, Dealer shows %s' % (hand.ranks,
                                                                 hand.value,
