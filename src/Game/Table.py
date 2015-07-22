@@ -5,20 +5,21 @@
 ####################
 
 from src.Utilities.Configuration import Configuration
+from src.Utilities.Utilities     import Utilities
 from src.Basic.Card import Card
 from src.Basic.BlackjackHand import BlackjackHand
 from src.Basic.Shoe import Shoe
 from src.Basic.Shoe import faro_shuffle
 from src.Basic.Shoe import fisher_yates_shuffle
+from src.Game.TableSlot import TableSlot
+from src.Game.HouseBank import HouseBank
+from src.Game.Dealer    import Dealer
 from src.Logic.Command       import Command
 from src.Logic.HitCommand    import HitCommand
 from src.Logic.StandCommand  import StandCommand
 from src.Logic.DoubleCommand import DoubleCommand
 from src.Logic.SplitCommand  import SplitCommand
 from src.Logic.SurrenderCommand  import SurrenderCommand
-from src.Game.TableSlot import TableSlot
-from src.Game.HouseBank import HouseBank
-from src.Game.Dealer    import Dealer
 
 class Table:
     """Representation of Blackjack Table"""
@@ -101,6 +102,8 @@ class Table:
         
     def play(self):
         """Plays one round of blackjack"""
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
+              '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         dealerHasBlackjack = False
         for slot in self.__slots:
             slot.beginRound()
@@ -117,7 +120,6 @@ class Table:
             dealerHasBlackjack = True
             print('Dealer has blackjack')
         if Configuration.get('OFFER_INSURANCE') and upcard.isAce:
-            print('Dealer shows Ace')
             for slot in self.active_slots:
                 slot.promptInsurance()
             dealerHasBlackjack = self.__dealer_slot.hasNaturalBlackjack
@@ -143,15 +145,22 @@ class Table:
                     slot.settled = True
                 else:
                     dealerActs = True
+                    Utilities.printBanner('PLAYER: %s' % slot.playerName)
                     self.__dealToSlot(slot, upcard)
+                    print()
             if dealerActs:
+                Utilities.printBanner('DEALER')
                 self.__dealToSlot(self.__dealer_slot, upcard)
+                print()
         self.__settle_bets()
         for slot in self.occupied_slots:
             slot.endRound()
+        self.__dealer_slot.clearHands()
         for slot in self.occupied_slots:
             print('%s plus $%d in pot' % (slot.player, slot.pot))
-            
+        print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+              '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+
     def __dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
         for index, hand in enumerate(slot.hands):
@@ -159,10 +168,8 @@ class Table:
             done = False
             while not done:
                 if hand.isBlackjackValued:
-                    print('Blackjack')
                     break
                 if hand.isBust:
-                    print('Bust at', hand.value)
                     self.__bank.deposit(slot.takePot())
                     slot.settled = True
                     break
@@ -173,6 +180,7 @@ class Table:
                     self.__bank.deposit(
                         slot.takePot(Configuration.get('LATE_SURRENDER_RATIO')) )
                 done = self.__commands[response].execute(slot)
+            print('Hand ends at', hand.value)
 
     def __offer_early_surrender(self):
         """Offers early surrender to each active player"""
@@ -188,7 +196,6 @@ class Table:
               * each player's hands are not bust, natural, or surrendered
               * dealer does not have natural"""
         dealer_value = self.__dealer_slot.handValue
-        print('Dealer has', self.__dealer_slot.hand.ranks, '=>', dealer_value)
         for slot in self.active_slots:
             if not slot.settled:
                 for index, hand in enumerate(slot.hands):

@@ -47,14 +47,16 @@ if __name__ == '__main__':
 
     Configuration.loadConfiguration()
 
-    player = Player("ME", HumanInputPolicy(), HumanInputInsurancePolicy(), MinBettingStrategy())
+    player = Player("Matt", HumanInputPolicy(), HumanInputInsurancePolicy(), MinBettingStrategy())
     player.receive_payment(100)
+    player2 = Player("Tim", HumanInputPolicy(), HumanInputInsurancePolicy(), MinBettingStrategy())
+    player2.receive_payment(100)
     table  = Table()
     table.register_player(player)
+    # table.register_player(player2)
     try:
         while True:
             table.play()
-            print('----------------------------------------'
-                  '----------------------------------------')
+            print('\n')
     except InsufficientFundsError as e:
         print(e)

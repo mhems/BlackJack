@@ -31,3 +31,11 @@ class Utilities:
         stderr.write(msg)
         stderr.write('\n')
         exit(1)
+
+    @staticmethod
+    def printBanner(msg):
+        """Prints msg in ASCII banner style"""
+        bookend = '+%s+' % ('-' * (len(msg) + 2 * 1))
+        print(bookend)
+        print('| %s |' % msg)
+        print(bookend)

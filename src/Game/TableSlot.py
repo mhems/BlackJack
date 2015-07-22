@@ -26,6 +26,11 @@ class TableSlot:
         return self.__player
 
     @property
+    def playerName(self):
+        """Return name of player seated at slot"""
+        return self.__player.name
+
+    @property
     def hand(self):
         """Return current hand being acted upon"""
         return self.__hands[self.index]
@@ -151,7 +156,6 @@ class TableSlot:
         
     def endRound(self):
         """Executes any actions necessary to end turn"""
-        print('ending round...')
         total = 0
         for pot in self.__pots:
             total += pot
@@ -166,7 +170,12 @@ class TableSlot:
         self.__insurance = 0
         self.index = 0
         self.settled = False
-        self.__hands = [BlackjackHand()]
+        self.clearHands()
+
+    def clearHands(self):
+        """Resets any hands in slot"""
+        for hand in self.__hands:
+            hand.reset()
         
     def promptAction(self, upcard, availableCommands, **kwargs):
         """Prompts player to act"""
