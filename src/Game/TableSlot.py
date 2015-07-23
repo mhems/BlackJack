@@ -76,6 +76,11 @@ class TableSlot:
         return self.hand.isBust
 
     @property
+    def handIsBlackjackValued(self):
+        """Return True iff hand is blackjack valued"""
+        return self.hand.isBlackjackValued
+    
+    @property
     def handWasSplit(self):
         """Returns True iff hand came from a split"""
         return self.hand.wasSplit
@@ -174,8 +179,8 @@ class TableSlot:
 
     def clearHands(self):
         """Resets any hands in slot"""
-        for hand in self.__hands:
-            hand.reset()
+        self.__hands = [self.__hands[0]]
+        self.__hands[0].reset()
         
     def promptAction(self, upcard, availableCommands, **kwargs):
         """Prompts player to act"""

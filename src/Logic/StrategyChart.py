@@ -125,12 +125,11 @@ class StrategyChart:
             arg = 'A' if player_hand.hasAce else int(value/2)
             advice = self.__pair_chart.access(arg, dealer_up_card)
         # check for soft
-        if not advice and player_hand.hasAce and self.__soft_chart:
+        if not advice and player_hand.isSoft and self.__soft_chart:
             advice = self.__soft_chart.access(value, dealer_up_card)
-        # default to hard    
+        # default to hard
         if not advice and self.__hard_chart:
             advice = self.__hard_chart.access(value, dealer_up_card)
-        print('advice',advice, player_hand, dealer_up_card)
         if advice:
             if advice[0].upper() == 'D' and len(advice) == 2:
                 if Command.DOUBLE_ENUM in availableCommands:
@@ -142,7 +141,6 @@ class StrategyChart:
             elif ( advice.upper() == 'SU' and
                 Command.SURRENDER_ENUM not in availableCommands):
                 return Command.HIT_ENUM
-            print('here',advice)
             return Command.getCommandEnumFromString(advice)
         else:
             return None

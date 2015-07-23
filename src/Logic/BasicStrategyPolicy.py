@@ -17,7 +17,4 @@ class BasicStrategyPolicy(DecisionPolicy):
     def decide(self, hand, upcard, availableCommands, **kwargs):
         """Decides command based on basic strategy"""
         upvalue = 'A' if upcard.isAce else upcard.value
-        print(upvalue)
-        p = self.strategy.advise(hand, upvalue, availableCommands)
-        print('decide',p)
-        return p
+        return self.strategy.advise(hand, upvalue, availableCommands)

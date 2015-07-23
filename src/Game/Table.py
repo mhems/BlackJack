@@ -167,10 +167,9 @@ class Table:
             slot.index = index
             done = False
             while not done:
-                print('deal:', hand.value)
-                if hand.isBlackjackValued:
+                if slot.handIsBlackjackValued:
                     break
-                if hand.isBust:
+                if slot.handIsBust:
                     self.__bank.deposit(slot.takePot())
                     slot.settled = True
                     break
@@ -181,7 +180,7 @@ class Table:
                     self.__bank.deposit(
                         slot.takePot(Configuration.get('LATE_SURRENDER_RATIO')) )
                 done = self.__commands[response].execute(slot)
-            print('Hand ends at', hand.value)
+            print('Hand ends at', slot.handValue)
 
     def __offer_early_surrender(self):
         """Offers early surrender to each active player"""
@@ -201,7 +200,7 @@ class Table:
             if not slot.settled:
                 for index, hand in enumerate(slot.hands):
                     slot.index = index
-                    value = hand.value
+                    value = slot.handValue
                     if value > dealer_value or self.__dealer_slot.handIsBust:
                         slot.payToPot( self.__bank.withdraw(
                                        slot.pot *

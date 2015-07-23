@@ -51,7 +51,7 @@ if __name__ == '__main__':
     Configuration.loadConfiguration()
 
     hip1 = HumanInputPolicy()
-    strat1 = BasicStrategyPolicy('src/Utilities/three_chart.txt')
+    strat1 = BasicStrategyPolicy('tests/Logic/test_files/three_chart.txt')
     player = Player("Matt", FeedbackDecisionPolicy(hip1, strat1), HumanInputInsurancePolicy(), MinBettingStrategy())
     player.receive_payment(100)
     player2 = Player("Billy Batch", strat1, DeclineInsurancePolicy(), MinBettingStrategy())
