@@ -99,10 +99,10 @@ class Configuration:
         if res:
             Configuration.__assign(res)
         else:
-            res = Configuration.parseConfigFile('config.ini')
+            res = Configuration.parseConfigFile('src/Utilities/config.ini')
             if res:
                 Configuration.__assign(res)
-        # override any options with present command line flags
+            # override any options with present command line flags
 
         # check semantics
         blackjack = Configuration.__configuration['BLACKJACK_VALUE']
@@ -198,7 +198,7 @@ class Configuration:
         Configuration.__configuration['TOTALS_ALLOWED_FOR_DOUBLE']     = conf.get('double','TOTALS_ALLOWED_FOR_DOUBLE')
         Configuration.__configuration['DOUBLE_RATIO']                  = conf.get('double','DOUBLE_RATIO')
         Configuration.__configuration['SPLIT_BY_VALUE']                = conf.getboolean('split','SPLIT_BY_VALUE')
-        Configuration.__configuration['RESPLIT_UP_TO']                 = conf.get('split','RESPLIT_UP_TO')
+        Configuration.__configuration['RESPLIT_UP_TO']                 = conf.getint('split','RESPLIT_UP_TO')
         Configuration.__configuration['RESPLIT_ACES']                  = conf.getboolean('split','RESPLIT_ACES')
         Configuration.__configuration['HIT_SPLIT_ACES']                = conf.getboolean('split','HIT_SPLIT_ACES')
         Configuration.__configuration['SPLIT_RATIO']                   = conf.get('split','SPLIT_RATIO')
@@ -215,6 +215,13 @@ class Configuration:
     def get(key):
         if key in Configuration.__configuration:
             return Configuration.__configuration[key]
+        else:
+            raise InvalidOptionError('Unknown configuration option:', key)
+
+    @staticmethod
+    def set(key, value):
+        if key in Configuration.__configuration:
+            Configuration.__configuration[key] = value
         else:
             raise InvalidOptionError('Unknown configuration option:', key)
 

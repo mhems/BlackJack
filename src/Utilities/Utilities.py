@@ -11,7 +11,7 @@ class Utilities:
     """Provides general utilities such as centralized error handling"""
 
     numErrors = 0
-    __count   = 0
+    __count   = 1000
 
     @staticmethod
     def uniqueNumber():
