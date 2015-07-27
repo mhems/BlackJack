@@ -20,6 +20,7 @@ class Shoe:
         self.numDecks = n
         self.__algorithm = algorithm
         self.__index = 0
+        self.__observers = []
         if not cutIndex:
             self.cutIndex = int((n - 1/2) * Card.NUM_CARDS_PER_DECK)
         elif isinstance(cutIndex,float):
@@ -63,7 +64,9 @@ class Shoe:
         """Convenience method to deal one card"""
         if self.isExhausted:
             self.shuffle()
+            self.notifyObservers(None)
         c = self.__cards[self.__index]
+        self.notifyObservers(c)
         self.__index += 1
         return c
 
@@ -72,7 +75,17 @@ class Shoe:
         self.__cards = self.__algorithm(self.__cards)
         self.__index = 0
         self.deal(Configuration.get('NUM_CARDS_BURN_ON_SHUFFLE'))        
-    
+
+    def registerObserver(self, observer):
+        self.__observers.append(observer)
+
+    def unregisterObserver(self, observer):
+        self.__observers.remove(observer)
+        
+    def notifyObservers(self, card):
+        for o in self.__observers:
+            o.update(card)
+
 def faro_shuffle(deck):
     N = len(deck)//2
     ret = []
