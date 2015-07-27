@@ -20,12 +20,25 @@ class testStrategyChart(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def assertRowNoSurrender(self, chart, hand, exp):
+        cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
+                Command.DOUBLE_ENUM, Command.SPLIT_ENUM]
+        self.assertRowWithCommands(chart, hand, exp, cmds)
+
+    def assertRowNoDouble(self, chart, hand, exp):
+        cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
+                Command.SPLIT_ENUM, Command.SURRENDER_ENUM]
+        self.assertRowWithCommands(chart, hand, exp, cmds)
+    
     def assertRow(self, chart, hand, exp):
+        cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
+                Command.DOUBLE_ENUM, Command.SPLIT_ENUM,
+                Command.SURRENDER_ENUM]
+        self.assertRowWithCommands(chart, hand, exp, cmds)
+
+    def assertRowWithCommands(self, chart, hand, exp, cmds):
         ls = re.split(r' +', exp)
         for (up, e) in zip(Card.values, ls):
-            cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
-                    Command.DOUBLE_ENUM, Command.SPLIT_ENUM,
-                    Command.SURRENDER_ENUM]
             advice = chart.advise(hand, up, cmds)
             expect = Command.getCommandEnumFromString(e)
             self.assertEqual(advice, expect,
@@ -51,8 +64,8 @@ class testStrategyChart(unittest.TestCase):
         hand = makePair(6)
         self.assertRow(chart, hand, 'Sp Sp Sp Sp Sp H H H H H')
         hand = makePair(5)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh H H
         self.assertRow(chart, hand, 'D D D D D D D D H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makePair(4)
         self.assertRow(chart, hand, 'H H H Sp Sp H H H H H')
         hand = makePair(3)
@@ -66,24 +79,24 @@ class testStrategyChart(unittest.TestCase):
         hand = makeSoft(8)
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makeSoft(7)
-        #                            S Ds Ds Ds Ds S S H H H
         self.assertRow(chart, hand, 'S D D D D S S H H H')
+        self.assertRowNoDouble(chart, hand, 'S S S S S S S H H H')
         hand = makeSoft(6)
-        #                            H Dh Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H D D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeSoft(5)
-        #                            H H Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H H D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeSoft(4)
-        #                            H H Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H H D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeSoft(3)
-        #                            H H H Dh Dh H H H H H
         self.assertRow(chart, hand, 'H H H D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeSoft(2)
-        #                            H H H Dh Dh H H H H H
         self.assertRow(chart, hand, 'H H H D D H H H H H')
-
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
+        
         # test hard advice
         hand = makeHand(10,10)
         self.assertRow(chart, hand, 'S S S S S S S S S S')
@@ -95,8 +108,10 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makeHand(10, 6)
         self.assertRow(chart, hand, 'S S S S S H H Su Su Su')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 5)
         self.assertRow(chart, hand, 'S S S S S H H H Su H')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 4)
         self.assertRow(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 3)
@@ -104,14 +119,14 @@ class testStrategyChart(unittest.TestCase):
         hand = makeHand(10, 2)
         self.assertRow(chart, hand, 'H H S S S H H H H H')
         hand = makeHand( 2, 9)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh Dh H
         self.assertRow(chart, hand, 'D D D D D D D D D H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 8)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh H H
         self.assertRow(chart, hand, 'D D D D D D D D H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 7)
-        #                            H Dh Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H D D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 6)
         self.assertRow(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 5)
@@ -133,13 +148,14 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makePair(8)
         self.assertRow(chart, hand, 'S S S S S H H Su Su Su')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makePair(7)
         self.assertRow(chart, hand, 'S S S S S H H H H H')
         hand = makePair(6)
         self.assertRow(chart, hand, 'H H S S S H H H H H')
         hand = makePair(5)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh H H
         self.assertRow(chart, hand, 'D D D D D D D D H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makePair(4)
         self.assertRow(chart, hand, 'H H H H H H H H H H')
         hand = makePair(3)
@@ -153,24 +169,24 @@ class testStrategyChart(unittest.TestCase):
         hand = makeSoft(8)
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makeSoft(7)
-        #                            S Ds Ds Ds Ds S S H H H
         self.assertRow(chart, hand, 'S D D D D S S H H H')
+        self.assertRowNoDouble(chart, hand, 'S S S S S S S H H H')
         hand = makeSoft(6)
-        #                            H Dh Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H D D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeSoft(5)
-        #                            H H Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H H D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeSoft(4)
-        #                            H H Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H H D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeSoft(3)
-        #                            H H H Dh Dh H H H H H
         self.assertRow(chart, hand, 'H H H D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeSoft(2)
-        #                            H H H Dh Dh H H H H H
         self.assertRow(chart, hand, 'H H H D D H H H H H')
-
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
+        
         # test hard advice
         hand = makeHand(10,10)
         self.assertRow(chart, hand, 'S S S S S S S S S S')
@@ -182,8 +198,10 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makeHand(10, 6)
         self.assertRow(chart, hand, 'S S S S S H H Su Su Su')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 5)
         self.assertRow(chart, hand, 'S S S S S H H H Su H')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 4)
         self.assertRow(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 3)
@@ -191,14 +209,14 @@ class testStrategyChart(unittest.TestCase):
         hand = makeHand(10, 2)
         self.assertRow(chart, hand, 'H H S S S H H H H H')
         hand = makeHand( 2, 9)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh Dh H
         self.assertRow(chart, hand, 'D D D D D D D D D H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 8)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh H H
         self.assertRow(chart, hand, 'D D D D D D D D H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 7)
-        #                            H Dh Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H D D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 6)
         self.assertRow(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 5)
@@ -223,8 +241,10 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makeSoft(5)
         self.assertRow(chart, hand, 'S S S S S H H Su Su Su')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeSoft(4)
         self.assertRow(chart, hand, 'S S S S S H H H Su H')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeSoft(3)
         self.assertRow(chart, hand, 'S S S S S H H H H H')
         hand = makeSoft(2)
@@ -244,8 +264,8 @@ class testStrategyChart(unittest.TestCase):
         hand = makePair(6)
         self.assertRow(chart, hand, 'Sp Sp Sp Sp Sp H H H H H')
         hand = makePair(5)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh H H
         self.assertRow(chart, hand, 'D D D D D D D D H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makePair(4)
         self.assertRow(chart, hand, 'H H H Sp Sp H H H H H')
         hand = makePair(3)
@@ -264,8 +284,10 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makeHand(10, 6)
         self.assertRow(chart, hand, 'S S S S S H H Su Su Su')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 5)
         self.assertRow(chart, hand, 'S S S S S H H H Su H')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 4)
         self.assertRow(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 3)
@@ -273,14 +295,14 @@ class testStrategyChart(unittest.TestCase):
         hand = makeHand(10, 2)
         self.assertRow(chart, hand, 'H H S S S H H H H H')
         hand = makeHand( 2, 9)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh Dh H
         self.assertRow(chart, hand, 'D D D D D D D D D H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 8)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh H H
         self.assertRow(chart, hand, 'D D D D D D D D H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 7)
-        #                            H Dh Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H D D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 6)
         self.assertRow(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 5)
@@ -304,8 +326,10 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makeHand(10, 6)
         self.assertRow(chart, hand, 'S S S S S H H Su Su Su')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 5)
         self.assertRow(chart, hand, 'S S S S S H H H Su H')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 4)
         self.assertRow(chart, hand, 'S S S S S H H H H H')
         hand = makeHand(10, 3)
@@ -313,14 +337,14 @@ class testStrategyChart(unittest.TestCase):
         hand = makeHand(10, 2)
         self.assertRow(chart, hand, 'H H S S S H H H H H')
         hand = makeHand( 2, 9)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh Dh H
         self.assertRow(chart, hand, 'D D D D D D D D D H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 8)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh H H
         self.assertRow(chart, hand, 'D D D D D D D D H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 7)
-        #                            H Dh Dh Dh Dh H H H H H
         self.assertRow(chart, hand, 'H D D D D H H H H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 6)
         self.assertRow(chart, hand, 'H H H H H H H H H H')
         hand = makeHand( 2, 5)
@@ -341,8 +365,10 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makeSoft(5)
         self.assertRow(chart, hand, 'S S S S S H H Su Su Su')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeSoft(4)
         self.assertRow(chart, hand, 'S S S S S H H H Su H')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makeSoft(3)
         self.assertRow(chart, hand, 'S S S S S H H H H H')
         hand = makeSoft(2)
@@ -357,13 +383,14 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'S S S S S S S S S S')
         hand = makePair(8)
         self.assertRow(chart, hand, 'S S S S S H H Su Su Su')
+        self.assertRowNoSurrender(chart, hand, 'S S S S S H H H H H')
         hand = makePair(7)
         self.assertRow(chart, hand, 'S S S S S H H H H H')
         hand = makePair(6)
         self.assertRow(chart, hand, 'H H S S S H H H H H')
         hand = makePair(5)
-        #                            Dh Dh Dh Dh Dh Dh Dh Dh H H
         self.assertRow(chart, hand, 'D D D D D D D D H H')
+        self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
         hand = makePair(4)
         self.assertRow(chart, hand, 'H H H H H H H H H H')
         hand = makePair(3)

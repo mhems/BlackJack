@@ -33,7 +33,7 @@ class testDoubleCommand(unittest.TestCase):
         standCmd = StandCommand()
         doubleCmd = DoubleCommand(hitCmd, standCmd)
         player.receive_payment(Configuration.get('MINIMUM_BET') *
-                                    (1 + Configuration.get('DOUBLE_RATIO')))
+                               (1 + Configuration.get('DOUBLE_RATIO')))
         slot.promptBet()
         rc = doubleCmd.perform(slot)
         self.assertEqual(player.stackAmount, 0, 'testDoubleCommand:testPerform:Double should remove amount in pot from player')
@@ -52,29 +52,39 @@ class testDoubleCommand(unittest.TestCase):
         player.receive_payment(Configuration.get('MINIMUM_BET'))
         slot.promptBet()
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should not be available for player with insufficient money')
+        player.receive_payment(Configuration.get('MINIMUM_BET') *
+                               (1 + Configuration.get('DOUBLE_RATIO')))
+        slot.promptBet()
+        Configuration.set('TOTALS_ALLOWED_FOR_DOUBLE', Configuration.UNRESTRICTED)
+        self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be availabe for player with sufficient money and unrestricted totals')
         hitCmd.perform(slot)
         player.receive_payment(Configuration.get('MINIMUM_BET') *
-                                    (1 + Configuration.get('DOUBLE_RATIO')))
+                               (1 + Configuration.get('DOUBLE_RATIO')))
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should not be available beyond first action')
         Configuration.set('TOTALS_ALLOWED_FOR_DOUBLE', [9, 10, 11])
         slot.clearHands()
         slot.addCards(Card(2,'H'), Card(4, 'C'))
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should not be availabe if total not in allowed totals')
+        slot.clearHands()
+        slot.addCards(Card(5,'H'), Card(4, 'C'))
+        self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be available when totals match')
         splitCmd = SplitCommand(hitCmd, standCmd)
         player.receive_payment(Configuration.get('MINIMUM_BET') *
-                                    (1 + Configuration.get('SPLIT_RATIO')))
+                               (1 + Configuration.get('SPLIT_RATIO')))
         slot.clearHands()
         slot.addCards(Card(5,'C'), Card(5, 'H'))
         splitCmd.perform(slot)
         Configuration.set('DOUBLE_AFTER_SPLIT_ALLOWED', False)
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailbe:Double should not be available if player split and DAS is disallowed')
+        Configuration.set('TOTALS_ALLOWED_FOR_DOUBLE', Configuration.UNRESTRICTED)
+        Configuration.set('DOUBLE_AFTER_SPLIT_ALLOWED', True)
+        self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be available after split if DAS is allowed')
         slot.clearHands()
         slot.addCards(Card(2,'H'), Card(4, 'C'))
         player.receive_payment(Configuration.get('MINIMUM_BET') *
                                     (1 + Configuration.get('DOUBLE_RATIO')))
-        Configuration.set('DOUBLE_AFTER_SPLIT_ALLOWED', True)
         Configuration.set('TOTALS_ALLOWED_FOR_DOUBLE', Configuration.UNRESTRICTED)
         self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be availabe under sufficient funds and appropriate configurations')
-                                    
+
 if __name__ == '__main__':
     unittest.main()

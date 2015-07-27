@@ -6,6 +6,9 @@
 
 import unittest
 
+from src.Logic.MinBettingStrategy import MinBettingStrategy
+from src.Utilities.Configuration  import Configuration
+
 class testMinBettingStrategy(unittest.TestCase):
     def setUp(self):
         pass
@@ -13,8 +16,9 @@ class testMinBettingStrategy(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test(self):
-        pass # self.fail('Implement test MinBettingStrategy')
+    def testBet(self):
+        strat = MinBettingStrategy()
+        self.assertEqual(strat.bet(), Configuration.get('MINIMUM_BET'), 'testMinBettingStrategy:testBet:Bet should always be minimum')
 
 if __name__ == '__main__':
     unittest.main()

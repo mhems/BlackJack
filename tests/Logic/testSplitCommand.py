@@ -65,6 +65,7 @@ class testSplitCommand(unittest.TestCase):
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available to insufficiently funded player')
         player.receive_payment(Configuration.get('MINIMUM_BET') *
                                Configuration.get('SPLIT_RATIO'))
+        slot.promptBet()
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be avaible to non-pair hand')
         Configuration.set('SPLIT_BY_VALUE', False)
         slot.clearHands()
@@ -81,17 +82,22 @@ class testSplitCommand(unittest.TestCase):
         slot.promptBet()
         slot.addCards(Card(5,'C'), Card(5,'C'))
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be availabe if splitting is disallowed')
-        Configuration.set('RESPLIT_UP_TO', 1)
+        Configuration.set('RESPLIT_UP_TO', Configuration.UNRESTRICTED)
         player.receive_payment(Configuration.get('MINIMUM_BET') *
-                               (2 + Configuration.get('SPLIT_RATIO')))
+                               (2 + 2 * Configuration.get('SPLIT_RATIO')))
+        slot.promptBet()
         splitCmd.perform(slot)
         slot.clearHands()
         slot.addCards(Card('A','C'), Card('A','H'))
         splitCmd.perform(slot)
         slot.hand.reset()
         slot.hand.addCards(Card('A','C'), Card('A', 'H'))
-        Configuration.set('RESPLIT_ACES', False)
-        self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Spli should not be available if hand is aces from split and resplitting aces is disallowed')
-        
+        Configuration.set('RESPLIT_ACES', True)
+        self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available if hand is aces from split and resplitting aces is disallowed')
+        player.receive_payment(Configuration.get('MINIMUM_BET') *
+                               (2 + Configuration.get('SPLIT_RATIO')))
+        Configuration.set('RESPLIT_ACES', True)
+        self.assertTrue(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should be available on split aces if resplit aces allowed')
+
 if __name__ == '__main__':
     unittest.main()
