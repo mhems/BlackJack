@@ -19,7 +19,7 @@ class InvalidOptionError(KeyError):
 class Configuration:
     """Provides handling and access of configuration files"""
     
-    UNRESTRICTED = Utilities.uniqueNumber()
+    UNRESTRICTED = Utilities.createEnum()
     
     __configuration = {
         # general
@@ -102,7 +102,7 @@ class Configuration:
             res = Configuration.parseConfigFile('src/Utilities/config.ini')
             if res:
                 Configuration.__assign(res)
-            # override any options with present command line flags
+        # override any options with present command line flags
 
         # check semantics
         blackjack = Configuration.__configuration['BLACKJACK_VALUE']

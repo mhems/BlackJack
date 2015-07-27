@@ -14,11 +14,11 @@ class UnavailableCommandError(Exception):
 class Command(metaclass=ABCMeta):
     """Base class for Blackjack commands"""
 
-    HIT_ENUM       = Utilities.uniqueNumber()
-    STAND_ENUM     = Utilities.uniqueNumber()
-    DOUBLE_ENUM    = Utilities.uniqueNumber()
-    SPLIT_ENUM     = Utilities.uniqueNumber()
-    SURRENDER_ENUM = Utilities.uniqueNumber()
+    HIT_ENUM       = Utilities.createEnum()
+    STAND_ENUM     = Utilities.createEnum()
+    DOUBLE_ENUM    = Utilities.createEnum()
+    SPLIT_ENUM     = Utilities.createEnum()
+    SURRENDER_ENUM = Utilities.createEnum()
     
     __command_string_map = {
         # Order duplicate entries by descending string length
