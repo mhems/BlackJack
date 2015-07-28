@@ -14,14 +14,9 @@ class CardCount():
         self.__count = 0
 
     @property
-    def count(self):
-        """Returns current count"""
+    def runningCount(self):
+        """Returns current running count"""
         return self.__count
-
-    @property
-    def trueCount(self):
-        """Returns current true count"""
-        return self.__count/self.__num_decks
 
     def update(self, card):
         """Updates count based on card"""
