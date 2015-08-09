@@ -53,20 +53,24 @@ class Shoe:
         """This is only possible if cut index == len(self.__cards)"""
         return self.__index >= self.numDecks * Card.NUM_CARDS_PER_DECK
 
-    def deal(self,n=1):
+    def deal(self,n=1,visible=True):
         """Remove and return n cards from beginning of shoe"""
         c = []
         for _ in range(n):
-            c.append(self.dealOneCard())
+            c.append(self.dealOneCard(visible))
         return c
     
-    def dealOneCard(self):
-        """Convenience method to deal one card"""
+    def burn(self,n=1):
+        """Remove, without showing, n cards from beginning of shoe"""
+        self.deal(n, False)
+
+    def dealOneCard(self, visible=True):
+        """Remove and return one card from beginning of shoe"""
         if self.isExhausted:
             self.shuffle()
-            self.notifyObservers(None)
         c = self.__cards[self.__index]
-        self.notifyObservers(c)
+        if visible:
+            self.notifyObservers(c)
         self.__index += 1
         return c
 
@@ -74,7 +78,8 @@ class Shoe:
         """Shuffles the deck using specified algorithm"""
         self.__cards = self.__algorithm(self.__cards)
         self.__index = 0
-        self.deal(Configuration.get('NUM_CARDS_BURN_ON_SHUFFLE'))        
+        self.notifyObservers(None)
+        self.burn(Configuration.get('NUM_CARDS_BURN_ON_SHUFFLE'))
 
     def registerObserver(self, observer):
         self.__observers.append(observer)

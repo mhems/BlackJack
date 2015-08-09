@@ -14,6 +14,7 @@ from src.Basic.Shoe import fisher_yates_shuffle
 from src.Game.TableSlot import TableSlot
 from src.Game.HouseBank import HouseBank
 from src.Game.Dealer    import Dealer
+from src.Logic.CardCount     import HiLoCount
 from src.Logic.Command       import Command
 from src.Logic.HitCommand    import HitCommand
 from src.Logic.StandCommand  import StandCommand
@@ -35,6 +36,7 @@ class Table:
                                   fisher_yates_shuffle,
                                   Configuration.get('CUT_INDEX'))
         self.__shoe.shuffle()
+        self.__shoe.registerObserver(HiLoCount())
         self.__dealer_slot.seatPlayer(Dealer())
         hitCmd   = HitCommand(self.__shoe)
         standCmd = StandCommand()
@@ -213,7 +215,7 @@ class Table:
            Returns dealer's up card"""
         for slot in self.active_slots:
             slot.addCards(self.__shoe.dealOneCard())
-        self.__dealer_slot.addCards(self.__shoe.dealOneCard())
+        self.__dealer_slot.addCards(self.__shoe.dealOneCard(False))
         for slot in self.active_slots:
             slot.addCards(self.__shoe.dealOneCard())
         upcard = self.__shoe.dealOneCard()
