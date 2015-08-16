@@ -20,7 +20,6 @@ class SplitCommand(Command):
         done = (slot.handIsAcePair and
                 not Configuration.get('HIT_SPLIT_ACES') and
                 not Configuration.get('RESPLIT_ACES'))
-        slot.multiplyPot(Configuration.get('SPLIT_RATIO'))
         slot.splitHand()
         self.__hit_command.execute(slot, **kwargs)
         slot.index += 1

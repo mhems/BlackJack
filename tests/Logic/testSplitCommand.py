@@ -92,7 +92,7 @@ class testSplitCommand(unittest.TestCase):
         splitCmd.perform(slot)
         slot.hand.reset()
         slot.hand.addCards(Card('A','C'), Card('A', 'H'))
-        Configuration.set('RESPLIT_ACES', True)
+        Configuration.set('RESPLIT_ACES', False)
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available if hand is aces from split and resplitting aces is disallowed')
         player.receive_payment(Configuration.get('MINIMUM_BET') *
                                (2 + Configuration.get('SPLIT_RATIO')))

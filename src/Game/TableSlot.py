@@ -4,6 +4,8 @@
 #
 ####################
 
+from math import floor
+
 from src.Basic.BlackjackHand     import BlackjackHand
 from src.Utilities.Configuration import Configuration
 
@@ -104,19 +106,22 @@ class TableSlot:
     def playerCanAffordDouble(self):
         """Return True iff player has adequate funds to double"""
         return (self.player.stackAmount >=
-                Configuration.get('DOUBLE_RATIO') * self.pot)
+                floor( self.pot *
+                       Configuration.get('DOUBLE_RATIO') ) )
 
     @property
     def playerCanAffordSplit(self):
         """Return True iff player has adequate funds to split"""
         return (self.player.stackAmount >=
-                Configuration.get('SPLIT_RATIO') * self.pot)
+                floor( self.pot *
+                       Configuration.get('SPLIT_RATIO') ) )
 
     @property
     def playerCanAffordInsurance(self):
         """Return True iff player has adequate funds to insurance"""
         return (self.player.stackAmount >=
-                Configuration.get('INSURANCE_RATIO') * self.pot)
+                floor(self.pot *
+                      Configuration.get('INSURANCE_RATIO') ) )
     
     @property
     def isActive(self):
@@ -208,7 +213,7 @@ class TableSlot:
 
     def takePot(self, fraction=1):
         """Takes and returns specified fraction of pot"""
-        amt = self.pot * fraction
+        amt = floor(self.pot * fraction)
         self.__pots[self.index] -= amt
         return amt
 
@@ -224,17 +229,18 @@ class TableSlot:
     
     def multiplyPot(self, factor):
         """Adds factor of current pot to pot"""
-        self.__pots[self.index] += self.__player.wager(self.pot * factor)
+        self.__pots[self.index] += self.__player.wager(floor(self.pot * factor))
         
     def splitHand(self):
-        """Splits player's hand into 2 new hands"""
+        """Splits player's hand into 2 new hands with one card each"""
         (card1, card2) = self.hand.splitCards
         self.__hands[self.index] = BlackjackHand()
         self.__hands[self.index].addCards(card1)
         self.__hands[self.index].wasSplit = True
         self.__hands.insert(self.index + 1, BlackjackHand())
-        self.__pots.insert(self.index + 1,
-                           (self.__pots[self.index] *
-                            Configuration.get('SPLIT_RATIO') ) )
+        split_bet = floor( self.__pots[self.index] *
+                           Configuration.get('SPLIT_RATIO') )
+        self.__player.wager(split_bet)
+        self.__pots.insert(self.index + 1, split_bet)
         self.__hands[self.index + 1].addCards(card2)
         self.__hands[self.index + 1].wasSplit = True

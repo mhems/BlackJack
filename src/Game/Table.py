@@ -4,6 +4,8 @@
 #
 ####################
 
+from math import floor
+
 from src.Utilities.Configuration import Configuration
 from src.Utilities.Utilities     import Utilities
 from src.Basic.Card import Card
@@ -104,8 +106,7 @@ class Table:
         
     def play(self):
         """Plays one round of blackjack"""
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
-              '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        print('>' * 80)
         dealerHasBlackjack = False
         for slot in self.__slots:
             slot.beginRound()
@@ -118,7 +119,7 @@ class Table:
             self.__offer_early_surrender()
         if ( upcard.value == ( Configuration.get('BLACKJACK_VALUE') -
                                Card.HARD_ACE_VALUE ) and
-             self.__dealer_slot.hasNaturalBlackjack ):
+            self.__dealer_slot.hasNaturalBlackjack ):
             dealerHasBlackjack = True
             print('Dealer has blackjack')
         if Configuration.get('OFFER_INSURANCE') and upcard.isAce:
@@ -133,8 +134,8 @@ class Table:
                     self.__bank.deposit(slot.takePot())
                 if slot.insured:
                     print('You\'re insured though')
-                    slot.payToPot( self.__bank.withdraw(slot.insurance *
-                                   Configuration.get('INSURANCE_PAYOUT_RATIO') ) )
+                    self.payout( slot, slot.insurance *
+                                 Configuration.get('INSURANCE_PAYOUT_RATIO') )
                 slot.settled = True
         else:
             for slot in self.active_slots:
@@ -142,8 +143,8 @@ class Table:
                 self.__bank.deposit(slot.takeInsurance())
                 if slot.hasNaturalBlackjack:
                     print('BLACKJACK!')
-                    slot.payToPot( self.__bank.withdraw(slot.pot *
-                                   Configuration.get('BLACKJACK_PAYOUT_RATIO') ) )
+                    self.payout( slot, slot.pot *
+                                 Configuration.get('BLACKJACK_PAYOUT_RATIO') )
                     slot.settled = True
                 else:
                     dealerActs = True
@@ -160,8 +161,11 @@ class Table:
         self.__dealer_slot.clearHands()
         for slot in self.occupied_slots:
             print('%s plus $%d in pot' % (slot.player, slot.pot))
-        print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
-              '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+        print('<' * 80)
+
+    def payout(self, slot, amt):
+        """Pay floor of amt to slot"""
+        slot.payToPot(self.__bank.withdraw(floor(amt)))
 
     def __dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
@@ -204,9 +208,8 @@ class Table:
                     slot.index = index
                     value = slot.handValue
                     if value > dealer_value or self.__dealer_slot.handIsBust:
-                        slot.payToPot( self.__bank.withdraw(
-                                       slot.pot *
-                                       Configuration.get('PAYOUT_RATIO') ) )
+                        self.payout(slot, slot.pot *
+                                    Configuration.get('PAYOUT_RATIO') )
                     elif value < dealer_value:
                         self.__bank.deposit(slot.takePot())
         

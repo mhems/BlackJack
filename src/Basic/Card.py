@@ -34,7 +34,7 @@ class Card:
 
     def __init__(self, rank, suit):
         """Initializes card's rank and suit to rank and suit respectively"""
-        self.__rank = rank if isinstance(rank,int) else rank[0].upper()
+        self.__rank = rank if isinstance(rank, int) else rank[0].upper()
         self.__suit = suit[0].upper()
         if self.__rank not in Card.ranks:
             raise TypeError(
