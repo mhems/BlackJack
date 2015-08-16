@@ -8,7 +8,13 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 
 class InsufficientFundsError(Exception):
     """Error class to represent error of overwithdrawing from bank"""
-    pass
+
+    def __init__(self, request, balance):
+        self.request = request
+        self.balance = balance
+
+    def __str__(self):
+        return 'Insufficient funds to withdraw $%s from $%s' % (self.request, self.balance)
 
 class Bank:
     """Abstract mechanism for Bank transactions"""

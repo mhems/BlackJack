@@ -14,7 +14,12 @@ from src.Utilities.Utilities import Utilities
 
 class InvalidOptionError(KeyError):
     """Represents error for unknown configuration option"""
-    pass
+
+    def __init__(self, option):
+        self.option = option
+
+    def __str__(self):
+        return 'Invalid configuration option \'%s\'' % self.option
 
 class Configuration:
     """Provides handling and access of configuration files"""
@@ -216,14 +221,14 @@ class Configuration:
         if key in Configuration.__configuration:
             return Configuration.__configuration[key]
         else:
-            raise InvalidOptionError('Unknown configuration option:', key)
+            raise InvalidOptionError(key)
 
     @staticmethod
     def set(key, value):
         if key in Configuration.__configuration:
             Configuration.__configuration[key] = value
         else:
-            raise InvalidOptionError('Unknown configuration option:', key)
+            raise InvalidOptionError(key)
 
     @staticmethod
     def writeConfigFile(filename):

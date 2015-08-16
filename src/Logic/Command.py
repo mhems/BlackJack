@@ -9,8 +9,14 @@ from src.Utilities.Utilities import Utilities
 
 class UnavailableCommandError(Exception):
     """Exception signifying unavailable command attempted to execute"""
-    pass
 
+    def __init__(self, command, slot):
+        self.command = command
+        self.slot    = slot
+
+    def __str__(self):
+        return '%s is unavailable to %s' % (str(self.command), slot.playerName)
+        
 class Command(metaclass=ABCMeta):
     """Base class for Blackjack commands"""
 
@@ -79,8 +85,7 @@ class Command(metaclass=ABCMeta):
         """Executes the command on slot,
            Return True iff player is done with turn"""
         if not self.isAvailable(slot):
-            raise UnavailableCommandError(
-                '%s command is unavailable' % str(self))
+            raise UnavailableCommandError(self, slot)
         return self.perform(slot, **kwargs)
 
     @abstractmethod
@@ -88,7 +93,7 @@ class Command(metaclass=ABCMeta):
         """Perform command on slot,
            Return True iff player is done with turn"""
         raise NotImplementedError(
-            'Command implementations must implement the __perform method')
+            'Command implementations must implement the perform method')
 
     @abstractmethod
     def isAvailable(self, slot):
