@@ -35,7 +35,7 @@ class DoubleCommand(Command):
             not Configuration.get('DOUBLE_AFTER_SPLIT_ALLOWED')):
             return False
         return True
-            
+
     def __str__(self):
         """Returns string representing Double Command"""
         return 'Double'

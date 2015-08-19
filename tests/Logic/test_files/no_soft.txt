@@ -26,7 +26,7 @@
 > Pairs
 #     2  3  4  5  6  7  8  9 10  A
   A  Sp Sp Sp Sp Sp Sp Sp Sp Sp Sp
- 10   S  S  S  S  S  S  S  S  S  S 
+ 10   S  S  S  S  S  S  S  S  S  S
   9  Sp Sp Sp Sp Sp  S Sp Sp  S  S
   8  Sp Sp Sp Sp Sp Sp Sp Sp Sp Sp
   7  Sp Sp Sp Sp Sp Sp  H  H  H  H

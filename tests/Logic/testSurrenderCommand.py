@@ -40,7 +40,7 @@ class testSurrenderCommand(unittest.TestCase):
         self.assertTrue(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should be available if allowed')
 
         HitCommand(Shoe(2, lambda x:x)).perform(self.slot)
-        self.assertFalse(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should not be available after first action')        
+        self.assertFalse(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should not be available after first action')
 
 if __name__ == '__main__':
     unittest.main()

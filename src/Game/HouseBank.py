@@ -17,7 +17,7 @@ class HouseBank(Bank):
     def amount(self):
         """Returns amount of funds"""
         return self.__funds
-        
+
     def withdraw(self, amt):
         """Withdraws amt from funds"""
         # The House has "infinite" bankroll

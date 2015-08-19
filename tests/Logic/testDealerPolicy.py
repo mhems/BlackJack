@@ -44,6 +44,6 @@ class testDealerPolicy(unittest.TestCase):
         self.assertEqual(policy.decide(hand, None, cmds), Command.HIT_ENUM, 'testDealerPolicy:testDecide:Dealer should hit on soft 17 if configured to do so')
         Configuration.set('DEALER_HITS_ON_SOFT_17', False)
         self.assertEqual(policy.decide(hand, None, cmds), Command.STAND_ENUM, 'testDealerPolicy:testDecide:Dealer should stand on soft 17 if configured to do so')
-            
+
 if __name__ == '__main__':
     unittest.main()

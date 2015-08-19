@@ -24,7 +24,7 @@ class Bank:
         """Returns amount in funds"""
         raise NotImplementedError(
             'Bank implementations must implement the amount property')
-    
+
     @abstractmethod
     def withdraw(self, amt):
         """Attempts to withdraw amt from funds"""

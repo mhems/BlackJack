@@ -45,7 +45,7 @@ class testBlackjackHand(unittest.TestCase):
         h.addCards(Card('K','H'), Card('A','C'))
         self.assertEqual(h.ranks,['King','Ace'],'testBlackjackHand:testRanks:Hand with King and Ace should have ranks King and Ace')
         self.assertNotEqual(h.ranks,[10,'Ace'],'testBlackjackHand:testRanks:Ranks should not return values')
-        
+
     def testSoft(self):
         h = BlackjackHand()
         h.addCards(Card('A','D'), Card(10,'D'))
@@ -75,7 +75,7 @@ class testBlackjackHand(unittest.TestCase):
         self.assertFalse(h.isAcePair,'testBlackjackHand:testIsAcePair:A,J should not be ace pair')
         h = BlackjackHand()
         h.addCards(Card('J','C'), Card(10, 'H'))
-        self.assertFalse(h.isAcePair,'testBlackjackHand:testIsAcePair:J,10 should not be ace pair')    
+        self.assertFalse(h.isAcePair,'testBlackjackHand:testIsAcePair:J,10 should not be ace pair')
 
     def testIsSoft17(self):
         h = BlackjackHand()
@@ -87,7 +87,7 @@ class testBlackjackHand(unittest.TestCase):
         h = BlackjackHand()
         h.addCards(Card(10,'D'), Card(7,'C'))
         self.assertFalse(h.isSoft17,'testBlackjackHand:testSoft17:10,7 should not be soft 17')
-    
+
     def testNumCards(self):
         # Also tests addCards
         h = BlackjackHand()
@@ -98,7 +98,7 @@ class testBlackjackHand(unittest.TestCase):
         self.assertEqual(h.numCards,2,'testBlackjackHand:testNumCards:Hand should have two cards')
         h.addCards(Card(4,'D'), Card(6,'H'))
         self.assertEqual(h.numCards,4,'testBlackjackHand:testNumCards:Hand should have four cards')
-        
+
     def testNumAces(self):
         h = BlackjackHand()
         self.assertEqual(h.numAces,0,'testBlackjackHand:testNumAces:New hand should have no aces')
@@ -120,7 +120,7 @@ class testBlackjackHand(unittest.TestCase):
         h = BlackjackHand()
         h.addCards(Card('J','S'), Card(4,'D'))
         self.assertFalse(h.isNaturalBlackjack,'testBlackjackHand:testIsNaturalBlackjack:Non-21 hand should not be natural blackjack')
-        
+
     def testIsPairByRank(self):
         h = BlackjackHand()
         h.addCards(Card(4,'D'), Card(4,'H'))
@@ -172,6 +172,6 @@ class testBlackjackHand(unittest.TestCase):
         self.assertEqual(str(h),'[]','testBlackjackHand:testStr:New hand should have empty string')
         h.addCards(Card('A','S'), Card(4,'D'))
         self.assertEqual(str(h),'[Ace of Spades, 4 of Diamonds]', 'testBlackjackHand:testStr:Hand\'s string should list cards in hand')
-    
+
 if __name__ == '__main__':
     unittest.main()

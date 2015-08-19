@@ -17,7 +17,7 @@ class testHitCommand(unittest.TestCase):
         player = Player("Test", None, None, None)
         self.slot.seatPlayer(player)
         self.shoe = Shoe(1, lambda x: x)
-        
+
     def tearDown(self):
         pass
 

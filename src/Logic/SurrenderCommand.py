@@ -18,7 +18,7 @@ class SurrenderCommand(Command):
     def isAvailable(self, slot):
         """Returns True iff (late) surrender is available"""
         return Configuration.get('LATE_SURRENDER') and slot.firstAction
-    
+
     def __str__(self):
         """Returns string representing Surrender Command"""
         return 'Surrender'

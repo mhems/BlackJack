@@ -13,7 +13,7 @@ Initial features
 Features to support
 * Integrated advice system for basic strategy, counting
 * Various counting strategies
-  - Hi-Lo, Shuffle tracking 
+  - Hi-Lo, Shuffle tracking
 * GUI
 * Markov learning deterministic process to online learn basic strategy
   - manipulate payout ratios, minimum bets, play policies to see how strategy changes

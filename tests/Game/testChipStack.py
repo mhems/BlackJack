@@ -30,13 +30,13 @@ class testChipStack(unittest.TestCase):
         self.assertEqual(stack.amount,25,'testChipStack:testWithdraw:Withdrawal should leave appropriate funds')
         with self.assertRaises(InsufficientFundsError):
             stack.withdraw(50)
-        
+
     def testDeposit(self):
         stack = ChipStack()
         stack.deposit(100)
         self.assertEqual(stack.amount,100,'testChipStack:testDeposit:Deposit should deposit money')
         stack.deposit(50)
         self.assertEqual(stack.amount,150,'testChipStack:testDeposit:Deposit should deposit money')
-        
+
 if __name__ == '__main__':
     unittest.main()

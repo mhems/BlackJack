@@ -21,7 +21,7 @@ class HitCommand(Command):
     def isAvailable(self, slot):
         """Returns True iff Hit command is available"""
         return True
-        
+
     def __str__(self):
         """Returns string representing Hit Command"""
         return 'Hit'

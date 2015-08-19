@@ -20,7 +20,7 @@ from src.Utilities.Configuration import Configuration
 class testDoubleCommand(unittest.TestCase):
     def setUp(self):
         Configuration.loadConfiguration()
-        
+
     def tearDown(self):
         pass
 

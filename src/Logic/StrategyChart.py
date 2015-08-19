@@ -63,7 +63,7 @@ class StrategyChart:
             def sort(value):
                 """Function to sort card rank characters"""
                 return value if value != 'A' else Card.HARD_ACE_VALUE
-            
+
             result = '#    %s\n' % ' '.join((str(e).rjust(2,' ') for e in Card.values))
             vals = sorted(set(t[0] for t in self.__chart.keys()),
                           key = sort,
@@ -75,12 +75,12 @@ class StrategyChart:
             return result
 
     # END CHART CLASS
-                
+
     def __init__(self, hard_chart, soft_chart, pair_chart):
         self.__hard_chart = hard_chart
         self.__soft_chart = soft_chart
         self.__pair_chart = pair_chart
-        
+
     @staticmethod
     def fromFile(filename):
         """Create StrategyChart from file"""
@@ -111,7 +111,7 @@ class StrategyChart:
                 print('Unknown line: %s' % line)
         File.close()
         return StrategyChart(hard_chart, soft_chart, pair_chart)
-        
+
     def advise(self, player_hand, dealer_up_card, availableCommands):
         """Advise action given player's hand and dealer's up card"""
         value = player_hand.value

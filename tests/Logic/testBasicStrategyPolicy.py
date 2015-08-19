@@ -28,7 +28,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
         cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
                 Command.SPLIT_ENUM, Command.SURRENDER_ENUM]
         self.assertRowWithCommands(strat, hand, exp, cmds)
-    
+
     def assertRow(self, strat, hand, exp):
         cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
                 Command.DOUBLE_ENUM, Command.SPLIT_ENUM,
@@ -95,7 +95,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
         hand = makeSoft(2)
         self.assertRow(strat, hand, 'H H H D D H H H H H')
         self.assertRowNoDouble(strat, hand, 'H H H H H H H H H H')
-        
+
         # test hard advice
         hand = makeHand(10,10)
         self.assertRow(strat, hand, 'S S S S S S S S S S')
@@ -161,7 +161,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
         self.assertRow(strat, hand, 'H H H H H H H H H H')
         hand = makePair(2)
         self.assertRow(strat, hand, 'H H H H H H H H H H')
-        
+
         # test soft advice
         hand = makeSoft(9)
         self.assertRow(strat, hand, 'S S S S S S S S S S')
@@ -185,7 +185,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
         hand = makeSoft(2)
         self.assertRow(strat, hand, 'H H H D D H H H H H')
         self.assertRowNoDouble(strat, hand, 'H H H H H H H H H H')
-        
+
         # test hard advice
         hand = makeHand(10,10)
         self.assertRow(strat, hand, 'S S S S S S S S S S')
@@ -313,7 +313,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
 
     def testOneChart(self):
         strat = BasicStrategyPolicy('tests/Logic/test_files/one_chart.txt')
-        
+
         # test hard advice
         hand = makeHand(10,10)
         self.assertRow(strat, hand, 'S S S S S S S S S S')
@@ -372,7 +372,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
         self.assertRow(strat, hand, 'S S S S S H H H H H')
         hand = makeSoft(2)
         self.assertRow(strat, hand, 'S S S S S H H H H H')
-        
+
         # test pair advice -- should be same
         hand = makePair('A')
         self.assertRow(strat, hand, 'H  H S S S H H H H H')

@@ -41,7 +41,7 @@ class Shoe:
     def numCardsRemainingInShoe(self):
         """Returns number of cards remaining in shoe"""
         return self.numDecks * Card.NUM_CARDS_PER_DECK - self.__index
-    
+
     @property
     def isExhausted(self):
         """Returns True iff all cards that will be dealt have been dealt"""
@@ -59,7 +59,7 @@ class Shoe:
         for _ in range(n):
             c.append(self.dealOneCard(visible))
         return c
-    
+
     def burn(self,n=1):
         """Remove, without showing, n cards from beginning of shoe"""
         self.deal(n, False)
@@ -86,7 +86,7 @@ class Shoe:
 
     def unregisterObserver(self, observer):
         self.__observers.remove(observer)
-        
+
     def notifyObservers(self, card):
         for o in self.__observers:
             o.update(card)

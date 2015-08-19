@@ -29,7 +29,7 @@ class testStrategyChart(unittest.TestCase):
         cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
                 Command.SPLIT_ENUM, Command.SURRENDER_ENUM]
         self.assertRowWithCommands(chart, hand, exp, cmds)
-    
+
     def assertRow(self, chart, hand, exp):
         cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
                 Command.DOUBLE_ENUM, Command.SPLIT_ENUM,
@@ -96,7 +96,7 @@ class testStrategyChart(unittest.TestCase):
         hand = makeSoft(2)
         self.assertRow(chart, hand, 'H H H D D H H H H H')
         self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
-        
+
         # test hard advice
         hand = makeHand(10,10)
         self.assertRow(chart, hand, 'S S S S S S S S S S')
@@ -162,7 +162,7 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'H H H H H H H H H H')
         hand = makePair(2)
         self.assertRow(chart, hand, 'H H H H H H H H H H')
-        
+
         # test soft advice
         hand = makeSoft(9)
         self.assertRow(chart, hand, 'S S S S S S S S S S')
@@ -186,7 +186,7 @@ class testStrategyChart(unittest.TestCase):
         hand = makeSoft(2)
         self.assertRow(chart, hand, 'H H H D D H H H H H')
         self.assertRowNoDouble(chart, hand, 'H H H H H H H H H H')
-        
+
         # test hard advice
         hand = makeHand(10,10)
         self.assertRow(chart, hand, 'S S S S S S S S S S')
@@ -314,7 +314,7 @@ class testStrategyChart(unittest.TestCase):
 
     def testOneChart(self):
         chart = StrategyChart.fromFile('tests/Logic/test_files/one_chart.txt')
-        
+
         # test hard advice
         hand = makeHand(10,10)
         self.assertRow(chart, hand, 'S S S S S S S S S S')
@@ -373,7 +373,7 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'S S S S S H H H H H')
         hand = makeSoft(2)
         self.assertRow(chart, hand, 'S S S S S H H H H H')
-        
+
         # test pair advice -- should be same
         hand = makePair('A')
         self.assertRow(chart, hand, 'H  H S S S H H H H H')
@@ -412,6 +412,6 @@ def makeHand(r1, r2):
     hand = BlackjackHand()
     hand.addCards(Card(r1, 'H'), Card(r2, 'S'))
     return hand
-        
+
 if __name__ == '__main__':
     unittest.main()

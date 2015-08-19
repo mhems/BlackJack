@@ -24,7 +24,7 @@ class Player:
     def stackAmount(self):
         """Returns amount of chips in player's stack"""
         return self.__stack.amount
-        
+
     def wager(self, amt):
         """Attempts to wager amt"""
         return self.__stack.withdraw(amt)
@@ -32,7 +32,7 @@ class Player:
     def receive_payment(self, amt):
         """Adds amt to chip stack"""
         self.__stack.deposit(amt)
-    
+
     def act(self, hand, upcard, availableCommands, **kwargs):
         """Returns command player wishes to execute based on its policy"""
         return self.__decision_policy.decide(hand, upcard, availableCommands, **kwargs)
@@ -44,7 +44,7 @@ class Player:
     def amountToBet(self, **kwargs):
         """Returns amount player wishes to bet"""
         return self.__bet_policy.bet(**kwargs)
-    
+
     def __eq__(self, other):
         """Returns True iff player is other"""
         return id(self) == id(other)

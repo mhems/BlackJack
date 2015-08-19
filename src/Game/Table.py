@@ -49,12 +49,12 @@ class Table:
             Command.SPLIT_ENUM     : SplitCommand(hitCmd,  standCmd),
             Command.SURRENDER_ENUM : SurrenderCommand()
         }
-        
+
     @property
     def dealer(self):
         """Returns table dealer"""
         return self.__dealer_slot.player
-        
+
     @property
     def slots(self):
         """Returns generator for all slots at table"""
@@ -89,7 +89,7 @@ class Table:
     def num_active_players(self):
         """Number of players with placed bets"""
         return len(s for s in self.__slots if s.isActive)
-    
+
     def register_player(self, player, pos=-1):
         """Register player to table, provided there is room"""
         if pos < 0:
@@ -103,7 +103,7 @@ class Table:
             return False
         else:
             return self.__slots[pos].isOccupied
-        
+
     def play(self):
         """Plays one round of blackjack"""
         print('>' * 80)
@@ -195,9 +195,9 @@ class Table:
             if slot.surrendered:
                 self.__bank.deposit(
                     slot.takePot(Configuration.get('EARLY_SURRENDER_RATIO')) )
-            
+
     def __settle_bets(self):
-        """Settles each active player's 
+        """Settles each active player's
            Assumes:
               * each player's hands are not bust, natural, or surrendered
               * dealer does not have natural"""
@@ -212,7 +212,7 @@ class Table:
                                     Configuration.get('PAYOUT_RATIO') )
                     elif value < dealer_value:
                         self.__bank.deposit(slot.takePot())
-        
+
     def __dealCards(self):
         """Deals hands to all active players
            Returns dealer's up card"""
@@ -224,13 +224,13 @@ class Table:
         upcard = self.__shoe.dealOneCard()
         self.__dealer_slot.addCards(upcard)
         return upcard
-        
+
     def unregister_player(self, player):
         """Unregister player from table"""
         for pos, slot in self.occupied_slots:
             if slot.player == player:
                 self.unregister_player_from_slot(pos)
-                    
+
     def unregister_player_from_slot(self, pos):
         """Unregister player from slot, if present"""
         if self.__slots[pos].isOccupied:

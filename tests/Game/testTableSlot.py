@@ -51,7 +51,7 @@ class testTableSlot(unittest.TestCase):
         slot = TableSlot()
         slot.addCards(Card(9,'D'), Card(8,'H'))
         self.assertEqual(slot.numSplits,0,'testTableSlot:testNumSplits:New hand should have no splits')
-        slot = TableSlot()        
+        slot = TableSlot()
         player = Player('', None, MinBettingStrategy(), None)
         player.receive_payment(Configuration.get('SPLIT_RATIO'))
         slot.seatPlayer(player)
@@ -66,7 +66,7 @@ class testTableSlot(unittest.TestCase):
         slot = TableSlot()
         slot.addCards(Card(9,'D'), Card(8,'H'))
         self.assertFalse(slot.handWasSplit,'testTableSlot:testNumSplits:New hand should not have come from split')
-        slot = TableSlot()        
+        slot = TableSlot()
         player = Player('', None, MinBettingStrategy(), None)
         player.receive_payment(Configuration.get('SPLIT_RATIO'))
         slot.seatPlayer(player)
@@ -93,7 +93,7 @@ class testTableSlot(unittest.TestCase):
         class NoBettingStrategy(BettingStrategy):
             def bet(self, **kwargs):
                 return 0
-        
+
         player = Player('Jack',None, None, NoBettingStrategy())
         slot = TableSlot()
         slot.seatPlayer(player)
@@ -110,6 +110,6 @@ class testTableSlot(unittest.TestCase):
         self.assertTrue(slot.isOccupied,'testTableSlot:testIsOccupied:Slot with seated player should be occupied')
         slot.unseatPlayer()
         self.assertFalse(slot.isOccupied,'testTableSlot:testIsOccupied:Slot with unseated player should not be occupied')
-        
+
 if __name__ == '__main__':
     unittest.main()

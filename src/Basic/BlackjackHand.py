@@ -12,12 +12,12 @@ from src.Utilities.Configuration import Configuration
 
 class BlackjackHand(Hand):
     """Represents Blackjack hand"""
-    
+
     def __init__(self):
         """Initializes hand to have no cards"""
         self.__cards = []
         self.wasSplit = False
-        
+
     @property
     def value(self):
         """Returns largest non-bust value if possible, else largest value"""
@@ -35,12 +35,12 @@ class BlackjackHand(Hand):
     def ranks(self):
         """Returns list of ranks in hand"""
         return [c.rank for c in self.__cards]
-    
+
     @property
     def isAcePair(self):
         """Return True iff hand is pair of Aces"""
         return self.numAces == 2 and self.numCards == 2
-    
+
     @property
     def isSoft17(self):
         """Return True iff hand is soft 17"""
@@ -79,7 +79,7 @@ class BlackjackHand(Hand):
         return (self.numCards == 2 and
                 self.value == Configuration.get('BLACKJACK_VALUE') and
                 not self.wasSplit)
-    
+
     @property
     def isPairByRank(self):
         """Returns True iff initial two cards are equal in rank"""
@@ -91,7 +91,7 @@ class BlackjackHand(Hand):
         """Returns True iff initial two cards are equal in value"""
         return (self.numCards == 2 and
                 self.__cards[0].valueEquivalent(self.__cards[1]))
-    
+
     @property
     def isBust(self):
         """Returns True iff hand value is greater than blackjack value"""
@@ -108,7 +108,7 @@ class BlackjackHand(Hand):
         if self.numCards > 2:
             raise Exception('Cannot split hand of more than 2 cards')
         return tuple(self.__cards)
-    
+
     def addCards(self, *cards):
         """Adds args to hand"""
         self.__cards.extend(cards)
@@ -125,7 +125,7 @@ class BlackjackHand(Hand):
             if not c1 in other.__cards:
                 return False
         return True
-        
+
     def __str__(self):
         """Returns comma delimited list of cards' representations"""
         return '[' + ', '.join((str(c) for c in self.__cards)) +']'

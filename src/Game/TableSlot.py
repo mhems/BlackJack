@@ -21,7 +21,7 @@ class TableSlot:
         self.index       = 0
         self.surrendered = False
         self.settled     = False
-        
+
     @property
     def player(self):
         """Return player seated at slot"""
@@ -46,12 +46,12 @@ class TableSlot:
     def insurance(self):
         """Return amount of insurance in side bet"""
         return self.__insurance
-    
+
     @property
     def handValue(self):
         """Return value of current hand"""
         return self.hand.value
-    
+
     @property
     def hands(self):
         """Return all hands in play for slot"""
@@ -61,12 +61,12 @@ class TableSlot:
     def pots(self):
         """Return all pots for slot"""
         return self.__pots
-    
+
     @property
     def firstAction(self):
         """Return True iff player is on first action for hand"""
         return self.hand.numCards == 2
-    
+
     @property
     def numSplits(self):
         """Returns number of times player has split this round"""
@@ -81,7 +81,7 @@ class TableSlot:
     def handIsBlackjackValued(self):
         """Return True iff hand is blackjack valued"""
         return self.hand.isBlackjackValued
-    
+
     @property
     def handWasSplit(self):
         """Returns True iff hand came from a split"""
@@ -101,7 +101,7 @@ class TableSlot:
     def handIsPairByRank(self):
         """Returns True iff hand is pair by rank"""
         return self.hand.isPairByRank
-    
+
     @property
     def playerCanAffordDouble(self):
         """Return True iff player has adequate funds to double"""
@@ -122,7 +122,7 @@ class TableSlot:
         return (self.player.stackAmount >=
                 floor(self.pot *
                       Configuration.get('INSURANCE_RATIO') ) )
-    
+
     @property
     def isActive(self):
         """Return True iff seated player has placed money to play"""
@@ -137,7 +137,7 @@ class TableSlot:
     def insured(self):
         """Return True iff player is insured"""
         return self.__insured
-    
+
     @property
     def hasNaturalBlackjack(self):
         """Returns True iff hand is natural blackjack"""
@@ -163,7 +163,7 @@ class TableSlot:
     def beginRound(self):
         """Executes any actions necessary to begin turn"""
         pass
-        
+
     def endRound(self):
         """Executes any actions necessary to end turn"""
         total = 0
@@ -186,7 +186,7 @@ class TableSlot:
         """Resets any hands in slot"""
         self.__hands = [self.__hands[0]]
         self.__hands[0].reset()
-        
+
     def promptAction(self, upcard, availableCommands, **kwargs):
         """Prompts player to act"""
         return self.__player.act(self.hand, upcard, availableCommands, **kwargs)
@@ -197,7 +197,7 @@ class TableSlot:
             self.__insured = True
             self.__insurance = self.__player.wager(
                 self.__pots[0] * Configuration.get('INSURANCE_RATIO'))
-            
+
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
         amt = self.__player.amountToBet(**kwargs)
@@ -226,11 +226,11 @@ class TableSlot:
     def payToPot(self, amt):
         """Places amt in pot"""
         self.__pots[self.index] += amt
-    
+
     def multiplyPot(self, factor):
         """Adds factor of current pot to pot"""
         self.__pots[self.index] += self.__player.wager(floor(self.pot * factor))
-        
+
     def splitHand(self):
         """Splits player's hand into 2 new hands with one card each"""
         (card1, card2) = self.hand.splitCards

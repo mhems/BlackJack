@@ -16,7 +16,7 @@ class StandCommand(Command):
     def isAvailable(self, _):
         """Stand is always available"""
         return True
-    
+
     def __str__(self):
         """Returns string representing Stand Command"""
         return 'Stand'

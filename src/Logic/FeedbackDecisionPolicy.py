@@ -15,7 +15,7 @@ class FeedbackDecisionPolicy(DecisionPolicy):
         """Initializes members"""
         self.__input_policy    = input_policy
         self.__strategy_policy = strategy_policy
-    
+
     def decide(self, hand, upcard, availableCommands, **kwargs):
         """First corrects player's decision if wrong, then
            returns Command that policy wishes to execute"""

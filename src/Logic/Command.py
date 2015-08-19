@@ -16,7 +16,7 @@ class UnavailableCommandError(Exception):
 
     def __str__(self):
         return '%s is unavailable to %s' % (str(self.command), slot.playerName)
-        
+
 class Command(metaclass=ABCMeta):
     """Base class for Blackjack commands"""
 
@@ -25,7 +25,7 @@ class Command(metaclass=ABCMeta):
     DOUBLE_ENUM    = Utilities.createEnum()
     SPLIT_ENUM     = Utilities.createEnum()
     SURRENDER_ENUM = Utilities.createEnum()
-    
+
     __command_string_map = {
         # Order duplicate entries by descending string length
         'HIT'       : HIT_ENUM,
@@ -55,7 +55,7 @@ class Command(metaclass=ABCMeta):
         SPLIT_ENUM     : 'SPLIT',
         SURRENDER_ENUM : 'SURRENDERED'
     }
-    
+
     @staticmethod
     def getCommandEnumFromString(string):
         """Returns Command enum from string representation"""
@@ -72,7 +72,7 @@ class Command(metaclass=ABCMeta):
             return Command.__command_enum_map[enum]
         else:
             return None
-    
+
     @staticmethod
     def getPastTenseCommandName(enum):
         """Returns past tense of command from enum"""
@@ -80,7 +80,7 @@ class Command(metaclass=ABCMeta):
             return Command.__past_tense_command_map[enum]
         else:
             return None
-    
+
     def execute(self, slot, **kwargs):
         """Executes the command on slot,
            Return True iff player is done with turn"""
@@ -100,7 +100,7 @@ class Command(metaclass=ABCMeta):
         """Returns True iff command is permitted for slot's player and hand"""
         raise NotImplementedError(
             'Command implementations must implement the isAvailable method')
-        
+
     @abstractmethod
     def __str__(self):
         """Returns string representing Command"""

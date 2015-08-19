@@ -35,7 +35,7 @@ class testHouseBank(unittest.TestCase):
         house.deposit(100)
         self.assertEqual(house.amount,100,'testHouseBank:testDeposit:Deposit should deposit money')
         house.deposit(50)
-        self.assertEqual(house.amount,100,'testHouseBank:testDeposit:Deposit should deposit money')   
+        self.assertEqual(house.amount,100,'testHouseBank:testDeposit:Deposit should deposit money')
 
 if __name__ == '__main__':
     unittest.main()

@@ -14,7 +14,7 @@ class SplitCommand(Command):
         """Initialize members"""
         self.__hit_command   = hitCommand
         self.__stand_command = standCommand
-    
+
     def perform(self, slot, **kwargs):
         """Perform Split command"""
         done = (slot.handIsAcePair and
@@ -47,7 +47,7 @@ class SplitCommand(Command):
             not Configuration.get('RESPLIT_ACES')):
             return False
         return True
-    
+
     def __str__(self):
         """Returns string representing Split Command"""
         return 'Split'

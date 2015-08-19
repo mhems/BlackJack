@@ -26,7 +26,7 @@ class testCard(unittest.TestCase):
         c1 = Card(4,'hearts')
         c2 = Card(4,'h')
         c3 = Card(4,'Hearts')
-        
+
     def testRank(self):
         c = Card('J','H')
         self.assertEqual(c.rank,'Jack','testCard:testRank:Card rank doesn\'t evaluate properly')
@@ -34,7 +34,7 @@ class testCard(unittest.TestCase):
     def testSuit(self):
         c = Card(10,'H')
         self.assertEqual(c.suit,'Hearts','testCard:testRank:Card suit doesn\'t evaluate properly')
-        
+
     def testValue(self):
         num = Card(8,'S')
         self.assertEqual(num.value,8,'testCard:testValue:Numeric card value doesn\'t evaluate properly')
@@ -70,7 +70,7 @@ class testCard(unittest.TestCase):
         self.assertTrue(c != c3,'testCard:testNe:Cards should not be equal')
         c4 = Card(4, 'h')
         self.assertFalse(c != c4,'testCard:testNe:Cards should be equal')
-        
+
     def testRankEquivalent(self):
         c = Card(4,'H')
         c1 = Card(4, 'D')
@@ -109,6 +109,6 @@ class testCard(unittest.TestCase):
         self.assertEqual(len(d),52,'testCard:testMakeDeck:Deck should have 52 cards')
         self.assertEqual(len(list(filter(lambda c:c.suit=='Hearts',d))),13,'testCard:testMakeDeck:Deck should have 13 cards of hearts suit')
         self.assertEqual(len(list(filter(lambda c:c.rank=='Ace',d))),4,'testCard:testMakeDeck:Deck should have 4 aces')
-        
+
 if __name__ == '__main__':
     unittest.main()

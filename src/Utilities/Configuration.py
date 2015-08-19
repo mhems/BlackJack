@@ -23,9 +23,9 @@ class InvalidOptionError(KeyError):
 
 class Configuration:
     """Provides handling and access of configuration files"""
-    
+
     UNRESTRICTED = Utilities.createEnum()
-    
+
     __configuration = {
         # general
         # > 0
@@ -39,7 +39,7 @@ class Configuration:
         'CUT_INDEX'                      : -26,
         # > 0 and < number cards in shoe
         'NUM_CARDS_BURN_ON_SHUFFLE'      : 1,
-        
+
         # payout_ratio
         # ratios must be positive floats or fractions
         'PAYOUT_RATIO'                   : 1,
@@ -51,7 +51,7 @@ class Configuration:
         'DEALER_HITS_ON_SOFT_17'         : True,
         # True | False
         'DEALER_CHECKS_FOR_BLACKJACK'    : True,
-        
+
         # double
         # True | False
         'DOUBLE_AFTER_SPLIT_ALLOWED'     : True,
@@ -85,7 +85,7 @@ class Configuration:
         'OFFER_INSURANCE'                : True,
         # must be float or fraction between 0 and 1 inclusive
         'INSURANCE_RATIO'                : 0.5,
-        
+
         # game
         # > 0
         'MINIMUM_BET'                    : 15,
@@ -122,7 +122,7 @@ class Configuration:
             Utilities.error('CUT_INDEX: (%d) Cut index cannot be greater than number of cards in shoe (%d)' % (cut_index, num_cards))
         num_burn = Configuration.__configuration['NUM_CARDS_BURN_ON_SHUFFLE']
         if num_burn < 0:
-            Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be positive' % num_burn) 
+            Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be positive' % num_burn)
         if num_burn > num_cards:
             Utilities.error('NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after shuffle must be at most the number of cards in the deck (%d)' % (num_burn, num_cards))
         Configuration.__checkRatio('PAYOUT_RATIO')
@@ -185,7 +185,7 @@ class Configuration:
                 if re.match('[1-9][0-9]*', elem):
                     ls[idx] = int(elem)
             Configuration.__configuration[flagname] = ls
-            
+
     @staticmethod
     def __assign(conf):
         """Assigns values from configuration file into dictionary"""

@@ -49,8 +49,8 @@ class testSplitCommand(unittest.TestCase):
         self.assertEqual(hands[0], expected, 'testSplitCommand:testPerform:Split hands should draw next card from shoe')
         expected.reset()
         expected.addCards(Card(5,'H'), Card(2, 'H'))
-        self.assertEqual(hands[1], expected, 'testSplitCommand:testPerform:Split hands should draw next card from shoe')        
-        
+        self.assertEqual(hands[1], expected, 'testSplitCommand:testPerform:Split hands should draw next card from shoe')
+
     def testIsAvailable(self):
         slot = TableSlot()
         player = Player("Test", None, None, MinBettingStrategy())

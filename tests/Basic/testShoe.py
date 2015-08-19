@@ -52,7 +52,7 @@ class testShoe(unittest.TestCase):
         self.assertEqual(c,Card('A','D'),'testShoe:testDealOneCard:Deal should prompt shuffle')
         c = s.dealOneCard()
         self.assertEqual(c,Card('A','H'),'testShoe:testDealOneCard:Deal should deal in order after shuffle')
-        
+
     def testNumCardsRemainingToBeDealt(self):
         s = Shoe(3,alg)
         self.assertEqual(s.numCardsRemainingToBeDealt,3*52-26,'testShoe:testNumCardsRemainingToBeDealt:Undealt deck should have all cards remaining to be dealt')
@@ -75,7 +75,7 @@ class testShoe(unittest.TestCase):
             s.dealOneCard()
         self.assertEqual(s.numCardsRemainingInShoe,26,'testShoe:testNumCardsRemainingInShoe:Fully dealt deck should have only cut cards left in shoe')
         s.dealOneCard()
-        self.assertEqual(s.numCardsRemainingInShoe,3*52-2,'testShoe:testNumCardsRemainingInShoe:Newly shuffled deck should have all but one card remaining in shoe')        
+        self.assertEqual(s.numCardsRemainingInShoe,3*52-2,'testShoe:testNumCardsRemainingInShoe:Newly shuffled deck should have all but one card remaining in shoe')
 
     def testIsExhausted(self):
         s = Shoe(3,alg)
@@ -99,7 +99,7 @@ class testShoe(unittest.TestCase):
             s.dealOneCard()
         self.assertTrue(s.isEmpty,'testShoe:testIsEmpty:Dealt deck should be empty')
         s.dealOneCard()
-        self.assertFalse(s.isEmpty,'testShoe:testIsEmpty:New deck should not be empty')        
-        
+        self.assertFalse(s.isEmpty,'testShoe:testIsEmpty:New deck should not be empty')
+
 if __name__ == '__main__':
     unittest.main()

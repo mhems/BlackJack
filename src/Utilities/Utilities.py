@@ -38,7 +38,7 @@ class Utilities:
     def createEnum():
         """Return unique 'enum'"""
         return Enum()
-    
+
     @staticmethod
     def error(msg):
         stderr.write(msg)

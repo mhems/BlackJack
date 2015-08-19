@@ -30,7 +30,7 @@ class CardCount():
         """Computes value to add to count based on card and method"""
         # This will only work if Ace value is 11
         return cls.ranking[card.value - 2]
-    
+
 class HiLoCount(CardCount):
     """Uses the Hi-Lo counting system"""
 

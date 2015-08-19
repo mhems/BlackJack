@@ -6,7 +6,7 @@
 
 class Card:
     """Represents a playing card"""
-    
+
     HARD_ACE_VALUE = 11
     SOFT_ACE_VALUE = 1
     RANK_REGEX = '10|J(?:ack)?|Q(?:ueen)?|K(?:ing)?|A(?:ce)?|[2-9]'
@@ -14,7 +14,7 @@ class Card:
     suits  = ['S','H','D','C']
     values = [2,3,4,5,6,7,8,9,10,'A']
     NUM_CARDS_PER_DECK = len(ranks) * len(suits)
-    
+
     __charToNameDict = {}
     for i in range(2,11):
         __charToNameDict[i] = i
@@ -26,7 +26,7 @@ class Card:
     __charToNameDict['H'] = 'Hearts'
     __charToNameDict['D'] = 'Diamonds'
     __charToNameDict['C'] = 'Clubs'
-    
+
     @staticmethod
     def makeDeck():
         """Returns list of 52 cards over all ranks and suits"""
@@ -44,7 +44,7 @@ class Card:
             raise TypeError(
                 'Suit must be one of S, H, D, C'
                 ' (Spades, Hearts, Diamonds, Clubs)')
-        
+
     @property
     def rank(self):
         """Returns rank of card"""
@@ -54,7 +54,7 @@ class Card:
     def suit(self):
         """Returns suit of card"""
         return Card.__charToNameDict[self.__suit]
-    
+
     @property
     def value(self):
         """Returns integer value of card"""
@@ -74,7 +74,7 @@ class Card:
     def isFaceCard(self):
         """Returns True iff card is a face card"""
         return self.__rank in ['J','Q','K','A']
-    
+
     def rankEquivalent(self, other):
         """Returns True iff other has equivalent rank"""
         return self.rank == other.rank
@@ -82,7 +82,7 @@ class Card:
     def valueEquivalent(self, other):
         """Returns True iff other has equivalent value"""
         return self.value == other.value
-    
+
     def __str__(self):
         """Returns canonical representation of card"""
         return str(self.rank) + ' of ' + self.suit
