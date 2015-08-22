@@ -193,7 +193,8 @@ class TableSlot:
 
     def promptInsurance(self, **kwargs):
         """Prompts player for insurance"""
-        if self.playerCanAffordInsurance and self.__player.insure(self.hand, **kwargs):
+        if ( self.playerCanAffordInsurance and
+             self.__player.insure(self.hand,**kwargs) ):
             self.__insured = True
             self.__insurance = self.__player.wager(
                 self.__pots[0] * Configuration.get('INSURANCE_RATIO'))

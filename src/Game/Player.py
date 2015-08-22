@@ -35,7 +35,10 @@ class Player:
 
     def act(self, hand, upcard, availableCommands, **kwargs):
         """Returns command player wishes to execute based on its policy"""
-        return self.__decision_policy.decide(hand, upcard, availableCommands, **kwargs)
+        return self.__decision_policy.decide(hand,
+                                             upcard,
+                                             availableCommands,
+                                             **kwargs)
 
     def insure(self, hand, **kwargs):
         """Returns True iff player wishes to insure based on its policy"""

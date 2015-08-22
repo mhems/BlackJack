@@ -12,11 +12,11 @@ import argparse
 from src.Game.Player import Player
 from src.Game.Table  import Table
 from src.Game.Bank   import InsufficientFundsError
-from src.Logic.HumanInputPolicy   import HumanInputPolicy
-from src.Logic.BasicStrategyPolicy import BasicStrategyPolicy
-from src.Logic.FeedbackDecisionPolicy import FeedbackDecisionPolicy
+from src.Logic.HumanInputPolicy          import HumanInputPolicy
+from src.Logic.BasicStrategyPolicy       import BasicStrategyPolicy
+from src.Logic.FeedbackDecisionPolicy    import FeedbackDecisionPolicy
 from src.Logic.HumanInputInsurancePolicy import HumanInputInsurancePolicy
-from src.Logic.DeclineInsurancePolicy import DeclineInsurancePolicy
+from src.Logic.DeclineInsurancePolicy    import DeclineInsurancePolicy
 from src.Logic.MinBettingStrategy import MinBettingStrategy
 from src.Utilities.Configuration  import Configuration
 
@@ -52,9 +52,15 @@ if __name__ == '__main__':
 
     hip1 = HumanInputPolicy()
     strat1 = BasicStrategyPolicy('tests/Logic/test_files/three_chart.txt')
-    player = Player("Matt", FeedbackDecisionPolicy(hip1, strat1), HumanInputInsurancePolicy(), MinBettingStrategy())
+    player = Player("Matt",
+                    FeedbackDecisionPolicy(hip1, strat1),
+                    HumanInputInsurancePolicy(),
+                    MinBettingStrategy())
     player.receive_payment(100)
-    player2 = Player("Billy Batch", strat1, DeclineInsurancePolicy(), MinBettingStrategy())
+    player2 = Player("Billy Batch",
+                     strat1,
+                     DeclineInsurancePolicy(),
+                     MinBettingStrategy())
     player2.receive_payment(100)
     table  = Table()
     #table.register_player(player)

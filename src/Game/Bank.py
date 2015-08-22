@@ -14,7 +14,8 @@ class InsufficientFundsError(Exception):
         self.balance = balance
 
     def __str__(self):
-        return 'Insufficient funds to withdraw $%s from $%s' % (self.request, self.balance)
+        return 'Insufficient funds to withdraw $%s from $%s' % (self.request,
+                                                                self.balance)
 
 class Bank:
     """Abstract mechanism for Bank transactions"""

@@ -64,7 +64,8 @@ class StrategyChart:
                 """Function to sort card rank characters"""
                 return value if value != 'A' else Card.HARD_ACE_VALUE
 
-            result = '#    %s\n' % ' '.join((str(e).rjust(2,' ') for e in Card.values))
+            result = '#    %s\n' % ' '.join(( str(e).rjust(2, ' ')
+                                              for e in Card.values))
             vals = sorted(set(t[0] for t in self.__chart.keys()),
                           key = sort,
                           reverse = True)
