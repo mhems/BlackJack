@@ -7,7 +7,7 @@
 from math import floor
 
 from src.Basic.BlackjackHand     import BlackjackHand
-from src.Utilities.Configuration import Configuration
+import src.Utilities.Configuration as config
 
 class TableSlot:
     """Representation of one seat at the table (player, pot, hand)"""
@@ -107,21 +107,21 @@ class TableSlot:
         """Return True iff player has adequate funds to double"""
         return (self.player.stackAmount >=
                 floor( self.pot *
-                       Configuration.get('DOUBLE_RATIO') ) )
+                       config.get('DOUBLE_RATIO') ) )
 
     @property
     def playerCanAffordSplit(self):
         """Return True iff player has adequate funds to split"""
         return (self.player.stackAmount >=
                 floor( self.pot *
-                       Configuration.get('SPLIT_RATIO') ) )
+                       config.get('SPLIT_RATIO') ) )
 
     @property
     def playerCanAffordInsurance(self):
         """Return True iff player has adequate funds to insurance"""
         return (self.player.stackAmount >=
                 floor(self.pot *
-                      Configuration.get('INSURANCE_RATIO') ) )
+                      config.get('INSURANCE_RATIO') ) )
 
     @property
     def isActive(self):
@@ -169,7 +169,7 @@ class TableSlot:
         total = 0
         for pot in self.__pots:
             total += pot
-        if not Configuration.get('WINNINGS_REMAIN_IN_POT'):
+        if not config.get('WINNINGS_REMAIN_IN_POT'):
             if self.isOccupied:
                 self.__player.receive_payment(total)
             self.__pots = [0]
@@ -197,7 +197,7 @@ class TableSlot:
              self.__player.insure(self.hand,**kwargs) ):
             self.__insured = True
             self.__insurance = self.__player.wager(
-                self.__pots[0] * Configuration.get('INSURANCE_RATIO'))
+                self.__pots[0] * config.get('INSURANCE_RATIO'))
 
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
@@ -240,7 +240,7 @@ class TableSlot:
         self.__hands[self.index].wasSplit = True
         self.__hands.insert(self.index + 1, BlackjackHand())
         split_bet = floor( self.__pots[self.index] *
-                           Configuration.get('SPLIT_RATIO') )
+                           config.get('SPLIT_RATIO') )
         self.__player.wager(split_bet)
         self.__pots.insert(self.index + 1, split_bet)
         self.__hands[self.index + 1].addCards(card2)

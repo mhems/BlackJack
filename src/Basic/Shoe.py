@@ -8,7 +8,7 @@ from math   import floor
 from random import Random
 
 from src.Basic.Card import Card
-from src.Utilities.Configuration import Configuration
+import src.Utilities.Configuration as config
 
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""
@@ -79,7 +79,7 @@ class Shoe:
         self.__cards = self.__algorithm(self.__cards)
         self.__index = 0
         self.notifyObservers(None)
-        self.burn(Configuration.get('NUM_CARDS_BURN_ON_SHUFFLE'))
+        self.burn(config.get('NUM_CARDS_BURN_ON_SHUFFLE'))
 
     def registerObserver(self, observer):
         self.__observers.append(observer)

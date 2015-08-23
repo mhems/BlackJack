@@ -5,7 +5,7 @@
 ####################
 
 from src.Logic.Command import Command
-from src.Utilities.Configuration import Configuration
+import src.Utilities.Configuration as config
 
 class SurrenderCommand(Command):
     """Representation of the (late) surrender action"""
@@ -17,7 +17,7 @@ class SurrenderCommand(Command):
 
     def isAvailable(self, slot):
         """Returns True iff (late) surrender is available"""
-        return Configuration.get('LATE_SURRENDER') and slot.firstAction
+        return config.get('LATE_SURRENDER') and slot.firstAction
 
     def __str__(self):
         """Returns string representing Surrender Command"""

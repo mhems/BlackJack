@@ -5,7 +5,7 @@
 ####################
 
 from src.Logic.Command import Command
-from src.Utilities.Configuration import Configuration
+import src.Utilities.Configuration as config
 
 class SplitCommand(Command):
     """Representation of the split command"""
@@ -18,8 +18,8 @@ class SplitCommand(Command):
     def perform(self, slot, **kwargs):
         """Perform Split command"""
         done = (slot.handIsAcePair and
-                not Configuration.get('HIT_SPLIT_ACES') and
-                not Configuration.get('RESPLIT_ACES'))
+                not config.get('HIT_SPLIT_ACES') and
+                not config.get('RESPLIT_ACES'))
         slot.splitHand()
         self.__hit_command.execute(slot, **kwargs)
         slot.index += 1
@@ -29,7 +29,7 @@ class SplitCommand(Command):
 
     def isAvailable(self, slot):
         """Returns True iff Split command is available"""
-        if Configuration.get('SPLIT_BY_VALUE'):
+        if config.get('SPLIT_BY_VALUE'):
             toTest = slot.handIsPairByValue
         else:
             toTest = slot.handIsPairByRank
@@ -39,12 +39,12 @@ class SplitCommand(Command):
             return False
         if not slot.firstAction:
             return False
-        num_splits_allowed = Configuration.get('RESPLIT_UP_TO')
-        if (num_splits_allowed != Configuration.UNRESTRICTED and
+        num_splits_allowed = config.get('RESPLIT_UP_TO')
+        if (num_splits_allowed != config.UNRESTRICTED and
             slot.numSplits + 1 >= num_splits_allowed):
             return False
         if (slot.handWasSplit and slot.handIsAcePair and
-            not Configuration.get('RESPLIT_ACES')):
+            not config.get('RESPLIT_ACES')):
             return False
         return True
 

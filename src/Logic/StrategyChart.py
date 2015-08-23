@@ -6,7 +6,7 @@
 
 import re
 
-from src.Utilities.Configuration import Configuration
+import src.Utilities.Configuration as config
 from src.Basic.Card              import Card
 from src.Logic.Command           import Command
 
@@ -117,7 +117,7 @@ class StrategyChart:
         """Advise action given player's hand and dealer's up card"""
         value = player_hand.value
         advice = None
-        if Configuration.get('SPLIT_BY_VALUE'):
+        if config.get('SPLIT_BY_VALUE'):
             isPair = player_hand.isPairByValue
         else:
             isPair = player_hand.isPairByRank

@@ -12,7 +12,7 @@ from src.Game.Player              import Player
 from src.Game.TableSlot           import TableSlot
 from src.Logic.BettingStrategy    import BettingStrategy
 from src.Logic.MinBettingStrategy import MinBettingStrategy
-from src.Utilities.Configuration  import Configuration
+import src.Utilities.Configuration as config
 
 class testTableSlot(unittest.TestCase):
     def setUp(self):
@@ -53,7 +53,7 @@ class testTableSlot(unittest.TestCase):
         self.assertEqual(slot.numSplits,0,'testTableSlot:testNumSplits:New hand should have no splits')
         slot = TableSlot()
         player = Player('', None, MinBettingStrategy(), None)
-        player.receive_payment(Configuration.get('SPLIT_RATIO'))
+        player.receive_payment(config.get('SPLIT_RATIO'))
         slot.seatPlayer(player)
         slot.addCards(Card(7,'D'), Card(7,'H'))
         slot.splitHand()
@@ -68,7 +68,7 @@ class testTableSlot(unittest.TestCase):
         self.assertFalse(slot.handWasSplit,'testTableSlot:testNumSplits:New hand should not have come from split')
         slot = TableSlot()
         player = Player('', None, MinBettingStrategy(), None)
-        player.receive_payment(Configuration.get('SPLIT_RATIO'))
+        player.receive_payment(config.get('SPLIT_RATIO'))
         slot.seatPlayer(player)
         slot.addCards(Card(7,'D'), Card(7,'H'))
         slot.splitHand()

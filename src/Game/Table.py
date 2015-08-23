@@ -6,7 +6,7 @@
 
 from math import floor
 
-from src.Utilities.Configuration import Configuration
+import src.Utilities.Configuration as config
 from src.Utilities.Utilities     import Utilities
 from src.Basic.Card import Card
 from src.Basic.BlackjackHand import BlackjackHand
@@ -34,9 +34,9 @@ class Table:
         self.__num_slots   = num_slots
         # Index 0 is dealer's leftmost slot
         self.__slots       = [TableSlot() for _ in range(self.__num_slots)]
-        self.__shoe        = Shoe(Configuration.get('NUM_DECKS'),
+        self.__shoe        = Shoe(config.get('NUM_DECKS'),
                                   fisher_yates_shuffle,
-                                  Configuration.get('CUT_INDEX'))
+                                  config.get('CUT_INDEX'))
         self.__shoe.shuffle()
         self.__shoe.registerObserver(HiLoCount())
         self.__dealer_slot.seatPlayer(Dealer())
@@ -115,14 +115,14 @@ class Table:
             slot.promptBet()
         upcard = self.__dealCards()
         print('Dealer shows', upcard.rank)
-        if Configuration.get('EARLY_SURRENDER'):
+        if config.get('EARLY_SURRENDER'):
             self.__offer_early_surrender()
-        if ( upcard.value == ( Configuration.get('BLACKJACK_VALUE') -
+        if ( upcard.value == ( config.get('BLACKJACK_VALUE') -
                                Card.HARD_ACE_VALUE ) and
             self.__dealer_slot.hasNaturalBlackjack ):
             dealerHasBlackjack = True
             print('Dealer has blackjack')
-        if Configuration.get('OFFER_INSURANCE') and upcard.isAce:
+        if config.get('OFFER_INSURANCE') and upcard.isAce:
             for slot in self.active_slots:
                 slot.promptInsurance()
             dealerHasBlackjack = self.__dealer_slot.hasNaturalBlackjack
@@ -135,7 +135,7 @@ class Table:
                 if slot.insured:
                     print('You\'re insured though')
                     self.payout( slot, slot.insurance *
-                                 Configuration.get('INSURANCE_PAYOUT_RATIO') )
+                                 config.get('INSURANCE_PAYOUT_RATIO') )
                 slot.settled = True
         else:
             for slot in self.active_slots:
@@ -144,7 +144,7 @@ class Table:
                 if slot.hasNaturalBlackjack:
                     print('BLACKJACK!')
                     self.payout( slot, slot.pot *
-                                 Configuration.get('BLACKJACK_PAYOUT_RATIO') )
+                                 config.get('BLACKJACK_PAYOUT_RATIO') )
                     slot.settled = True
                 else:
                     dealerActs = True
@@ -184,7 +184,7 @@ class Table:
                 response = slot.promptAction(upcard, actions)
                 if response == Command.SURRENDER_ENUM:
                     self.__bank.deposit(
-                        slot.takePot(Configuration.get('LATE_SURRENDER_RATIO')) )
+                        slot.takePot(config.get('LATE_SURRENDER_RATIO')) )
                 done = self.__commands[response].execute(slot)
             print('Hand ends at', slot.handValue)
 
@@ -194,7 +194,7 @@ class Table:
             slot.promptEarlySurrender()
             if slot.surrendered:
                 self.__bank.deposit(
-                    slot.takePot(Configuration.get('EARLY_SURRENDER_RATIO')) )
+                    slot.takePot(config.get('EARLY_SURRENDER_RATIO')) )
 
     def __settle_bets(self):
         """Settles each active player's
@@ -209,7 +209,7 @@ class Table:
                     value = slot.handValue
                     if value > dealer_value or self.__dealer_slot.handIsBust:
                         self.payout(slot, slot.pot *
-                                    Configuration.get('PAYOUT_RATIO') )
+                                    config.get('PAYOUT_RATIO') )
                     elif value < dealer_value:
                         self.__bank.deposit(slot.takePot())
 

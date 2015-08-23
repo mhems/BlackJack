@@ -18,7 +18,7 @@ from src.Logic.FeedbackDecisionPolicy    import FeedbackDecisionPolicy
 from src.Logic.HumanInputInsurancePolicy import HumanInputInsurancePolicy
 from src.Logic.DeclineInsurancePolicy    import DeclineInsurancePolicy
 from src.Logic.MinBettingStrategy import MinBettingStrategy
-from src.Utilities.Configuration  import Configuration
+from src.Utilities.Configuration import loadConfiguration
 
 """Drives program execution"""
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     nspace = parseCommandLine()
 
-    Configuration.loadConfiguration()
+    loadConfiguration()
 
     hip1 = HumanInputPolicy()
     strat1 = BasicStrategyPolicy('tests/Logic/test_files/three_chart.txt')

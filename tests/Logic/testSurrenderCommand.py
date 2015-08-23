@@ -13,11 +13,11 @@ from src.Logic.SurrenderCommand   import SurrenderCommand
 from src.Logic.MinBettingStrategy import MinBettingStrategy
 from src.Game.TableSlot           import TableSlot
 from src.Game.Player              import Player
-from src.Utilities.Configuration  import Configuration
+import src.Utilities.Configuration as config
 
 class testSurrenderCommand(unittest.TestCase):
     def setUp(self):
-        Configuration.loadConfiguration()
+        config.loadConfiguration()
         self.surrenderCmd = SurrenderCommand()
         self.slot = TableSlot()
 
@@ -31,12 +31,12 @@ class testSurrenderCommand(unittest.TestCase):
 
     def testIsAvailable(self):
         player = Player("Test", None, None, MinBettingStrategy())
-        player.receive_payment(Configuration.get('MINIMUM_BET'))
+        player.receive_payment(config.get('MINIMUM_BET'))
         self.slot.seatPlayer(player)
         self.slot.addCards(Card('A','H'), Card(6,'D'))
-        Configuration.set('LATE_SURRENDER', False)
+        config.loadConfiguration('tests/Logic/test_files/no_surrender.ini')
         self.assertFalse(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should not be available if disallowed')
-        Configuration.set('LATE_SURRENDER', True)
+        config.loadConfiguration()
         self.assertTrue(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should be available if allowed')
 
         HitCommand(Shoe(2, lambda x:x)).perform(self.slot)

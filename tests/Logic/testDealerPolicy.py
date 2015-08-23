@@ -10,7 +10,7 @@ from src.Basic.Card          import Card
 from src.Basic.BlackjackHand import BlackjackHand
 from src.Logic.DealerPolicy  import DealerPolicy
 from src.Logic.Command       import Command
-from src.Utilities.Configuration import Configuration
+import src.Utilities.Configuration as config
 
 class testDealerPolicy(unittest.TestCase):
     def setUp(self):
@@ -40,9 +40,8 @@ class testDealerPolicy(unittest.TestCase):
             hand.reset()
         # soft 17
         hand.addCards(Card('A', 'H'), Card(6, 'H'))
-        Configuration.set('DEALER_HITS_ON_SOFT_17', True)
         self.assertEqual(policy.decide(hand, None, cmds), Command.HIT_ENUM, 'testDealerPolicy:testDecide:Dealer should hit on soft 17 if configured to do so')
-        Configuration.set('DEALER_HITS_ON_SOFT_17', False)
+        config.loadConfiguration('tests/Logic/test_files/S17_false.ini')
         self.assertEqual(policy.decide(hand, None, cmds), Command.STAND_ENUM, 'testDealerPolicy:testDecide:Dealer should stand on soft 17 if configured to do so')
 
 if __name__ == '__main__':
