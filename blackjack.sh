@@ -1,4 +1,4 @@
 #!/usr/bin/bash
 
-export PYTHONPATH="/cygdrive/c/Users/Matt/Documents/Computer Science/dev/BlackJack"
+export PYTHONPATH=.
 python3 src/Utilities/blackjack.py
