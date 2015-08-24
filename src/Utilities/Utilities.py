@@ -28,33 +28,23 @@ class Enum:
     def __hash__(self):
         return hash(self.value)
 
-class Utilities:
-    """Provides general utilities such as centralized error handling"""
+"""Provides general utilities such as centralized error handling"""
 
-    numErrors = 0
-    __count   = 1000
+numErrors = 0
 
-    @staticmethod
-    def createEnum():
-        """Return unique 'enum'"""
-        return Enum()
+def error(msg):
+    stderr.write(msg)
+    stderr.write('\n')
+    Utilities.numErrors += 1
 
-    @staticmethod
-    def error(msg):
-        stderr.write(msg)
-        stderr.write('\n')
-        Utilities.numErrors += 1
+def fatalError(msg):
+    stderr.write(msg)
+    stderr.write('\n')
+    exit(1)
 
-    @staticmethod
-    def fatalError(msg):
-        stderr.write(msg)
-        stderr.write('\n')
-        exit(1)
-
-    @staticmethod
-    def printBanner(msg):
-        """Prints msg in ASCII banner style"""
-        bookend = '+%s+' % ('-' * (len(msg) + 2 * 1))
-        print(bookend)
-        print('| %s |' % msg)
-        print(bookend)
+def printBanner(msg):
+    """Prints msg in ASCII banner style"""
+    bookend = '+%s+' % ('-' * (len(msg) + 2 * 1))
+    print(bookend)
+    print('| %s |' % msg)
+    print(bookend)

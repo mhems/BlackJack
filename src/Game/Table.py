@@ -7,7 +7,7 @@
 from math import floor
 
 import src.Utilities.Configuration as config
-from src.Utilities.Utilities     import Utilities
+import src.Utilities.Utilities as util
 from src.Basic.Card import Card
 from src.Basic.BlackjackHand import BlackjackHand
 from src.Basic.Shoe import Shoe
@@ -148,11 +148,11 @@ class Table:
                     slot.settled = True
                 else:
                     dealerActs = True
-                    Utilities.printBanner('PLAYER: %s' % slot.playerName)
+                    util.printBanner('PLAYER: %s' % slot.playerName)
                     self.__dealToSlot(slot, upcard)
                     print()
             if dealerActs:
-                Utilities.printBanner('DEALER')
+                util.printBanner('DEALER')
                 self.__dealToSlot(self.__dealer_slot, upcard)
                 print()
         self.__settle_bets()

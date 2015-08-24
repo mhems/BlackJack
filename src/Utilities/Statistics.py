@@ -27,7 +27,7 @@ def median(sequence):
     sseq = sorted(sequence)
     if n % 2 == 1:
         return sseq[mid]
-    else: # [2,4] [4,5,6,7]
+    else:
         return (sseq[mid-1] + sseq[mid])/2
 
 def mode(sequence):

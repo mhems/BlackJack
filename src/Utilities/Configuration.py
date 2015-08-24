@@ -8,7 +8,8 @@ from configparser import ConfigParser
 import re
 
 from src.Basic.Card          import Card
-from src.Utilities.Utilities import Utilities
+from src.Utilities.Utilities import Enum
+import src.Utilities.Utilities as util
 
 class InvalidOptionError(KeyError):
     """Represents error for unknown configuration option"""
@@ -21,7 +22,7 @@ class InvalidOptionError(KeyError):
 
 """Provides handling and access of configuration files"""
 
-UNRESTRICTED = Utilities.createEnum()
+UNRESTRICTED = Enum()
 
 configuration = {
     'general' : {
@@ -111,28 +112,28 @@ def loadConfiguration(filename=None):
     # check semantics
     blackjack = get('BLACKJACK_VALUE')
     if blackjack < 0:
-        Utilities.error(
+        util.error(
             'BLACKJACK_VALUE: (%d) Expected number to be positive' %
             blackjack)
     num_decks = get('NUM_DECKS')
     if num_decks < 1:
-        Utilities.error(
+        util.error(
             'NUM_DECKS: (%d) Expected number to be at least 1' %
             num_decks)
     num_cards = ( get('NUM_DECKS') *
                   Card.NUM_CARDS_PER_DECK )
     cut_index = get('CUT_INDEX')
     if abs(cut_index) > num_cards:
-        Utilities.error(
+        util.error(
             'CUT_INDEX: (%d) Cut index cannot be greater than number of '
             'cards in shoe (%d)' % (cut_index, num_cards))
     num_burn = get('NUM_CARDS_BURN_ON_SHUFFLE')
     if num_burn < 0:
-        Utilities.error(
+        util.error(
             'NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after '
             'shuffle must be positive' % num_burn)
     if num_burn > num_cards:
-        Utilities.error(
+        util.error(
             'NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after '
             'shuffle must be at most the number of cards in the deck (%d)' %
             (num_burn, num_cards))
@@ -145,7 +146,7 @@ def loadConfiguration(filename=None):
     if resplit_num == '*':
         configuration['split']['RESPLIT_UP_TO'] = UNRESTRICTED
     elif not re.match('0|[1-9][0-9]*', str(resplit_num)):
-        Utilities.error(
+        util.error(
             'RESPLIT_UP_TO: (%d) Number of times to resplit must be '
             'non-negative integer' % resplit_num)
     checkRatio('split', 'SPLIT_RATIO')
@@ -153,18 +154,18 @@ def loadConfiguration(filename=None):
     checkRatio('insurance', 'INSURANCE_RATIO', False)
     min_bet = get('MINIMUM_BET')
     if min_bet <= 0:
-        Utilities.error(
+        util.error(
             'MINIMUM BET: (%d) Minimum amount to bet must be positive' %
             min_bet);
     max_bet = get('MAXIMUM_BET')
     if max_bet <= 0 or max_bet < min_bet:
-        Utilities.error(
+        util.error(
             'MAXIMUM BET: (%d) Maximum amount to bet must be positive '
             'number no less than minimum bet amount (%d)' %
             (max_bet, min_bet))
 
-    if Utilities.numErrors > 0:
-        Utilities.fatalError(
+    if util.numErrors > 0:
+        util.fatalError(
             'Fatal semantic error in configuration options, exiting now')
 
 def checkRatio(category, flagname, allowImproper=True):
@@ -174,19 +175,19 @@ def checkRatio(category, flagname, allowImproper=True):
     try:
         ratio = float(value)
         if ratio < 0:
-            Utilities.error('%s: (%s) Ratio must be positive' %
+            util.error('%s: (%s) Ratio must be positive' %
                             (flagname, ratio))
     except ValueError:
         match = re.match('\+?([1-9][0-9]*)/([1-9][0-9]*)', value)
         if match:
             ratio = float(int(match.group(1))/int(match.group(2)))
         else:
-            Utilities.error(
+            util.error(
                 '%s: (%s) Ratio must be either a decimal or fraction' %
                 (flagname, value) )
     if ratio:
         if not allowImproper and ratio > 1.0:
-            Utilities.error(
+            util.error(
                 '%s: (%s) Ratio must be between 0 and 1, inclusive' %
                 (flagname, ratio))
         else:

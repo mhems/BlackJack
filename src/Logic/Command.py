@@ -5,7 +5,7 @@
 ####################
 
 from abc import ABCMeta, abstractmethod
-from src.Utilities.Utilities import Utilities
+from src.Utilities.Utilities import Enum
 
 class UnavailableCommandError(Exception):
     """Exception signifying unavailable command attempted to execute"""
@@ -20,11 +20,11 @@ class UnavailableCommandError(Exception):
 class Command(metaclass=ABCMeta):
     """Base class for Blackjack commands"""
 
-    HIT_ENUM       = Utilities.createEnum()
-    STAND_ENUM     = Utilities.createEnum()
-    DOUBLE_ENUM    = Utilities.createEnum()
-    SPLIT_ENUM     = Utilities.createEnum()
-    SURRENDER_ENUM = Utilities.createEnum()
+    HIT_ENUM       = Enum()
+    STAND_ENUM     = Enum()
+    DOUBLE_ENUM    = Enum()
+    SPLIT_ENUM     = Enum()
+    SURRENDER_ENUM = Enum()
 
     __command_string_map = {
         # Order duplicate entries by descending string length
