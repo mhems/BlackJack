@@ -19,7 +19,7 @@ import src.Utilities.Configuration as config
 
 class testDoubleCommand(unittest.TestCase):
     def setUp(self):
-        config.loadConfiguration()
+        pass
 
     def tearDown(self):
         pass
@@ -64,7 +64,7 @@ class testDoubleCommand(unittest.TestCase):
         slot.clearHands()
         slot.addCards(Card(2,'H'), Card(4, 'C'))
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should not be availabe if total not in allowed totals')
-        config.loadConfiguration()
+
         slot.clearHands()
         slot.addCards(Card(5,'H'), Card(4, 'C'))
         self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be available when totals match')
@@ -76,6 +76,7 @@ class testDoubleCommand(unittest.TestCase):
         splitCmd.perform(slot)
         config.loadConfiguration('tests/Logic/test_files/DAS_false.ini')
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailbe:Double should not be available if player split and DAS is disallowed')
+
         config.loadConfiguration()
         self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be available after split if DAS is allowed')
         slot.clearHands()

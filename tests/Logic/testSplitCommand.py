@@ -20,7 +20,7 @@ import src.Utilities.Configuration as config
 
 class testSplitCommand(unittest.TestCase):
     def setUp(self):
-        config.loadConfiguration()
+        pass
 
     def tearDown(self):
         pass
@@ -75,7 +75,7 @@ class testSplitCommand(unittest.TestCase):
         config.loadConfiguration('tests/Logic/test_files/split_by_value.ini')
         slot.addCards(Card(10,'C'), Card('K','C'))
         self.assertTrue(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should be availabe to non rank-paired hand when split by value is allowed')
-        config.loadConfiguration()
+
         hitCmd.perform(slot)
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be availabe to hand beyond first action')
         config.loadConfiguration('tests/Logic/test_files/resplit_upto.ini')
@@ -83,7 +83,7 @@ class testSplitCommand(unittest.TestCase):
         slot.promptBet()
         slot.addCards(Card(5,'C'), Card(5,'C'))
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be availabe if splitting is disallowed')
-        config.loadConfiguration()
+
         player.receive_payment(config.get('MINIMUM_BET') *
                                (2 + 2 * config.get('SPLIT_RATIO')))
         slot.promptBet()

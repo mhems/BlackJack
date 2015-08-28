@@ -17,7 +17,6 @@ import src.Utilities.Configuration as config
 
 class testSurrenderCommand(unittest.TestCase):
     def setUp(self):
-        config.loadConfiguration()
         self.surrenderCmd = SurrenderCommand()
         self.slot = TableSlot()
 
@@ -36,6 +35,7 @@ class testSurrenderCommand(unittest.TestCase):
         self.slot.addCards(Card('A','H'), Card(6,'D'))
         config.loadConfiguration('tests/Logic/test_files/no_surrender.ini')
         self.assertFalse(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should not be available if disallowed')
+
         config.loadConfiguration()
         self.assertTrue(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should be available if allowed')
 

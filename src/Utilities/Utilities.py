@@ -32,6 +32,10 @@ class Enum:
 
 numErrors = 0
 
+def warn(msg):
+    stderr.write(msg)
+    stderr.write('\n')
+
 def error(msg):
     stderr.write(msg)
     stderr.write('\n')

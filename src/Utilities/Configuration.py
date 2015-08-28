@@ -22,89 +22,17 @@ class InvalidOptionError(KeyError):
 
 """Provides handling and access of configuration files"""
 
-UNRESTRICTED = Enum()
-
-configuration = {
-    'general' : {
-        # > 0
-        'BLACKJACK_VALUE'                : 21,
-        # > 0
-        'NUM_DECKS'                      : 6,
-        # True | False
-        'PUSH_ON_BLACKJACK'              : True,
-        # > 0 => index from shoe front
-        # < 0 => index from shoe rear
-        'CUT_INDEX'                      : -26,
-        # > 0 and < number cards in shoe
-        'NUM_CARDS_BURN_ON_SHUFFLE'      : 1
-    },
-    'payout_ratio' : {
-        # all ratios must be positive floats or fractions
-        'PAYOUT_RATIO'                   : 1,
-        'BLACKJACK_PAYOUT_RATIO'         : 1.5,
-        'INSURANCE_PAYOUT_RATIO'         : 2
-    },
-    'dealer' : {
-        # True | False
-        'DEALER_HITS_ON_SOFT_17'         : True,
-        # True | False
-        'DEALER_CHECKS_FOR_BLACKJACK'    : True
-    },
-    'double' : {
-        # True | False
-        'DOUBLE_AFTER_SPLIT_ALLOWED'     : True,
-        # must be * or comma separated list of card ranks
-        'TOTALS_ALLOWED_FOR_DOUBLE'      : '*',
-        # must be positive float or fraction
-        'DOUBLE_RATIO'                   : 1
-    },
-    'split' : {
-        # True | False
-        'SPLIT_BY_VALUE'                 : True,
-        # > 0 or * to denote unlimited
-        'RESPLIT_UP_TO'                  : 4,
-        # True | False
-        'RESPLIT_ACES'                   : True,
-        # True | False
-        'HIT_SPLIT_ACES'                 : False,
-        # must be positive float or fraction
-        'SPLIT_RATIO'                    : 1
-    },
-    'surrender' : {
-        # True | False
-        'LATE_SURRENDER'                 : True,
-        # must be float or fraction between 0 and 1 inclusive
-        'LATE_SURRENDER_RATIO'           : 0.5,
-        # True | False
-        'EARLY_SURRENDER'                : False
-    },
-    'insurance' : {
-        # True | False
-        'OFFER_INSURANCE'                : True,
-        # must be float or fraction between 0 and 1 inclusive
-        'INSURANCE_RATIO'                : 0.5
-    },
-    'game' : {
-        # > 0
-        'MINIMUM_BET'                    : 15,
-        # >= MINIMUM_BET
-        'MAXIMUM_BET'                    : 10000
-    },
-    'preferences' : {
-        # True | False
-        'WINNINGS_REMAIN_IN_POT'         : False
-    }
-}
+UNRESTRICTED  = Enum()
+configuration = {}
+default_filename  = 'src/Utilities/default_config.ini'
 
 def loadConfiguration(filename=None):
     """Loads configuration data"""
-    defaults_filename = 'src/Utilities/config.ini'
-    conf = ConfigParser(defaults=configuration)
-    conf.read(defaults_filename)
+    conf = ConfigParser()
+    conf.read(default_filename)
     if filename is not None:
         if conf.read(filename) == 0:
-            # warn proceeding with defaults
-            pass
+            util.warn('Unable to read file %s, proceeding with defaults' % filename)
 
     assign(conf)
     # override any options with present command line flags
@@ -211,6 +139,8 @@ def assign(conf):
         """Returns function that uses func to retrieve key"""
         def assign(category, key):
             """Assigns key in category to configuration"""
+            if category not in configuration:
+                configuration[category] = {}
             configuration[category][key] = func(category, key)
         return assign
 
@@ -247,36 +177,24 @@ def assign(conf):
 
 def get(key):
     """Retrieve value associated with key"""
-    def __get(d, key):
-        """Recursively search for key"""
-        for k in d.keys():
-            if isinstance(d[k], dict):
-                res = __get(d[k], key)
-                if res is not None:
-                    return res
-            elif k == key:
-                return d[key]
-    res = __get(configuration, key)
-    if res is not None:
-        return res
+    for category in configuration.keys():
+        if key in configuration[category]:
+            return configuration[category][key]
     raise InvalidOptionError(key)
 
 def representation():
     """Build string representation of all associations"""
-    def __repr(d):
-        """Recursively traverse dictionary"""
-        s = ""
-        for k in d.keys():
-            if isinstance(d[k], dict):
-                s += '[%s]\n%s\n' % (k, __repr(d[k]))
-            else:
-                s += '%s : %s\n' % (k, d[k])
-        return s
-    return __repr(configuration)
+    s = ""
+    for category in configuration.keys():
+        s += '[%s]\n' % category
+        s += '\n'.join('%s : %s' % (key, configuration[category][key]) for key in configuration[category])
+        s += '\n'
+    return s
 
 def writeConfigFile(filename):
     """Outputs configuration to file"""
     with open(filename, 'w') as f:
         f.write(representation())
 
+# Load eagerly on first import
 loadConfiguration()
