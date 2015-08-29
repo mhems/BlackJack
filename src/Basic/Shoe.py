@@ -9,6 +9,8 @@ from random import Random
 
 from src.Basic.Card import Card
 import src.Utilities.Configuration as config
+from src.Utilities.Utilities import LINE_END
+from src.Utilities.Logger    import Logger
 
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""
@@ -31,6 +33,8 @@ class Shoe:
             self.cutIndex = cutIndex
         for _ in range(n):
             self.__cards.extend(Card.makeDeck())
+        self.all_log = Logger('log/all_cards.log')
+        self.vis_log = Logger('log/vis_cards.log')
 
     @property
     def numCardsRemainingToBeDealt(self):
@@ -68,8 +72,12 @@ class Shoe:
         """Remove and return one card from beginning of shoe"""
         if self.isExhausted:
             self.shuffle()
+            self.all_log.log(LINE_END)
+            self.vis_log.log(LINE_END)
         c = self.__cards[self.__index]
+        self.all_log.log(str(c.rank) + ' ')
         if visible:
+            self.vis_log.log(str(c.rank) + ' ')
             self.notifyObservers(c)
         self.__index += 1
         return c
