@@ -4,8 +4,7 @@
 #
 ####################
 
-from sys import stderr
-from sys import exit
+from sys import (platform, stderr, exit)
 
 class Enum:
     """Provides mechanism for 'enum' object"""
@@ -30,20 +29,21 @@ class Enum:
 
 """Provides general utilities such as centralized error handling"""
 
+LINE_END = '\r\n' if 'win' in platform.lower() else '\n'
 numErrors = 0
 
 def warn(msg):
     stderr.write(msg)
-    stderr.write('\n')
+    stderr.write(LINE_END)
 
 def error(msg):
     stderr.write(msg)
-    stderr.write('\n')
+    stderr.write(LINE_END)
     Utilities.numErrors += 1
 
 def fatalError(msg):
     stderr.write(msg)
-    stderr.write('\n')
+    stderr.write(LINE_END)
     exit(1)
 
 def printBanner(msg):

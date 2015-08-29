@@ -9,6 +9,7 @@ import re
 import src.Utilities.Configuration as config
 from src.Basic.Card              import Card
 from src.Logic.Command           import Command
+from src.Utilities.Utilities     import LINE_END
 
 # Actions:
 # H  - Hit
@@ -64,15 +65,19 @@ class StrategyChart:
                 """Function to sort card rank characters"""
                 return value if value != 'A' else Card.HARD_ACE_VALUE
 
-            result = '#    %s\n' % ' '.join(( str(e).rjust(2, ' ')
-                                              for e in Card.values))
+            fmt = '#    %s' + LINE_END
+            result = fmt % ' '.join(( str(e).rjust(2, ' ')
+                                      for e in Card.values ))
             vals = sorted(set(t[0] for t in self.__chart.keys()),
                           key = sort,
                           reverse = True)
+            fmt = ' %s  %s' + LINE_END
             for value in vals:
-                result += ' %s  %s\n' % (str(value).rjust(2, ' '),
-                    ' '.join(str(self.__chart[(value, up)]).rjust(2, ' ')
-                             for up in Card.values))
+                result += fmt % (str(value).rjust(2, ' '),
+                                 ' '.join(str(
+                                              self.__chart[(value, up)]
+                                             ).rjust(2, ' ')
+                                          for up in Card.values))
             return result
 
     # END CHART CLASS
@@ -157,14 +162,14 @@ class StrategyChart:
     def __repr__(self):
         result = ''
         if len(self.__hard_chart) > 0:
-            result += '> Hard totals\n'
+            result += '> Hard totals' + LINE_END
             result += repr(self.__hard_chart)
         if len(self.__soft_chart) > 0:
-            result += '\n\n'
-            result += '> Soft totals\n'
+            result += LINE_END * 2
+            result += '> Soft totals' + LINE_END
             result += repr(self.__soft_chart)
         if len(self.__pair_chart) > 0:
-            result += '\n\n'
-            result += '> Pairs\n'
+            result += LINE_END * 2
+            result += '> Pairs' + LINE_END
             result += repr(self.__pair_chart)
         return result

@@ -6,6 +6,7 @@
 
 from src.Logic.Command        import Command
 from src.Logic.DecisionPolicy import DecisionPolicy
+from src.Utilities.Utilities  import LINE_END
 
 class HumanInputPolicy(DecisionPolicy):
     """Class to prompt human for decision"""
@@ -15,7 +16,7 @@ class HumanInputPolicy(DecisionPolicy):
 
         def prompt(availableCommands):
             """Prompts for response"""
-            response = input( 'How will you act? Options = %s\n' %
+            response = input( ('How will you act? Options = %s' + LINE_END) %
                               ( ', '.join( ( Command.getCommandStringFromEnum(e)
                                              for e in availableCommands ) ) ) )
             return Command.getCommandEnumFromString(response), response

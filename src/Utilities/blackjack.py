@@ -18,7 +18,8 @@ from src.Logic.FeedbackDecisionPolicy    import FeedbackDecisionPolicy
 from src.Logic.HumanInputInsurancePolicy import HumanInputInsurancePolicy
 from src.Logic.DeclineInsurancePolicy    import DeclineInsurancePolicy
 from src.Logic.MinBettingStrategy import MinBettingStrategy
-from src.Utilities.Configuration import loadConfiguration
+from src.Utilities.Configuration  import loadConfiguration
+from src.Utilities.Utilities      import LINE_END
 
 """Drives program execution"""
 
@@ -63,11 +64,11 @@ if __name__ == '__main__':
                      MinBettingStrategy())
     player2.receive_payment(100)
     table  = Table()
-    #table.register_player(player)
+    # table.register_player(player)
     table.register_player(player2)
     try:
         while True:
             table.play()
-            print('\n')
+            print(LINE_END)
     except InsufficientFundsError as e:
         print(e)

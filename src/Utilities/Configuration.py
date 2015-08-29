@@ -186,9 +186,10 @@ def representation():
     """Build string representation of all associations"""
     s = ""
     for category in configuration.keys():
-        s += '[%s]\n' % category
-        s += '\n'.join('%s : %s' % (key, configuration[category][key]) for key in configuration[category])
-        s += '\n'
+        s += '[%s]' % category
+        s += LINE_END
+        s += LINE_END.join('%s : %s' % (key, configuration[category][key]) for key in configuration[category])
+        s += LINE_END
     return s
 
 def writeConfigFile(filename):
