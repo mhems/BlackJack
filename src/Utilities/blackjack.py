@@ -45,7 +45,10 @@ if __name__ == '__main__':
 
     nspace = parseCommandLine()
 
-    loadConfiguration(nspace.config_file_name)
+    try:
+        loadConfiguration(nspace.config_file_name)
+    except SemanticConfigError as e:
+        print(e)
 
     hip1   = HumanInputPolicy()
     strat1 = BasicStrategyPolicy('tests/Logic/test_files/three_chart.txt')

@@ -11,6 +11,18 @@ from src.Basic.Card          import Card
 from src.Utilities.Utilities import Enum
 import src.Utilities.Utilities as util
 
+class SemanticConfigError(RuntimeError):
+    """Represents error for configuration value with improper semantic value"""
+
+    def __init__(self, option, msg):
+        self.option = option
+        self.msg    = msg
+
+    def __str__(self):
+        return 'Expected option %s %s, received %s' % (self.option,
+                                                       self.msg,
+                                                       str(get(self.option)))
+
 class InvalidOptionError(KeyError):
     """Represents error for unknown configuration option"""
 
@@ -32,68 +44,54 @@ def loadConfiguration(filename=None):
     conf.read(default_filename)
     if filename is not None:
         if len(conf.read(filename)) == 0:
-            util.warn('Unable to read file %s, proceeding with defaults' % filename)
-
-    assign(conf)
+            util.warn(
+                'Unable to read file %s, proceeding with defaults' % filename)
 
     # check semantics
     blackjack = get('BLACKJACK_VALUE')
-    if blackjack < 0:
-        util.error(
-            'BLACKJACK_VALUE: (%d) Expected number to be positive' %
-            blackjack)
+    if not isinstance(blackjack, int) or blackjack < 0:
+        raise SemanticConfigError('BLACKJACK_VALUE', 'to be positive integer')
     num_decks = get('NUM_DECKS')
-    if num_decks < 1:
-        util.error(
-            'NUM_DECKS: (%d) Expected number to be at least 1' %
-            num_decks)
+    if not isinstance(blackjack, int) or num_decks < 1:
+        raise SemanticConfigError('NUM_DECKS', 'to be an integer greater than 0')
     num_cards = ( get('NUM_DECKS') *
                   Card.NUM_CARDS_PER_DECK )
-    cut_index = get('CUT_INDEX')
-    if abs(cut_index) > num_cards:
-        util.error(
-            'CUT_INDEX: (%d) Cut index cannot be greater than number of '
-            'cards in shoe (%d)' % (cut_index, num_cards))
+    if abs(get('CUT_INDEX')) > num_cards:
+        raise SemanticConfigError('CUT_INDEX',
+                                  'to be at most the number of cards in shoe'
+                                  ' (%d)' % num_cards)
     num_burn = get('NUM_CARDS_BURN_ON_SHUFFLE')
-    if num_burn < 0:
-        util.error(
-            'NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after '
-            'shuffle must be positive' % num_burn)
+    if not isinstance(num_burn, int) or num_burn < 0:
+        raise SemanticConfigError('NUM_CARDS_BURN_ON_SHUFFLE',
+                                  'to be positive integer')
     if num_burn > num_cards:
-        util.error(
-            'NUM_CARDS_BURN_ON_SHUFFLE: (%d) Number of cards to burn after '
-            'shuffle must be at most the number of cards in the deck (%d)' %
-            (num_burn, num_cards))
+        raise SemanticConfigError('NUM_CARDS_BURN_ON_SHUFFLE',
+                                  'to be at most the number of cards in shoe'
+                                  ' (%d)' % num_cards)
     checkRatio('payout_ratio', 'PAYOUT_RATIO')
     checkRatio('payout_ratio', 'BLACKJACK_PAYOUT_RATIO')
     checkRatio('payout_ratio', 'INSURANCE_PAYOUT_RATIO')
-    checkCardRange('double', 'TOTALS_ALLOWED_FOR_DOUBLE')
-    checkRatio('double', 'DOUBLE_RATIO')
+    checkCardRange('double',   'TOTALS_ALLOWED_FOR_DOUBLE')
+    checkRatio('double',       'DOUBLE_RATIO')
     resplit_num = get('RESPLIT_UP_TO')
     if resplit_num == '*':
         configuration['split']['RESPLIT_UP_TO'] = UNRESTRICTED
     elif not re.match('0|[1-9][0-9]*', str(resplit_num)):
-        util.error(
-            'RESPLIT_UP_TO: (%d) Number of times to resplit must be '
-            'non-negative integer' % resplit_num)
-    checkRatio('split', 'SPLIT_RATIO')
+        raise SemanticConfigError('RESPLIT_UP_TO', 'to be non-negative integer')
+    checkRatio('split',     'SPLIT_RATIO')
     checkRatio('surrender', 'LATE_SURRENDER_RATIO', False)
     checkRatio('insurance', 'INSURANCE_RATIO', False)
     min_bet = get('MINIMUM_BET')
-    if min_bet <= 0:
-        util.error(
-            'MINIMUM BET: (%d) Minimum amount to bet must be positive' %
-            min_bet);
+    if not isinstance(min_bet, int) or min_bet <= 0:
+        raise SemanticConfigError('MINIMUM_BET', 'to be positive integer')
     max_bet = get('MAXIMUM_BET')
-    if max_bet <= 0 or max_bet < min_bet:
-        util.error(
-            'MAXIMUM BET: (%d) Maximum amount to bet must be positive '
-            'number no less than minimum bet amount (%d)' %
-            (max_bet, min_bet))
+    if not isinstance(max_bet, int) or max_bet <= 0 or max_bet < min_bet:
+        raise SemanticConfigError('MAXIMUM_BET',
+                                  'to be positive integer no less than minimum'
+                                  ' bet (%d)' % min_bet)
 
-    if util.numErrors > 0:
-        util.fatalError(
-            'Fatal semantic error in configuration options, exiting now')
+    # commit if no semantic errors
+    assign(conf)
 
 def checkRatio(category, flagname, allowImproper=True):
     """Semantic check of options with ratio values"""
@@ -102,21 +100,18 @@ def checkRatio(category, flagname, allowImproper=True):
     try:
         ratio = float(value)
         if ratio < 0:
-            util.error('%s: (%s) Ratio must be positive' %
-                            (flagname, ratio))
+            raise SemanticConfigError(flagname, 'to be positive')
     except ValueError:
         match = re.match('\+?([1-9][0-9]*)/([1-9][0-9]*)', value)
         if match:
             ratio = float(int(match.group(1))/int(match.group(2)))
         else:
-            util.error(
-                '%s: (%s) Ratio must be either a decimal or fraction' %
-                (flagname, value) )
+            raise SemanticConfigError(flagname,
+                                      'to be either a decimal or a fraction')
     if ratio:
         if not allowImproper and ratio > 1.0:
-            util.error(
-                '%s: (%s) Ratio must be between 0 and 1, inclusive' %
-                (flagname, ratio))
+            raise SemanticConfigError(flagname,
+                                      'to be ratio between 0 and 1 inclusive')
         else:
             configuration[category][flagname] = ratio
 
@@ -126,7 +121,7 @@ def checkCardRange(category, flagname):
     if value == '*':
         configuration[category][flagname] = UNRESTRICTED
     else:
-        ls = list(set(re.findall('10|J|Q|K|A|[2-9]', value, re.I)))
+        ls = list(set(re.findall('10|J(?:ack)|Q(?:ueen)|K(?:ing)|A(?:ce)|[2-9]', value, re.I)))
         for idx, elem in enumerate(ls):
             if re.match('[1-9][0-9]*', elem):
                 ls[idx] = int(elem)
