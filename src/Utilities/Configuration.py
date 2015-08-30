@@ -40,7 +40,7 @@ UNRESTRICTED  = Enum()
 configuration = {}
 default_filename  = 'src/Utilities/default_config.ini'
 
-def loadConfiguration(filename=None):
+def loadConfiguration(filename):
     """Loads configuration data"""
 
     def assignFromFunc(func):
@@ -49,13 +49,14 @@ def loadConfiguration(filename=None):
             """Assign option key under category into configuration
                If check specified, perform check before assignment and
                raise SemanticConfigError with err message if check fails"""
-            result = func(category, key)
-            if result is not None:
-                if ( check is None or
-                     check is not None and check(result) ):
+            if conf.has_option(category, key):
+                result = func(category, key)
+                if result is not None:
+                    if ( check is None or
+                         check is not None and check(result) ):
                         configuration[category][key] = result
-                else:
-                    raise SemanticConfigError(key, err)
+                    else:
+                        raise SemanticConfigError(key, err)
         return assign
     posInt    = lambda x : isinstance(x, int) and x >  0
     posIntErr = 'to be positive integer'
@@ -63,14 +64,13 @@ def loadConfiguration(filename=None):
     nonNegIntErr = 'to be an integer greater than 0'
 
     conf = ConfigParser()
-    conf.read(default_filename)
-    if filename is not None:
-        if len(conf.read(filename)) == 0:
-            util.warn(
-                'Unable to read file %s, proceeding with defaults' % filename)
+    if len(conf.read(filename)) == 0:
+        util.warn('Unable to read file %s, proceeding with defaults' % filename)
+        return
 
     for s in conf.sections():
-        configuration[s] = {}
+        if s not in configuration:
+            configuration[s] = {}
 
     assignInt  = assignFromFunc(conf.getint)
     assignBool = assignFromFunc(conf.getboolean)
@@ -102,7 +102,9 @@ def loadConfiguration(filename=None):
     checkRatio(conf, 'double', 'DOUBLE_RATIO')
 
     assignBool('split', 'SPLIT_BY_VALUE')
-    resplit_num = conf.getint('split', 'RESPLIT_UP_TO')
+    resplit_num = None
+    if conf.has_section('split') and conf.has_option('split', 'RESPLIT_UP_TO'):
+        resplit_num = conf.getint('split', 'RESPLIT_UP_TO')
     if resplit_num is not None:
         if resplit_num == '*':
             configuration['split']['RESPLIT_UP_TO'] = UNRESTRICTED
@@ -130,8 +132,14 @@ def loadConfiguration(filename=None):
 
     assignBool('preferences', 'WINNINGS_REMAIN_IN_POT')
 
+def loadDefaultConfiguration():
+    """Loads default configuration"""
+    loadConfiguration(default_filename)
+
 def checkRatio(conf, category, flagname, allowImproper=True):
     """Semantic check of options with ratio values"""
+    if not conf.has_option(category, flagname):
+        return None
     value = conf.get(category, flagname)
     ratio = None
     if value is None:
@@ -156,6 +164,8 @@ def checkRatio(conf, category, flagname, allowImproper=True):
 
 def checkCardRange(conf, category, flagname):
     """Semantic check of options with range values"""
+    if not conf.has_option(category, flagname):
+        return None
     value = conf.get(category, flagname)
     if value is None:
         return None
@@ -182,10 +192,10 @@ def representation():
     s = ""
     for category in configuration.keys():
         s += '[%s]' % category
-        s += LINE_END
-        s += LINE_END.join('%s : %s' % ( (key, configuration[category][key])
-                                         for key in configuration[category] ) )
-        s += LINE_END
+        s += util.LINE_END
+        s += util.LINE_END.join( ('%s : %s' % (key, configuration[category][key]))
+                                 for key in configuration[category] )
+        s += util.LINE_END
     return s
 
 def writeConfigFile(filename):
@@ -194,4 +204,4 @@ def writeConfigFile(filename):
         f.write(representation())
 
 # Load eagerly on first import
-loadConfiguration()
+loadDefaultConfiguration()

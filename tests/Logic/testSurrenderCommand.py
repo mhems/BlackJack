@@ -36,7 +36,7 @@ class testSurrenderCommand(unittest.TestCase):
         config.loadConfiguration('tests/Logic/test_files/no_surrender.ini')
         self.assertFalse(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should not be available if disallowed')
 
-        config.loadConfiguration()
+        config.loadDefaultConfiguration()
         self.assertTrue(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should be available if allowed')
 
         HitCommand(Shoe(2, lambda x:x)).perform(self.slot)

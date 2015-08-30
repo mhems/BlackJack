@@ -97,7 +97,7 @@ class testSplitCommand(unittest.TestCase):
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available if hand is aces from split and resplitting aces is disallowed')
         player.receive_payment(config.get('MINIMUM_BET') *
                                (2 + config.get('SPLIT_RATIO')))
-        config.loadConfiguration()
+        config.loadDefaultConfiguration()
         self.assertTrue(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should be available on split aces if resplit aces allowed')
 
 if __name__ == '__main__':
