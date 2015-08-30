@@ -31,11 +31,10 @@ def loadConfiguration(filename=None):
     conf = ConfigParser()
     conf.read(default_filename)
     if filename is not None:
-        if conf.read(filename) == 0:
+        if len(conf.read(filename)) == 0:
             util.warn('Unable to read file %s, proceeding with defaults' % filename)
 
     assign(conf)
-    # override any options with present command line flags
 
     # check semantics
     blackjack = get('BLACKJACK_VALUE')

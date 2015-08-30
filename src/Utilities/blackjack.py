@@ -29,7 +29,6 @@ def parseCommandLine():
     parser = argparse.ArgumentParser(description='Blackjack Game Suit')
     parser.add_argument('-cfg', '--config_file',
                         dest    = 'config_file_name',
-                        default = 'config.ini',
                         metavar = 'CONFIG_FILE',
                         help    = 'the location of the configuration file')
     return parser.parse_args()
@@ -40,18 +39,15 @@ def handler(signum, frame):
     sys.exit(0)
 
 if __name__ == '__main__':
-    # ugly hack to ensure imports work
-    abspath = os.path.abspath(__file__)
-    # os.environ['PYTHONPATH'] += ':' + abspath[:len(abspath)-len(__file__)]
-
+    # establish interrupt handlers
     signal.signal(signal.SIGTERM, handler)
     signal.signal(signal.SIGINT,  handler)
 
     nspace = parseCommandLine()
 
-    loadConfiguration()
+    loadConfiguration(nspace.config_file_name)
 
-    hip1 = HumanInputPolicy()
+    hip1   = HumanInputPolicy()
     strat1 = BasicStrategyPolicy('tests/Logic/test_files/three_chart.txt')
     player = Player("Matt",
                     FeedbackDecisionPolicy(hip1, strat1),
@@ -63,7 +59,7 @@ if __name__ == '__main__':
                      DeclineInsurancePolicy(),
                      MinBettingStrategy())
     player2.receive_payment(100)
-    table  = Table()
+    table = Table()
     # table.register_player(player)
     table.register_player(player2)
     try:
