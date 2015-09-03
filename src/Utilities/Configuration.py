@@ -4,6 +4,7 @@
 #
 ####################
 
+from collections  import OrderedDict
 from configparser import ConfigParser
 import re
 
@@ -37,7 +38,7 @@ class InvalidOptionError(KeyError):
 # To add new configuration option, add assignment in loadConfiguration
 
 UNRESTRICTED  = Enum()
-configuration = {}
+configuration = OrderedDict()
 default_filename  = 'src/Utilities/default_config.ini'
 
 def loadConfiguration(filename):
@@ -50,7 +51,17 @@ def loadConfiguration(filename):
                If check specified, perform check before assignment and
                raise SemanticConfigError with err message if check fails"""
             if conf.has_option(category, key):
+                #                try:
                 result = func(category, key)
+                #                except ValueError as e:
+                #                    # attempt to pull type from function name
+                #                    typ = func.__name__
+                #                    if len(typ) > 2 and 'get' == typ[:3]:
+                #                        typ = typ[3:]
+                #                    else:
+                #                        typ = None
+                #                    msg = 'type ' + typ if typ else ''
+                #                    raise SemanticConfigError(key, msg)
                 if result is not None:
                     if ( check is None or
                          check is not None and check(result) ):
@@ -70,7 +81,7 @@ def loadConfiguration(filename):
 
     for s in conf.sections():
         if s not in configuration:
-            configuration[s] = {}
+            configuration[s] = OrderedDict()
 
     assignInt  = assignFromFunc(conf.getint)
     assignBool = assignFromFunc(conf.getboolean)
@@ -149,7 +160,7 @@ def checkRatio(conf, category, flagname, allowImproper=True):
         if ratio < 0:
             raise SemanticConfigError(flagname, 'to be positive')
     except ValueError:
-        match = re.match('\+?([1-9][0-9]*)/([1-9][0-9]*)', value)
+        match = re.match('^\+?([1-9][0-9]*)/([1-9][0-9]*)$', value)
         if match:
             ratio = float(int(match.group(1))/int(match.group(2)))
         else:
@@ -172,11 +183,10 @@ def checkCardRange(conf, category, flagname):
     elif value == '*':
         configuration[category][flagname] = UNRESTRICTED
     else:
-        ls = list(set(re.findall('10|J(?:ack)|Q(?:ueen)|K(?:ing)|A(?:ce)|[2-9]',
-                                 value,
-                                 re.I)))
+        # refactor to allow only ranks, raise error if anything else found
+        ls = list(set(re.findall(Card.RANK_REGEX, value, re.I)))
         for idx, elem in enumerate(ls):
-            if re.match('[1-9][0-9]*', elem):
+            if re.match('[0-9]+', elem):
                 ls[idx] = int(elem)
         configuration[category][flagname] = ls
 
