@@ -28,6 +28,7 @@ def parseCommandLine():
     """Return True upon success"""
     parser = argparse.ArgumentParser(description='Blackjack Game Suit')
     parser.add_argument('-cfg', '--config_file',
+                        default = 'src/Utilities/default_config.ini',
                         dest    = 'config_file_name',
                         metavar = 'CONFIG_FILE',
                         help    = 'the location of the configuration file')
