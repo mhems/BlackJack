@@ -8,6 +8,7 @@
 
 
 MAINTENANCE
+* Migrate hard-coded embedded output to view and separate model from it
 * Logging
 * Count Betting Policy
   - Kelly criterion
