@@ -15,7 +15,7 @@ class UnavailableCommandError(Exception):
         self.slot    = slot
 
     def __str__(self):
-        return '%s is unavailable to %s' % (str(self.command), slot.playerName)
+        return '%s is unavailable to %s' % (str(self.command), self.slot.playerName)
 
 class Command(metaclass=ABCMeta):
     """Base class for Blackjack commands"""
