@@ -55,14 +55,14 @@ if __name__ == '__main__':
     strat1 = BasicStrategyPolicy('tests/Logic/test_files/three_chart.txt')
     player = Player("Matt",
                     FeedbackDecisionPolicy(hip1, strat1),
-                    HumanInputInsurancePolicy(),
+                    DeclineInsurancePolicy(),
                     MinBettingStrategy())
-    player.receive_payment(100)
+    player.receive_payment(1000)
     player2 = Player("Billy Batch",
                      strat1,
                      DeclineInsurancePolicy(),
                      MinBettingStrategy())
-    player2.receive_payment(100)
+    player2.receive_payment(1000)
     table = Table()
     # table.register_player(player)
     table.register_player(player2)

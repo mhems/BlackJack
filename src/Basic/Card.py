@@ -26,6 +26,12 @@ class Card:
     __charToNameDict['H'] = 'Hearts'
     __charToNameDict['D'] = 'Diamonds'
     __charToNameDict['C'] = 'Clubs'
+    suits_strs = {
+        'S' : '♠',
+        'H' : '♥',
+        'D' : '♦',
+        'C' : '♣'
+    }
 
     @staticmethod
     def makeDeck():
@@ -85,7 +91,7 @@ class Card:
 
     def __str__(self):
         """Returns canonical representation of card"""
-        return str(self.rank) + ' of ' + self.suit
+        return str(self.rank) + Card.suits_strs[self.suit[0]]
 
     def __repr__(self):
         """Returns canonical representation of card"""
