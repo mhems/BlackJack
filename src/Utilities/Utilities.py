@@ -27,6 +27,9 @@ class Enum:
     def __hash__(self):
         return hash(self.value)
 
+    def __str__(self):
+        return str(self.value)
+
 """Provides general utilities such as centralized error handling"""
 
 LINE_END = '\r\n' if 'win' in platform.lower() else '\n'

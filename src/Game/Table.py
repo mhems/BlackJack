@@ -182,7 +182,7 @@ class Table:
                 actions = [key for (key, cmd) in self.__commands.items()
                            if cmd.isAvailable(slot)]
                 response = slot.promptAction(upcard, actions)
-                if response == Command.SURRENDER_ENUM:
+                if response == 'Su':
                     self.__bank.deposit(
                         slot.takePot(config.get('LATE_SURRENDER_RATIO')) )
                 done = self.__commands[response].execute(slot)

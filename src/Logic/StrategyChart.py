@@ -130,8 +130,7 @@ class StrategyChart:
         if isPair and self.__pair_chart:
             arg = 'A' if player_hand.hasAce else int(value/2)
             advice = self.__pair_chart.access(arg, dealer_up_card)
-            if (advice == Command.SPLIT_ENUM and
-                Command.SPLIT_ENUM not in availableCommands):
+            if advice == 'Sp' and Command.SPLIT_ENUM not in availableCommands:
                 # defer iff split advised but unavailable
                 advice = None
         # check for soft

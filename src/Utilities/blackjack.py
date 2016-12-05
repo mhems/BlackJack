@@ -66,9 +66,12 @@ if __name__ == '__main__':
     table = Table()
     # table.register_player(player)
     table.register_player(player2)
+    nRounds = 0
     try:
         while True:
             table.play()
             print(LINE_END)
+            nRounds += 1
     except InsufficientFundsError as e:
         print(e)
+    print(str(nRounds) + ' rounds played')
