@@ -4,8 +4,6 @@
 #
 ####################
 
-from src.Basic.Shoe import Shoe
-
 class CardCount():
     """Pluggable mechanism for card counting"""
 

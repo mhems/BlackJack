@@ -51,6 +51,10 @@ class Table:
         }
 
     @property
+    def shoe(self):
+        return self.__shoe
+
+    @property
     def dealer(self):
         """Returns table dealer"""
         return self.__dealer_slot.player

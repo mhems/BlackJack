@@ -15,6 +15,7 @@ class FeedbackDecisionPolicy(DecisionPolicy):
         """Initializes members"""
         self.__input_policy    = input_policy
         self.__strategy_policy = strategy_policy
+        self.num_wrong = 0
 
     def decide(self, hand, upcard, availableCommands, **kwargs):
         """First corrects player's decision if wrong, then
@@ -28,6 +29,7 @@ class FeedbackDecisionPolicy(DecisionPolicy):
                                                  availableCommands,
                                                  **kwargs)
         if decision != expected and expected in availableCommands:
+            self.num_wrong += 1
             print( 'WRONG: You %s when you should have %s' %
                    ( Command.getPastTenseCommandName(decision),
                      Command.getPastTenseCommandName(expected) ) )
