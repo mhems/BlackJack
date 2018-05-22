@@ -46,8 +46,7 @@ class StrategyChart:
             """Accesses chart entry at the value row and upcard column"""
             if (value, upcard) in self.chart:
                 return self.chart[(value, upcard)]
-            else:
-                return None
+            return None
 
         def __len__(self):
             return len(self.chart)

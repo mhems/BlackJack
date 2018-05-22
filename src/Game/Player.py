@@ -5,16 +5,20 @@ from src.Logic.DecisionPolicy import DealerPolicy
 class Player:
     """Representation of a blackjack player"""
 
-    def __init__(self, name, decision_policy, insurance_policy, betting_policy):
+    def __init__(self,
+                 name,
+                 decision_policy=None,
+                 insurance_policy=None,
+                 betting_policy=None):
         """Initializes Player members"""
-        self.stack            = Bank()
-        self.name             = name
-        self.hands            = []
-        self.hand_index       = 0
-        self.isActive         = False
-        self.decision_policy  = decision_policy
+        self.stack = Bank()
+        self.name = name
+        self.hands = []
+        self.hand_index = 0
+        self.isActive = False
+        self.decision_policy = decision_policy
         self.insurance_policy = insurance_policy
-        self.bet_policy       = betting_policy
+        self.bet_policy = betting_policy
 
     def wager(self, amt):
         """Attempts to wager amt"""
@@ -50,22 +54,8 @@ class Player:
 class Dealer(Player):
     """Representation of blackjack dealer"""
 
-    def __init__(self, name = 'Dealer'):
+    def __init__(self, name='Dealer'):
         """Initializes Dealer members"""
-        self.name   = name
-        self.hand = None
+        super().__init__(name, DealerPolicy())
         self.isActive = True
-        self.policy = DealerPolicy()
         self.stack = HouseBank()
-
-    def act(self, hand, upcard, availableCommands):
-        """Returns command player wishes to execute based on its policy"""
-        return self.policy.decide(hand, upcard, availableCommands)
-
-    def __eq__(self, other):
-        """Returns True iff player is other"""
-        return id(self) == id(other)
-
-    def __str__(self):
-        """Returns string representation of player"""
-        return '%s ($%d)' % (self.name, self.stack.amount)

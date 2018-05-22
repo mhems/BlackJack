@@ -24,23 +24,23 @@ class Table:
     def __init__(self, num_slots = 6):
         """Initializes table members"""
         self.dealer_slot = TableSlot()
-        self.bank        = Bank()
-        self.num_slots   = num_slots
+        self.bank = Bank()
+        self.num_slots = num_slots
         # Index 0 is dealer's leftmost slot
-        self.slots       = [TableSlot() for _ in range(self.num_slots)]
-        self.shoe        = Shoe(config.get('NUM_DECKS'),
-                                fisher_yates_shuffle,
-                                config.get('CUT_INDEX'))
+        self.slots = [TableSlot() for _ in range(self.num_slots)]
+        self.shoe = Shoe(config.get('NUM_DECKS'),
+                         fisher_yates_shuffle,
+                         config.get('CUT_INDEX'))
         self.shoe.shuffle()
         self.shoe.registerObserver(HiLoCount())
         self.dealer_slot.seatPlayer(Dealer())
-        hitCmd   = HitCommand(self.shoe)
+        hitCmd = HitCommand(self.shoe)
         standCmd = StandCommand()
-        self.commands    = {
+        self.commands = {
             Command.HIT_ENUM       : hitCmd,
             Command.STAND_ENUM     : standCmd,
             Command.DOUBLE_ENUM    : DoubleCommand(hitCmd, standCmd),
-            Command.SPLIT_ENUM     : SplitCommand(hitCmd,  standCmd),
+            Command.SPLIT_ENUM     : SplitCommand(hitCmd, standCmd),
             Command.SURRENDER_ENUM : SurrenderCommand()
         }
 
@@ -83,10 +83,12 @@ class Table:
                     slot.seatPlayer(player)
                     return True
             return False
-        elif pos > self.num_slots:
+        if pos > self.num_slots:
             return False
-        else:
-            return self.slots[pos].isOccupied
+        if not self.slots[pos].isOccupied:
+            self.slots[pos].seatPlayer(player)
+            return True
+        return False
 
     def play(self):
         """Plays one round of blackjack"""
@@ -118,8 +120,8 @@ class Table:
                     self.bank.deposit(slot.takePot())
                 if slot.insured:
                     print('You\'re insured though')
-                    self.payout( slot, slot.insurance *
-                                 config.get('INSURANCE_PAYOUT_RATIO') )
+                    self.payout(slot,
+                                slot.insurance * config.get('INSURANCE_PAYOUT_RATIO'))
                 slot.settled = True
         else:
             for slot in self.active_slots:
@@ -127,8 +129,8 @@ class Table:
                 self.bank.deposit(slot.takeInsurance())
                 if slot.hand.isNaturalBlackjack:
                     print('BLACKJACK!')
-                    self.payout( slot, slot.pot *
-                                 config.get('BLACKJACK_PAYOUT_RATIO') )
+                    self.payout( slot,
+                                 slot.pot * config.get('BLACKJACK_PAYOUT_RATIO') )
                     slot.settled = True
                 else:
                     dealerActs = True

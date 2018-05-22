@@ -4,17 +4,17 @@ import os
 import argparse
 
 from src.Game.Player import Player
-from src.Game.Table  import Table
-from src.Game.Bank   import InsufficientFundsError
-from src.Logic.DecisionPolicy          import HumanInputPolicy
-from src.Logic.DecisionPolicy            import BasicStrategyPolicy
-from src.Logic.DecisionPolicy    import FeedbackDecisionPolicy
+from src.Game.Table import Table
+from src.Game.Bank import InsufficientFundsError
+from src.Logic.DecisionPolicy import HumanInputPolicy
+from src.Logic.DecisionPolicy import BasicStrategyPolicy
+from src.Logic.DecisionPolicy import FeedbackDecisionPolicy
 from src.Logic.InsurancePolicy import HumanInputInsurancePolicy
-from src.Logic.InsurancePolicy    import DeclineInsurancePolicy
+from src.Logic.InsurancePolicy import DeclineInsurancePolicy
 from src.Logic.BettingStrategy import MinBettingStrategy
-from src.Logic.CardCount          import HiLoCount
-from src.Utilities.Configuration  import loadConfiguration
-from src.Utilities.Utilities      import LINE_END
+from src.Logic.CardCount import HiLoCount
+from src.Utilities.Configuration import loadConfiguration
+from src.Utilities.Utilities import LINE_END
 
 """Drives program execution"""
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     except SemanticConfigError as e:
         print(e)
 
-    hip1   = HumanInputPolicy()
+    hip1 = HumanInputPolicy()
     strat1 = BasicStrategyPolicy('tests/Logic/test_files/three_chart.txt')
     strat1 = FeedbackDecisionPolicy(hip1, strat1)
     player = Player("Matt",

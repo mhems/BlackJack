@@ -37,13 +37,9 @@ class Card:
         self.rank = rank if isinstance(rank, int) else rank[0].upper()
         self.suit = suit[0].upper()
         if self.rank not in Card.ranks:
-            raise TypeError(
-                'Rank must be a number 2-10 or J, Q, K, A'
-                ' (Jack, Queen, King, or Ace)')
+            raise TypeError('Rank must be a number 2-10 or J, Q, K, A')
         if self.suit not in Card.suits:
-            raise TypeError(
-                'Suit must be one of S, H, D, C'
-                ' (Spades, Hearts, Diamonds, Clubs)')
+            raise TypeError('Suit must be one of S, H, D, C')
 
     @property
     def rankName(self):
@@ -62,8 +58,7 @@ class Card:
             return Card.HARD_ACE_VALUE
         elif self.isFaceCard:
             return 10
-        else:
-            return self.rank
+        return self.rank
 
     @property
     def isAce(self):
@@ -73,7 +68,7 @@ class Card:
     @property
     def isFaceCard(self):
         """Returns True iff card is a face card"""
-        return self.rank in ['J','Q','K','A']
+        return self.rank in ('J','Q','K','A')
 
     def rankEquivalent(self, other):
         """Returns True iff other has equivalent rank"""

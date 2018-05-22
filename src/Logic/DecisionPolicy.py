@@ -43,7 +43,7 @@ class FeedbackDecisionPolicy(DecisionPolicy):
 
     def __init__(self, input_policy, strategy_policy):
         """Initializes members"""
-        self.input_policy    = input_policy
+        self.input_policy = input_policy
         self.strategy_policy = strategy_policy
         self.num_wrong = 0
 

@@ -1,20 +1,20 @@
 from math import floor
 
-from src.Basic.BlackjackHand     import BlackjackHand
+from src.Basic.BlackjackHand import BlackjackHand
 import src.Utilities.Configuration as config
 
 class TableSlot:
     """Representation of one seat at the table (player, pot, hand)"""
 
     def __init__(self):
-        self.player    = None
-        self.hands     = [BlackjackHand()]
-        self.pots      = [0]
+        self.player = None
+        self.hands = [BlackjackHand()]
+        self.pots = [0]
         self.insurance = 0
-        self.insured   = False
-        self.index       = 0
+        self.insured = False
+        self.index = 0
         self.surrendered = False
-        self.settled     = False
+        self.settled = False
 
     @property
     def hand(self):

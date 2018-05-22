@@ -11,7 +11,7 @@ class SemanticConfigError(RuntimeError):
 
     def __init__(self, option, msg):
         self.option = option
-        self.msg    = msg
+        self.msg = msg
 
     def __str__(self):
         return 'Expected option %s %s, received %s' % (self.option,
@@ -31,7 +31,7 @@ class InvalidOptionError(KeyError):
 
 # To add new configuration option, add assignment in loadConfiguration
 
-UNRESTRICTED  = Enum()
+UNRESTRICTED = Enum()
 configuration = OrderedDict()
 default_filename  = 'src/Utilities/default_config.ini'
 
@@ -63,7 +63,7 @@ def loadConfiguration(filename):
                     else:
                         raise SemanticConfigError(key, err)
         return assign
-    posInt    = lambda x : isinstance(x, int) and x >  0
+    posInt = lambda x : isinstance(x, int) and x >  0
     posIntErr = 'to be positive integer'
     nonNegInt = lambda x : isinstance(x, int) and x >= 0
     nonNegIntErr = 'to be an integer greater than 0'
@@ -77,13 +77,13 @@ def loadConfiguration(filename):
         if s not in configuration:
             configuration[s] = OrderedDict()
 
-    assignInt  = assignFromFunc(conf.getint)
+    assignInt = assignFromFunc(conf.getint)
     assignBool = assignFromFunc(conf.getboolean)
-    assignStr  = assignFromFunc(conf.get)
+    assignStr = assignFromFunc(conf.get)
 
     # check any semantics and assign iff valid
-    assignInt('general', 'BLACKJACK_VALUE', posInt,    posIntErr)
-    assignInt('general', 'NUM_DECKS',       nonNegInt, nonNegIntErr)
+    assignInt('general', 'BLACKJACK_VALUE', posInt, posIntErr)
+    assignInt('general', 'NUM_DECKS', nonNegInt, nonNegIntErr)
     assignBool('general', 'PUSH_ON_BLACKJACK')
     num_cards = get('NUM_DECKS') * Card.NUM_CARDS_PER_DECK
     assignInt('general', 'CUT_INDEX',
@@ -164,8 +164,7 @@ def checkRatio(conf, category, flagname, allowImproper=True):
         if not allowImproper and ratio > 1.0:
             raise SemanticConfigError(flagname,
                                       'to be ratio between 0 and 1 inclusive')
-        else:
-            configuration[category][flagname] = ratio
+        configuration[category][flagname] = ratio
 
 def checkCardRange(conf, category, flagname):
     """Semantic check of options with range values"""

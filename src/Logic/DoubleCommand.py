@@ -6,7 +6,7 @@ class DoubleCommand(Command):
 
     def __init__(self, hitCommand, standCommand):
         """Initialize members"""
-        self.hit_command   = hitCommand
+        self.hit_command = hitCommand
         self.stand_command = standCommand
 
     def perform(self, slot, **kwargs):

@@ -9,7 +9,7 @@ from src.Utilities.Logger    import Logger
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""
 
-    def __init__(self,n,algorithm,cutIndex=None):
+    def __init__(self, n, algorithm, cutIndex=None):
         """Initializes shoe to have n decks,
                algorithm function for shuffling, and cutIndex"""
         self.cards = []
@@ -19,8 +19,8 @@ class Shoe:
         self.observers = []
         if not cutIndex:
             self.cutIndex = int((n - 1/2) * Card.NUM_CARDS_PER_DECK)
-        elif isinstance(cutIndex,float):
-            self.cutIndex = int(floor(n * Card.NUM_CARDS_PER_DECK * cutIndex))
+        elif isinstance(cutIndex, float):
+            self.cutIndex = int(floor(n * Card.NUM_CARDS_PER_DECK * cutIndex)
         elif cutIndex < 0:
             self.cutIndex = n * Card.NUM_CARDS_PER_DECK + cutIndex
         else:
@@ -99,7 +99,7 @@ def fisher_yates_shuffle(deck):
     rand = Random()
     for i in range(len(deck) - 1, 1, -1):
         j = rand.randint(0, i)
-        temp    = deck[i]
+        temp = deck[i]
         deck[i] = deck[j]
         deck[j] = temp
     return deck

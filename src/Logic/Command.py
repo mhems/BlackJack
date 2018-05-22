@@ -6,18 +6,19 @@ class UnavailableCommandError(Exception):
 
     def __init__(self, command, slot):
         self.command = command
-        self.slot    = slot
+        self.slot = slot
 
     def __str__(self):
-        return '%s is unavailable to %s' % (str(self.command), self.slot.playerName)
+        return '%s is unavailable to %s' % (str(self.command),
+                                            self.slot.playerName)
 
 class Command(metaclass=ABCMeta):
     """Base class for Blackjack commands"""
 
-    HIT_ENUM       = Enum()
-    STAND_ENUM     = Enum()
-    DOUBLE_ENUM    = Enum()
-    SPLIT_ENUM     = Enum()
+    HIT_ENUM = Enum()
+    STAND_ENUM = Enum()
+    DOUBLE_ENUM = Enum()
+    SPLIT_ENUM = Enum()
     SURRENDER_ENUM = Enum()
 
     command_string_map = {
@@ -56,24 +57,21 @@ class Command(metaclass=ABCMeta):
         s = string.upper()
         if s in Command.command_string_map:
             return Command.command_string_map[s]
-        else:
-            return None
+        return None
 
     @staticmethod
     def getCommandStringFromEnum(enum):
         """Returns Command string from enum representation"""
         if enum in Command.command_enum_map:
             return Command.command_enum_map[enum]
-        else:
-            return None
+        return None
 
     @staticmethod
     def getPastTenseCommandName(enum):
         """Returns past tense of command from enum"""
         if enum in Command.past_tense_command_map:
             return Command.past_tense_command_map[enum]
-        else:
-            return None
+        return None
 
     def execute(self, slot, **kwargs):
         """Executes the command on slot,

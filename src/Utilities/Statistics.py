@@ -21,8 +21,7 @@ def median(sequence):
     sseq = sorted(sequence)
     if n % 2 == 1:
         return sseq[mid]
-    else:
-        return (sseq[mid-1] + sseq[mid])/2
+    return (sseq[mid-1] + sseq[mid])/2
 
 def mode(sequence):
     """Computes the mode of the sequence"""
@@ -105,16 +104,16 @@ def maximum_subarray(sequence):
     # Kadane's algorithm adapted from wikipedia
     if len(sequence) == 0:
         return (None, 0)
-    local_max   = global_max   = sequence[0]
+    local_max = global_max = sequence[0]
     local_count = global_count = 1
     for item in sequence[1:]:
         if item > local_max + item:
-            local_max   = item
+            local_max = item
             local_count = 1
         else:
-            local_max   += item
+            local_max += item
             local_count += 1
         if local_max > global_max:
-            global_max   = local_max
+            global_max = local_max
             global_count = local_count
     return (global_max, global_count)

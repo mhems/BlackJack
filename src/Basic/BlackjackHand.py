@@ -1,5 +1,3 @@
-from itertools import groupby
-
 from src.Basic.Card import Card
 from src.Basic.Hand import Hand
 import src.Utilities.Configuration as config
@@ -9,13 +7,12 @@ class BlackjackHand(Hand):
 
     def __init__(self):
         """Initializes hand to have no cards"""
-        self.cards = []
-        self.wasSplit = False
+        self.reset()
 
     @property
     def value(self):
         """Returns largest non-bust value if possible, else largest value"""
-        val = sum([c.value for c in self.cards if not c.isAce])
+        val = sum(c.value for c in self.cards if not c.isAce)
         nAces = self.numAces
         if nAces > 0:
             val += (nAces - 1) * Card.SOFT_ACE_VALUE
@@ -33,7 +30,7 @@ class BlackjackHand(Hand):
     @property
     def isAcePair(self):
         """Return True iff hand is pair of Aces"""
-        return self.numAces == 2 and self.numCards == 2
+        return self.numCards == 2 and self.numAces == 2
 
     @property
     def isSoft17(self):
@@ -43,7 +40,7 @@ class BlackjackHand(Hand):
     @property
     def isSoft(self):
         """Return True iff hand is soft (i.e. contains hard-valued ace)"""
-        val = sum((c.value for c in self.cards if not c.isAce))
+        val = sum(c.value for c in self.cards if not c.isAce)
         numAces = self.numAces
         if numAces > 0:
             val += (numAces - 1) * Card.SOFT_ACE_VALUE
@@ -59,7 +56,7 @@ class BlackjackHand(Hand):
     @property
     def numAces(self):
         """Returns number of ace cards in hand"""
-        return len([c for c in self.cards if c.isAce])
+        return len(c for c in self.cards if c.isAce)
 
     @property
     def isBlackjackValued(self):
@@ -110,6 +107,7 @@ class BlackjackHand(Hand):
     def reset(self):
         """Removes all cards from hand"""
         self.cards = []
+        self.wasSplit = False
 
     def __eq__(self, other):
         """Returns True iff cards in self are same as in other"""
