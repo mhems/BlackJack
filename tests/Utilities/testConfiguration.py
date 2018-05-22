@@ -1,9 +1,3 @@
-####################
-#
-# testConfiguration.py
-#
-####################
-
 import unittest
 
 from src.Utilities.Configuration import *

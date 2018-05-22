@@ -1,9 +1,3 @@
-####################
-#
-# testHumanInputBettingStrategy.py
-#
-####################
-
 import unittest
 
 class testHumanInputBettingStrategy(unittest.TestCase):

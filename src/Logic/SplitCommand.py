@@ -1,9 +1,3 @@
-####################
-#
-# SplitCommand.py
-#
-####################
-
 from src.Logic.Command import Command
 import src.Utilities.Configuration as config
 
@@ -12,27 +6,27 @@ class SplitCommand(Command):
 
     def __init__(self, hitCommand, standCommand):
         """Initialize members"""
-        self.__hit_command   = hitCommand
-        self.__stand_command = standCommand
+        self.hit_command   = hitCommand
+        self.stand_command = standCommand
 
     def perform(self, slot, **kwargs):
         """Perform Split command"""
-        done = (slot.handIsAcePair and
+        done = (slot.hand.isAcePair and
                 not config.get('HIT_SPLIT_ACES') and
                 not config.get('RESPLIT_ACES'))
         slot.splitHand()
-        self.__hit_command.execute(slot, **kwargs)
+        self.hit_command.execute(slot, **kwargs)
         slot.index += 1
-        self.__hit_command.execute(slot, **kwargs)
+        self.hit_command.execute(slot, **kwargs)
         slot.index -= 1
         return done
 
     def isAvailable(self, slot):
         """Returns True iff Split command is available"""
         if config.get('SPLIT_BY_VALUE'):
-            toTest = slot.handIsPairByValue
+            toTest = slot.hand.isPairByValue
         else:
-            toTest = slot.handIsPairByRank
+            toTest = slot.hand.isPairByRank
         if not toTest:
             return False
         if not slot.playerCanAffordSplit:
@@ -43,7 +37,7 @@ class SplitCommand(Command):
         if (num_splits_allowed != config.UNRESTRICTED and
             slot.numSplits + 1 >= num_splits_allowed):
             return False
-        if (slot.handWasSplit and slot.handIsAcePair and
+        if (slot.hand.wasSplit and slot.hand.isAcePair and
             not config.get('RESPLIT_ACES')):
             return False
         return True

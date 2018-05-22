@@ -1,9 +1,3 @@
-####################
-#
-# testPlayer.py
-#
-####################
-
 import unittest
 
 class testPlayer(unittest.TestCase):

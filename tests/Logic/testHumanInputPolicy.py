@@ -1,9 +1,3 @@
-####################
-#
-# testHumanInputPolicy.py
-#
-####################
-
 import unittest
 
 class testHumanInputPolicy(unittest.TestCase):

@@ -1,12 +1,6 @@
-####################
-#
-# testMinBettingStrategy.py
-#
-####################
-
 import unittest
 
-from src.Logic.MinBettingStrategy import MinBettingStrategy
+from src.Logic.BettingStrategy import MinBettingStrategy
 import src.Utilities.Configuration as config
 
 class testMinBettingStrategy(unittest.TestCase):

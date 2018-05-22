@@ -1,9 +1,3 @@
-####################
-#
-# testStandCommand.py
-#
-####################
-
 import unittest
 
 from src.Logic.StandCommand import StandCommand

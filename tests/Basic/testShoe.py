@@ -1,9 +1,3 @@
-####################
-#
-# testShoe.py
-#
-####################
-
 from src.Basic.Shoe import Shoe
 from src.Basic.Card import Card
 import unittest

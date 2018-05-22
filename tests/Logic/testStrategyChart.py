@@ -1,9 +1,3 @@
-####################
-#
-# testStrategyChart.py
-#
-####################
-
 import re
 import unittest
 

@@ -1,9 +1,3 @@
-####################
-#
-# HitCommand.py
-#
-####################
-
 from src.Logic.Command import Command
 
 class HitCommand(Command):
@@ -11,11 +5,11 @@ class HitCommand(Command):
 
     def __init__(self, shoe):
         """Initializes members"""
-        self.__shoe = shoe
+        self.shoe = shoe
 
     def perform(self, slot, **kwargs):
         """Perform Hit command"""
-        slot.addCards(self.__shoe.dealOneCard())
+        slot.addCards(self.shoe.dealOneCard())
         return False
 
     def isAvailable(self, slot):

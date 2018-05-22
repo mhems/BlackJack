@@ -1,9 +1,3 @@
-####################
-#
-# testHiLoCounting.py
-#
-####################
-
 import unittest
 
 class testHiLoCounting(unittest.TestCase):

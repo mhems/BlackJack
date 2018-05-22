@@ -1,9 +1,3 @@
-####################
-#
-# testDoubleCommand.py
-#
-####################
-
 import unittest
 
 from src.Basic.Card          import Card
@@ -12,7 +6,7 @@ from src.Logic.DoubleCommand import DoubleCommand
 from src.Logic.HitCommand    import HitCommand
 from src.Logic.StandCommand  import StandCommand
 from src.Logic.SplitCommand  import SplitCommand
-from src.Logic.MinBettingStrategy import MinBettingStrategy
+from src.Logic.BettingStrategy import MinBettingStrategy
 from src.Game.TableSlot      import TableSlot
 from src.Game.Player         import Player
 import src.Utilities.Configuration as config
@@ -36,9 +30,9 @@ class testDoubleCommand(unittest.TestCase):
                                (1 + config.get('DOUBLE_RATIO')))
         slot.promptBet()
         rc = doubleCmd.perform(slot)
-        self.assertEqual(player.stackAmount, 0, 'testDoubleCommand:testPerform:Double should remove amount in pot from player')
+        self.assertEqual(player.stack.amount, 0, 'testDoubleCommand:testPerform:Double should remove amount in pot from player')
         self.assertTrue(rc, 'testDoubleCommand:testPerform:Double should always end hand')
-        self.assertEqual(slot.handValue, 2, 'testDoubleCommand:testPerform:Double should add next card in shoe to hand')
+        self.assertEqual(slot.hand.value, 2, 'testDoubleCommand:testPerform:Double should add next card in shoe to hand')
 
     def testIsAvailable(self):
         slot = TableSlot()

@@ -1,9 +1,3 @@
-####################
-#
-# testHitCommand.py
-#
-####################
-
 import unittest
 
 from src.Logic.HitCommand import HitCommand
@@ -24,10 +18,10 @@ class testHitCommand(unittest.TestCase):
     def testPerform(self):
         hitCmd = HitCommand(self.shoe)
         rc = hitCmd.perform(self.slot)
-        self.assertEqual(self.slot.handValue,2,'testHitCommand:testPeform:Hit should add next card in shoe to slot player\'s hand')
+        self.assertEqual(self.slot.hand.value,2,'testHitCommand:testPeform:Hit should add next card in shoe to slot player\'s hand')
         self.assertFalse(rc,'testHitCommand:testPerform:Hit should never directly end hand')
         hitCmd.perform(self.slot)
-        self.assertEqual(self.slot.handValue,4,'testHitCommand:testPeform:Hit should add next card in shoe to slot player\'s hand')
+        self.assertEqual(self.slot.hand.value,4,'testHitCommand:testPeform:Hit should add next card in shoe to slot player\'s hand')
 
     def testIsAvailable(self):
         hitCmd = HitCommand(self.shoe)

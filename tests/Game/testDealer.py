@@ -1,9 +1,3 @@
-####################
-#
-# testDealer.py
-#
-####################
-
 import unittest
 
 class testDealer(unittest.TestCase):

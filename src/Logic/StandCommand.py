@@ -1,9 +1,3 @@
-####################
-#
-# StandCommand.py
-#
-####################
-
 from src.Logic.Command import Command
 
 class StandCommand(Command):

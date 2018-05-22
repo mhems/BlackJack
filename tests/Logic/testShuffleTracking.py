@@ -1,9 +1,3 @@
-####################
-#
-# testShuffleTracking.py
-#
-####################
-
 import unittest
 
 class testShuffleTracking(unittest.TestCase):

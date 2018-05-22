@@ -1,12 +1,6 @@
-####################
-#
-# testFeedbackDecisionPolicy
-#
-####################
-
 import unittest
 
-from src.Logic.FeedbackDecisionPolicy import FeedbackDecisionPolicy
+from src.Logic.DecisionPolicy import FeedbackDecisionPolicy
 
 class testFeedbackDecisionPolicy(unittest.TestCase):
 

@@ -1,9 +1,3 @@
-####################
-#
-# Logger.py
-#
-####################
-
 import os
 
 from src.Utilities.Utilities import LINE_END

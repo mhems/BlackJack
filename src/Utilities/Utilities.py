@@ -1,19 +1,13 @@
-####################
-#
-# Utilities.py
-#
-####################
-
 from sys import (platform, stderr, exit)
 
 class Enum:
     """Provides mechanism for 'enum' object"""
 
-    __counter = 0
+    counter = 0
 
     def __init__(self):
-        self.value = Enum.__counter
-        Enum.__counter += 1
+        self.value = Enum.counter
+        Enum.counter += 1
 
     def __eq__(self, other):
         try:

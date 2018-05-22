@@ -1,9 +1,3 @@
-####################
-#
-# Shoe.py
-#
-####################
-
 from math   import floor
 from random import Random
 
@@ -18,11 +12,11 @@ class Shoe:
     def __init__(self,n,algorithm,cutIndex=None):
         """Initializes shoe to have n decks,
                algorithm function for shuffling, and cutIndex"""
-        self.__cards = []
+        self.cards = []
         self.numDecks = n
-        self.__algorithm = algorithm
-        self.__index = 0
-        self.__observers = []
+        self.algorithm = algorithm
+        self.index = 0
+        self.observers = []
         if not cutIndex:
             self.cutIndex = int((n - 1/2) * Card.NUM_CARDS_PER_DECK)
         elif isinstance(cutIndex,float):
@@ -32,28 +26,28 @@ class Shoe:
         else:
             self.cutIndex = cutIndex
         for _ in range(n):
-            self.__cards.extend(Card.makeDeck())
+            self.cards.extend(Card.makeDeck())
 
     @property
     def numCardsRemainingToBeDealt(self):
         """Returns number of cards remaining to be dealt from shoe"""
-        return self.cutIndex - self.__index
+        return self.cutIndex - self.index
 
     @property
     def numCardsRemainingInShoe(self):
         """Returns number of cards remaining in shoe"""
-        return self.numDecks * Card.NUM_CARDS_PER_DECK - self.__index
+        return self.numDecks * Card.NUM_CARDS_PER_DECK - self.index
 
     @property
     def isExhausted(self):
         """Returns True iff all cards that will be dealt have been dealt"""
-        return self.__index >= self.cutIndex
+        return self.index >= self.cutIndex
 
     @property
     def isEmpty(self):
         """Returns True iff all cards in shoe have been dealt"""
-        """This is only possible if cut index == len(self.__cards)"""
-        return self.__index >= self.numDecks * Card.NUM_CARDS_PER_DECK
+        """This is only possible if cut index == len(self.cards)"""
+        return self.index >= self.numDecks * Card.NUM_CARDS_PER_DECK
 
     def deal(self,n=1,visible=True):
         """Remove and return n cards from beginning of shoe"""
@@ -70,27 +64,27 @@ class Shoe:
         """Remove and return one card from beginning of shoe"""
         if self.isExhausted:
             self.shuffle()
-        c = self.__cards[self.__index]
+        c = self.cards[self.index]
         if visible:
             self.notifyObservers(c)
-        self.__index += 1
+        self.index += 1
         return c
 
     def shuffle(self):
         """Shuffles the deck using specified algorithm"""
-        self.__cards = self.__algorithm(self.__cards)
-        self.__index = 0
+        self.cards = self.algorithm(self.cards)
+        self.index = 0
         self.notifyObservers(None)
         self.burn(config.get('NUM_CARDS_BURN_ON_SHUFFLE'))
 
     def registerObserver(self, observer):
-        self.__observers.append(observer)
+        self.observers.append(observer)
 
     def unregisterObserver(self, observer):
-        self.__observers.remove(observer)
+        self.observers.remove(observer)
 
     def notifyObservers(self, card):
-        for o in self.__observers:
+        for o in self.observers:
             o.update(card)
 
 def faro_shuffle(deck):

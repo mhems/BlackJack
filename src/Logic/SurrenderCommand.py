@@ -1,9 +1,3 @@
-####################
-#
-# SurrenderCommand.py
-#
-####################
-
 from src.Logic.Command import Command
 import src.Utilities.Configuration as config
 

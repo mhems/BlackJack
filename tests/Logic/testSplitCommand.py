@@ -1,9 +1,3 @@
-####################
-#
-# testSplitCommand.py
-#
-####################
-
 import unittest
 
 from src.Basic.Card          import Card
@@ -13,7 +7,7 @@ from src.Logic.DoubleCommand import DoubleCommand
 from src.Logic.HitCommand    import HitCommand
 from src.Logic.StandCommand  import StandCommand
 from src.Logic.SplitCommand  import SplitCommand
-from src.Logic.MinBettingStrategy import MinBettingStrategy
+from src.Logic.BettingStrategy import MinBettingStrategy
 from src.Game.TableSlot      import TableSlot
 from src.Game.Player         import Player
 import src.Utilities.Configuration as config
@@ -39,7 +33,7 @@ class testSplitCommand(unittest.TestCase):
         slot.promptBet()
         rc = splitCmd.perform(slot)
         self.assertFalse(rc, 'testSplitCommand:testPerform:Split should not end hand')
-        self.assertEqual(player.stackAmount, 0, 'testSplitCommand:testPerform:Split should deduct appropriate amount from player')
+        self.assertEqual(player.stack.amount, 0, 'testSplitCommand:testPerform:Split should deduct appropriate amount from player')
         hands = slot.hands
         self.assertEqual(len(hands), 2, 'testSplitCommand:testPerform:Split should split player\'s hand into two hands')
         self.assertTrue(hands[0].wasSplit, 'testSplitCommand:testPerform: Split hands should reflect split')

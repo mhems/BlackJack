@@ -1,9 +1,3 @@
-####################
-#
-# testBlackjackHand.py
-#
-####################
-
 from src.Basic.BlackjackHand import BlackjackHand
 from src.Basic.Card import Card
 import unittest
@@ -43,8 +37,8 @@ class testBlackjackHand(unittest.TestCase):
         self.assertEqual(h.ranks,[9,10],'testBlackjackHand:testRanks:Hand with 9 and 10 should have ranks 9 and 10')
         h = BlackjackHand()
         h.addCards(Card('K','H'), Card('A','C'))
-        self.assertEqual(h.ranks,['King','Ace'],'testBlackjackHand:testRanks:Hand with King and Ace should have ranks King and Ace')
-        self.assertNotEqual(h.ranks,[10,'Ace'],'testBlackjackHand:testRanks:Ranks should not return values')
+        self.assertEqual(h.ranks,['K','A'],'testBlackjackHand:testRanks:Hand with King and Ace should have ranks King and Ace')
+        self.assertNotEqual(h.ranks,[10,'A'],'testBlackjackHand:testRanks:Ranks should not return values')
 
     def testSoft(self):
         h = BlackjackHand()

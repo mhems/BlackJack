@@ -1,9 +1,3 @@
-####################
-#
-# StrategyChart.py
-#
-####################
-
 import re
 
 import src.Utilities.Configuration as config
@@ -26,7 +20,7 @@ class StrategyChart:
         """Representation of advice chart"""
 
         def __init__(self, chart):
-            self.__chart = chart
+            self.chart = chart
 
         @staticmethod
         def fromFileContents(lines):
@@ -50,13 +44,13 @@ class StrategyChart:
 
         def access(self, value, upcard):
             """Accesses chart entry at the value row and upcard column"""
-            if (value, upcard) in self.__chart:
-                return self.__chart[(value, upcard)]
+            if (value, upcard) in self.chart:
+                return self.chart[(value, upcard)]
             else:
                 return None
 
         def __len__(self):
-            return len(self.__chart)
+            return len(self.chart)
 
         def __repr__(self):
             """Returns string representation of chart"""
@@ -68,14 +62,14 @@ class StrategyChart:
             fmt = '#    %s' + LINE_END
             result = fmt % ' '.join(( str(e).rjust(2, ' ')
                                       for e in Card.values ))
-            vals = sorted(set(t[0] for t in self.__chart.keys()),
+            vals = sorted(set(t[0] for t in self.chart.keys()),
                           key = sort,
                           reverse = True)
             fmt = ' %s  %s' + LINE_END
             for value in vals:
                 result += fmt % (str(value).rjust(2, ' '),
                                  ' '.join(str(
-                                              self.__chart[(value, up)]
+                                              self.chart[(value, up)]
                                              ).rjust(2, ' ')
                                           for up in Card.values))
             return result
@@ -83,9 +77,9 @@ class StrategyChart:
     # END CHART CLASS
 
     def __init__(self, hard_chart, soft_chart, pair_chart):
-        self.__hard_chart = hard_chart
-        self.__soft_chart = soft_chart
-        self.__pair_chart = pair_chart
+        self.hard_chart = hard_chart
+        self.soft_chart = soft_chart
+        self.pair_chart = pair_chart
 
     @staticmethod
     def fromFile(filename):
@@ -127,18 +121,18 @@ class StrategyChart:
         else:
             isPair = player_hand.isPairByRank
         # check for pair
-        if isPair and self.__pair_chart:
+        if isPair and self.pair_chart:
             arg = 'A' if player_hand.hasAce else int(value/2)
-            advice = self.__pair_chart.access(arg, dealer_up_card)
+            advice = self.pair_chart.access(arg, dealer_up_card)
             if advice == 'Sp' and Command.SPLIT_ENUM not in availableCommands:
                 # defer iff split advised but unavailable
                 advice = None
         # check for soft
-        if not advice and player_hand.isSoft and self.__soft_chart:
-            advice = self.__soft_chart.access(value, dealer_up_card)
+        if not advice and player_hand.isSoft and self.soft_chart:
+            advice = self.soft_chart.access(value, dealer_up_card)
         # default to hard
-        if not advice and self.__hard_chart:
-            advice = self.__hard_chart.access(value, dealer_up_card)
+        if not advice and self.hard_chart:
+            advice = self.hard_chart.access(value, dealer_up_card)
         if advice:
             if advice[0].upper() == 'D' and len(advice) == 2:
                 if Command.DOUBLE_ENUM in availableCommands:
@@ -160,15 +154,15 @@ class StrategyChart:
 
     def __repr__(self):
         result = ''
-        if len(self.__hard_chart) > 0:
+        if len(self.hard_chart) > 0:
             result += '> Hard totals' + LINE_END
-            result += repr(self.__hard_chart)
-        if len(self.__soft_chart) > 0:
+            result += repr(self.hard_chart)
+        if len(self.soft_chart) > 0:
             result += LINE_END * 2
             result += '> Soft totals' + LINE_END
-            result += repr(self.__soft_chart)
-        if len(self.__pair_chart) > 0:
+            result += repr(self.soft_chart)
+        if len(self.pair_chart) > 0:
             result += LINE_END * 2
             result += '> Pairs' + LINE_END
-            result += repr(self.__pair_chart)
+            result += repr(self.pair_chart)
         return result

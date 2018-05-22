@@ -1,9 +1,3 @@
-####################
-#
-# BlackjackHand.py
-#
-####################
-
 from itertools import groupby
 
 from src.Basic.Card import Card
@@ -15,13 +9,13 @@ class BlackjackHand(Hand):
 
     def __init__(self):
         """Initializes hand to have no cards"""
-        self.__cards = []
+        self.cards = []
         self.wasSplit = False
 
     @property
     def value(self):
         """Returns largest non-bust value if possible, else largest value"""
-        val = sum([c.value for c in self.__cards if not c.isAce])
+        val = sum([c.value for c in self.cards if not c.isAce])
         nAces = self.numAces
         if nAces > 0:
             val += (nAces - 1) * Card.SOFT_ACE_VALUE
@@ -34,7 +28,7 @@ class BlackjackHand(Hand):
     @property
     def ranks(self):
         """Returns list of ranks in hand"""
-        return [c.rank for c in self.__cards]
+        return [c.rank for c in self.cards]
 
     @property
     def isAcePair(self):
@@ -49,7 +43,7 @@ class BlackjackHand(Hand):
     @property
     def isSoft(self):
         """Return True iff hand is soft (i.e. contains hard-valued ace)"""
-        val = sum((c.value for c in self.__cards if not c.isAce))
+        val = sum((c.value for c in self.cards if not c.isAce))
         numAces = self.numAces
         if numAces > 0:
             val += (numAces - 1) * Card.SOFT_ACE_VALUE
@@ -60,12 +54,12 @@ class BlackjackHand(Hand):
     @property
     def numCards(self):
         """Returns number of cards in hand"""
-        return len(self.__cards)
+        return len(self.cards)
 
     @property
     def numAces(self):
         """Returns number of ace cards in hand"""
-        return len([c for c in self.__cards if c.isAce])
+        return len([c for c in self.cards if c.isAce])
 
     @property
     def isBlackjackValued(self):
@@ -84,13 +78,13 @@ class BlackjackHand(Hand):
     def isPairByRank(self):
         """Returns True iff initial two cards are equal in rank"""
         return (self.numCards == 2 and
-                self.__cards[0].rankEquivalent(self.__cards[1]))
+                self.cards[0].rankEquivalent(self.cards[1]))
 
     @property
     def isPairByValue(self):
         """Returns True iff initial two cards are equal in value"""
         return (self.numCards == 2 and
-                self.__cards[0].valueEquivalent(self.__cards[1]))
+                self.cards[0].valueEquivalent(self.cards[1]))
 
     @property
     def isBust(self):
@@ -107,25 +101,25 @@ class BlackjackHand(Hand):
         """Returns cards as tuple"""
         if self.numCards > 2:
             raise Exception('Cannot split hand of more than 2 cards')
-        return tuple(self.__cards)
+        return tuple(self.cards)
 
     def addCards(self, *cards):
         """Adds args to hand"""
-        self.__cards.extend(cards)
+        self.cards.extend(cards)
 
     def reset(self):
         """Removes all cards from hand"""
-        self.__cards = []
+        self.cards = []
 
     def __eq__(self, other):
         """Returns True iff cards in self are same as in other"""
         if self.numCards != other.numCards:
             return False
-        for c1 in self.__cards:
-            if not c1 in other.__cards:
+        for c1 in self.cards:
+            if not c1 in other.cards:
                 return False
         return True
 
     def __str__(self):
         """Returns comma delimited list of cards' representations"""
-        return '[' + ', '.join((str(c) for c in self.__cards)) +']'
+        return '[' + ', '.join((str(c) for c in self.cards)) +']'

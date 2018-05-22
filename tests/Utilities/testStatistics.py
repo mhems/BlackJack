@@ -1,9 +1,3 @@
-####################
-#
-# testStatistics.py
-#
-####################
-
 import unittest
 from src.Utilities.Statistics import *
 

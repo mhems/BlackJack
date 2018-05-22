@@ -1,9 +1,3 @@
-####################
-#
-# testTable.py
-#
-####################
-
 import unittest
 
 class testTable(unittest.TestCase):

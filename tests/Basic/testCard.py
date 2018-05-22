@@ -1,10 +1,3 @@
-####################
-#
-# testCard.py
-#
-####################
-
-
 from src.Basic.Card import *
 from itertools import *
 import unittest
@@ -20,7 +13,7 @@ class testCard(unittest.TestCase):
     def testInit(self):
         c = Card(4,'H')
         self.assertEqual(c.rank,4,"testCard:testInit:Card rank not initialized properly")
-        self.assertEqual(c.suit,'Hearts',"testCard:testInit:Card suit not initialized properly")
+        self.assertEqual(c.suit,'H',"testCard:testInit:Card suit not initialized properly")
         self.assertRaises(TypeError,Card.__init__,'B','D')
         self.assertRaises(TypeError,Card.__init__,'K','B')
         c1 = Card(4,'hearts')
@@ -29,11 +22,11 @@ class testCard(unittest.TestCase):
 
     def testRank(self):
         c = Card('J','H')
-        self.assertEqual(c.rank,'Jack','testCard:testRank:Card rank doesn\'t evaluate properly')
+        self.assertEqual(c.rank,'J','testCard:testRank:Card rank doesn\'t evaluate properly')
 
     def testSuit(self):
         c = Card(10,'H')
-        self.assertEqual(c.suit,'Hearts','testCard:testRank:Card suit doesn\'t evaluate properly')
+        self.assertEqual(c.suit,'H','testCard:testRank:Card suit doesn\'t evaluate properly')
 
     def testValue(self):
         num = Card(8,'S')
@@ -107,8 +100,8 @@ class testCard(unittest.TestCase):
     def testMakeDeck(self):
         d = Card.makeDeck()
         self.assertEqual(len(d),52,'testCard:testMakeDeck:Deck should have 52 cards')
-        self.assertEqual(len(list(filter(lambda c:c.suit=='Hearts',d))),13,'testCard:testMakeDeck:Deck should have 13 cards of hearts suit')
-        self.assertEqual(len(list(filter(lambda c:c.rank=='Ace',d))),4,'testCard:testMakeDeck:Deck should have 4 aces')
+        self.assertEqual(len(list(filter(lambda c:c.suit=='H',d))),13,'testCard:testMakeDeck:Deck should have 13 cards of hearts suit')
+        self.assertEqual(len(list(filter(lambda c:c.rank=='A',d))),4,'testCard:testMakeDeck:Deck should have 4 aces')
 
 if __name__ == '__main__':
     unittest.main()

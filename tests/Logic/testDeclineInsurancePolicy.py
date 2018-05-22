@@ -1,12 +1,6 @@
-####################
-#
-# testDeclineInsurancePolicy.py
-#
-####################
-
 import unittest
 
-from src.Logic.DeclineInsurancePolicy import DeclineInsurancePolicy
+from src.Logic.InsurancePolicy import DeclineInsurancePolicy
 
 class testDeclineInsurancePolicy(unittest.TestCase):
 

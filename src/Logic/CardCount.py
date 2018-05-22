@@ -1,27 +1,16 @@
-####################
-#
-# CardCount.py
-#
-####################
-
 class CardCount():
     """Pluggable mechanism for card counting"""
 
     def __init__(self):
         """Initializes members"""
-        self.__count = 0
-
-    @property
-    def runningCount(self):
-        """Returns current running count"""
-        return self.__count
+        self.count = 0
 
     def update(self, card):
         """Updates count based on card"""
         if card is None:
-            self.__count = 0
+            self.count = 0
         else:
-            self.__count += self.computeValue(card)
+            self.count += self.computeValue(card)
 
     @classmethod
     def computeValue(cls, card):

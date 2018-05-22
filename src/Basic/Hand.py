@@ -1,9 +1,3 @@
-####################
-#
-# Hand.py
-#
-####################
-
 from abc import ABCMeta, abstractmethod
 
 class Hand(metaclass=ABCMeta):

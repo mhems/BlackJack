@@ -1,9 +1,3 @@
-####################
-#
-# DoubleCommand.py
-#
-####################
-
 from src.Logic.Command import Command
 import src.Utilities.Configuration as config
 
@@ -12,14 +6,14 @@ class DoubleCommand(Command):
 
     def __init__(self, hitCommand, standCommand):
         """Initialize members"""
-        self.__hit_command   = hitCommand
-        self.__stand_command = standCommand
+        self.hit_command   = hitCommand
+        self.stand_command = standCommand
 
     def perform(self, slot, **kwargs):
         """Perform Double command"""
         slot.multiplyPot(config.get('DOUBLE_RATIO'))
-        self.__hit_command.execute(slot, **kwargs)
-        return self.__stand_command.execute(slot, **kwargs)
+        self.hit_command.execute(slot, **kwargs)
+        return self.stand_command.execute(slot, **kwargs)
 
     def isAvailable(self, slot):
         """Double available depending on configuration"""
@@ -29,9 +23,9 @@ class DoubleCommand(Command):
             return False
         double_range = config.get('TOTALS_ALLOWED_FOR_DOUBLE')
         if (double_range != config.UNRESTRICTED and
-            not slot.handValue in double_range):
+            not slot.hand.value in double_range):
             return False
-        if (slot.handWasSplit and
+        if (slot.hand.wasSplit and
             not config.get('DOUBLE_AFTER_SPLIT_ALLOWED')):
             return False
         return True

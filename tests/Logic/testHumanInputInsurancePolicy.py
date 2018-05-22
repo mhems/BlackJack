@@ -1,12 +1,6 @@
-####################
-#
-# testHumanInputInsurancePolicy
-#
-####################
-
 import unittest
 
-from src.Logic.HumanInputInsurancePolicy import HumanInputInsurancePolicy
+from src.Logic.InsurancePolicy import HumanInputInsurancePolicy
 
 class testHumanInputInsurancePolicy(unittest.TestCase):
 

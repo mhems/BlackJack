@@ -1,9 +1,3 @@
-####################
-#
-# Configuration.py
-#
-####################
-
 from collections  import OrderedDict
 from configparser import ConfigParser
 import re

@@ -1,11 +1,3 @@
-####################
-#
-# Bank.py
-#
-####################
-
-from abc import ABCMeta, abstractmethod, abstractproperty
-
 class InsufficientFundsError(Exception):
     """Error class to represent error of overwithdrawing from bank"""
 
@@ -18,22 +10,34 @@ class InsufficientFundsError(Exception):
                                                                 self.balance)
 
 class Bank:
-    """Abstract mechanism for Bank transactions"""
+    """Model for withdraw/deposit transactions"""
 
-    @abstractproperty
-    def amount(self):
-        """Returns amount in funds"""
-        raise NotImplementedError(
-            'Bank implementations must implement the amount property')
+    def __init__(self):
+        """Initializes Bank"""
+        self.amount = 0
 
-    @abstractmethod
     def withdraw(self, amt):
-        """Attempts to withdraw amt from funds"""
-        raise NotImplementedError(
-            'Bank implementations must implement the withdraw method')
+        """Attempts to withdraw amt from Bank.
+        If there is less than amt in the Bank, raises InsufficientFundsError"""
+        if amt > self.amount:
+            raise InsufficientFundsError(amt, self.amount)
+        self.amount -= amt
+        return amt
 
-    @abstractmethod
     def deposit(self, amt):
-        """Deposits amt into funds"""
-        raise NotImplementedError(
-            'Bank implementations must implement the deposit method')
+        """Deposits amt into Bank"""
+        if amt < 0:
+            raise ValueError('amt cannot be negative')
+        self.amount += amt
+
+class HouseBank(Bank):
+    """Model for endless Bank"""
+
+    def __init__(self):
+        """Initializes HouseBank"""
+        super().__init__()
+
+    def withdraw(self, amt):
+        """Withdraws amt from Bank"""
+        self.amount -= amt
+        return amt

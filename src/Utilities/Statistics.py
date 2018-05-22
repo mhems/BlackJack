@@ -1,9 +1,3 @@
-####################
-#
-# Statistics.py
-#
-####################
-
 from math import sqrt
 from operator import (le, lt, ge, gt)
 
@@ -74,21 +68,21 @@ def delta(sequence):
 
 def length_longest_non_decreasing_run(sequence):
     """Computes the length of the longest non-decreasing run"""
-    return __length_longest_run(sequence, le)
+    return length_longest_run(sequence, le)
 
 def length_longest_increasing_run(sequence):
     """Computes the length of the longest increasing run"""
-    return __length_longest_run(sequence, lt)
+    return length_longest_run(sequence, lt)
 
 def length_longest_non_increasing_run(sequence):
     """Computes the length of the longest non-increasing run"""
-    return __length_longest_run(sequence, ge)
+    return length_longest_run(sequence, ge)
 
 def length_longest_decreasing_run(sequence):
     """Computes the length of the longest decreasing run"""
-    return __length_longest_run(sequence, gt)
+    return length_longest_run(sequence, gt)
 
-def __length_longest_run(sequence, predicate):
+def length_longest_run(sequence, predicate):
     """Computes the length of the longest run in sequence
        such that each pair of adjacent items satisfies binary predicate"""
     n = len(sequence)
