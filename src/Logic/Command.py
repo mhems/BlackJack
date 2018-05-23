@@ -5,6 +5,7 @@ class UnavailableCommandError(Exception):
     """Exception signifying unavailable command attempted to execute"""
 
     def __init__(self, command, slot):
+        super().__init__()
         self.command = command
         self.slot = slot
 

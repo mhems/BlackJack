@@ -29,10 +29,10 @@ def mode(sequence):
         return None
     fd = frequency_dict(sequence)
     m = max(fd.values())
-    mode = [key for (key, val) in fd.items() if val == m]
-    if len(mode) == 1:
-        return mode[0]
-    return mode
+    mode_ = [key for (key, val) in fd.items() if val == m]
+    if len(mode_) == 1:
+        return mode_[0]
+    return mode_
 
 def frequency_dict(sequence):
     """Computes the frequency of each element in sequence"""

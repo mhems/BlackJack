@@ -1,7 +1,6 @@
+import re
 from abc import ABCMeta, abstractmethod
 
-from src.Logic.Command        import Command
-from src.Logic.DecisionPolicy import DecisionPolicy
 import src.Utilities.Configuration as config
 
 class BettingStrategy(metaclass=ABCMeta):

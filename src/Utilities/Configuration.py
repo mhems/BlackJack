@@ -10,6 +10,7 @@ class SemanticConfigError(RuntimeError):
     """Represents error for configuration value with improper semantic value"""
 
     def __init__(self, option, msg):
+        super().__init__()
         self.option = option
         self.msg = msg
 
@@ -22,6 +23,7 @@ class InvalidOptionError(KeyError):
     """Represents error for unknown configuration option"""
 
     def __init__(self, option):
+        super().__init__()
         self.option = option
 
     def __str__(self):
@@ -70,7 +72,6 @@ def loadConfiguration(filename):
 
     conf = ConfigParser()
     if len(conf.read(filename)) == 0:
-        util.warn('Unable to read file %s, proceeding with defaults' % filename)
         return
 
     for s in conf.sections():
@@ -79,7 +80,6 @@ def loadConfiguration(filename):
 
     assignInt = assignFromFunc(conf.getint)
     assignBool = assignFromFunc(conf.getboolean)
-    assignStr = assignFromFunc(conf.get)
 
     # check any semantics and assign iff valid
     assignInt('general', 'BLACKJACK_VALUE', posInt, posIntErr)
@@ -154,7 +154,7 @@ def checkRatio(conf, category, flagname, allowImproper=True):
         if ratio < 0:
             raise SemanticConfigError(flagname, 'to be positive')
     except ValueError:
-        match = re.match('^\+?([1-9][0-9]*)/([1-9][0-9]*)$', value)
+        match = re.match('^\\+?([1-9][0-9]*)/([1-9][0-9]*)$', value)
         if match:
             ratio = float(int(match.group(1))/int(match.group(2)))
         else:

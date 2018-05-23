@@ -1,5 +1,3 @@
-import inspect
-
 from src.Basic.Card import Card
 
 class Event():

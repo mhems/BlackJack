@@ -1,7 +1,5 @@
 import os
 
-from src.Utilities.Utilities import LINE_END
-
 class Logger:
     """Mechanism for central logging and data aggregation"""
 

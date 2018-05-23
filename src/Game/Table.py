@@ -3,9 +3,7 @@ from math import floor
 import src.Utilities.Configuration as config
 import src.Utilities.Utilities as util
 from src.Basic.Card import Card
-from src.Basic.BlackjackHand import BlackjackHand
 from src.Basic.Shoe import Shoe
-from src.Basic.Shoe import faro_shuffle
 from src.Basic.Shoe import fisher_yates_shuffle
 from src.Game.TableSlot import TableSlot
 from src.Game.Bank import Bank
@@ -105,7 +103,7 @@ class Table:
             self.offer_early_surrender()
         if ( upcard.value == ( config.get('BLACKJACK_VALUE') -
                                Card.HARD_ACE_VALUE ) and
-            self.dealer_slot.hand.isNaturalBlackjack ):
+             self.dealer_slot.hand.isNaturalBlackjack ):
             dealerHasBlackjack = True
             print('Dealer has blackjack')
         if config.get('OFFER_INSURANCE') and upcard.isAce:
@@ -155,7 +153,7 @@ class Table:
 
     def dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
-        for index, hand in enumerate(slot.hands):
+        for index in range(len(slot.hands)):
             slot.index = index
             done = False
             while not done:
@@ -190,7 +188,7 @@ class Table:
         dealer_value = self.dealer_slot.hand.value
         for slot in self.active_slots:
             if not slot.settled:
-                for index, hand in enumerate(slot.hands):
+                for index in range(len(slot.hands)):
                     slot.index = index
                     value = slot.hand.value
                     if value > dealer_value or self.dealer_slot.hand.isBust:

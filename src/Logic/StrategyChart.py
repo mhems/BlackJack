@@ -67,9 +67,7 @@ class StrategyChart:
             fmt = ' %s  %s' + LINE_END
             for value in vals:
                 result += fmt % (str(value).rjust(2, ' '),
-                                 ' '.join(str(
-                                              self.chart[(value, up)]
-                                             ).rjust(2, ' ')
+                                 ' '.join(str(self.chart[(value, up)]).rjust(2, ' ')
                                           for up in Card.values))
             return result
 
@@ -141,7 +139,7 @@ class StrategyChart:
                 elif advice[1].upper() == 'S':
                     return Command.STAND_ENUM
             elif ( advice.upper() == 'SU' and
-                Command.SURRENDER_ENUM not in availableCommands):
+                   Command.SURRENDER_ENUM not in availableCommands):
                 return Command.HIT_ENUM
             return Command.getCommandEnumFromString(advice)
         else:
@@ -149,7 +147,7 @@ class StrategyChart:
 
     def toFile(self, filename):
         """Writes chart(s) to file in parse-expected format"""
-        File = open(filename, 'w')
+        pass
 
     def __repr__(self):
         result = ''

@@ -56,7 +56,7 @@ class BlackjackHand(Hand):
     @property
     def numAces(self):
         """Returns number of ace cards in hand"""
-        return len(c for c in self.cards if c.isAce)
+        return sum(1 for c in self.cards if c.isAce)
 
     @property
     def isBlackjackValued(self):
@@ -65,8 +65,8 @@ class BlackjackHand(Hand):
 
     @property
     def isNaturalBlackjack(self):
-        """Returns True iff hand is natural blackjack"""
-        """Note a blackjack after split is NOT considered natural"""
+        """Returns True iff hand is natural blackjack
+        Note a blackjack after split is NOT considered natural"""
         return (self.numCards == 2 and
                 self.value == config.get('BLACKJACK_VALUE') and
                 not self.wasSplit)

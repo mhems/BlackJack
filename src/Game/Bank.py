@@ -2,6 +2,7 @@ class InsufficientFundsError(Exception):
     """Error class to represent error of overwithdrawing from bank"""
 
     def __init__(self, request, balance):
+        super().__init__()
         self.request = request
         self.balance = balance
 

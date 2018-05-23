@@ -1,10 +1,8 @@
-from math   import floor
+from math import floor
 from random import Random
 
 from src.Basic.Card import Card
 import src.Utilities.Configuration as config
-from src.Utilities.Utilities import LINE_END
-from src.Utilities.Logger    import Logger
 
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""
@@ -20,7 +18,7 @@ class Shoe:
         if not cutIndex:
             self.cutIndex = int((n - 1/2) * Card.NUM_CARDS_PER_DECK)
         elif isinstance(cutIndex, float):
-            self.cutIndex = int(floor(n * Card.NUM_CARDS_PER_DECK * cutIndex)
+            self.cutIndex = int(floor(n * Card.NUM_CARDS_PER_DECK * cutIndex))
         elif cutIndex < 0:
             self.cutIndex = n * Card.NUM_CARDS_PER_DECK + cutIndex
         else:

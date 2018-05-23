@@ -1,7 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
 from src.Logic.StrategyChart import StrategyChart
-from src.Logic.InsurancePolicy import InsurancePolicy
 from src.Logic.Command import Command
 from src.Utilities.Utilities import LINE_END
 import src.Utilities.Configuration as config
@@ -82,7 +81,7 @@ class HumanInputPolicy(DecisionPolicy):
                                                                 hand.value,
                                                                 upcard))
         command, response = prompt(availableCommands)
-        while command == None:
+        while command is None:
             print('Unknown or unavailable action: %s' % response)
             command, response = prompt(availableCommands)
         return command

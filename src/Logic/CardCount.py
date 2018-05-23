@@ -1,6 +1,8 @@
 class CardCount():
     """Pluggable mechanism for card counting"""
 
+    ranking = []
+
     def __init__(self):
         """Initializes members"""
         self.count = 0
