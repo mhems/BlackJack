@@ -1,3 +1,5 @@
+from math import floor
+
 from src.Logic.Command import Command
 import src.Utilities.Configuration as config
 
@@ -11,7 +13,8 @@ class DoubleCommand(Command):
 
     def perform(self, slot, **kwargs):
         """Perform Double command"""
-        slot.multiplyPot(config.get('DOUBLE_RATIO'))
+        amt = floor(slot.pot * config.get('DOUBLE_RATIO'))
+        slot.pots[slot.index] += slot.player.wager(amt)
         self.hit_command.execute(slot, **kwargs)
         return self.stand_command.execute(slot, **kwargs)
 

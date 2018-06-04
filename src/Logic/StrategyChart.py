@@ -142,8 +142,7 @@ class StrategyChart:
                    Command.SURRENDER_ENUM not in availableCommands):
                 return Command.HIT_ENUM
             return Command.getCommandEnumFromString(advice)
-        else:
-            return None
+        return None
 
     def toFile(self, filename):
         """Writes chart(s) to file in parse-expected format"""

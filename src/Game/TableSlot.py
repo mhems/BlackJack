@@ -39,23 +39,17 @@ class TableSlot:
     @property
     def playerCanAffordDouble(self):
         """Return True iff player has adequate funds to double"""
-        return (self.player.stack.amount >=
-                floor( self.pot *
-                       config.get('DOUBLE_RATIO') ) )
+        return self._canAfford('DOUBLE_RATIO')
 
     @property
     def playerCanAffordSplit(self):
         """Return True iff player has adequate funds to split"""
-        return (self.player.stack.amount >=
-                floor( self.pot *
-                       config.get('SPLIT_RATIO') ) )
+        return self._canAfford('SPLIT_RATIO')
 
     @property
     def playerCanAffordInsurance(self):
         """Return True iff player has adequate funds to insurance"""
-        return (self.player.stack.amount >=
-                floor(self.pot *
-                      config.get('INSURANCE_RATIO') ) )
+        return self._canAfford('INSURANCE_RAIO')
 
     @property
     def isActive(self):
@@ -81,24 +75,19 @@ class TableSlot:
 
     def beginRound(self):
         """Executes any actions necessary to begin turn"""
-        pass
+        self.promptBet()
 
     def endRound(self):
         """Executes any actions necessary to end turn"""
-        total = 0
-        for pot in self.pots:
-            total += pot
-        if not config.get('WINNINGS_REMAIN_IN_POT'):
-            if self.isOccupied:
-                self.player.receive_payment(total)
-            self.pots = [0]
-        else:
-            self.pots = [total]
         if self.isOccupied:
+            self.player.receive_payment(sum(self.pots))
             self.player.receive_payment(self.insurance)
+        self.pots = [0]
         self.insurance = 0
+        self.insured = False
         self.index = 0
         self.settled = False
+        self.surrendered = False
         self.clearHands()
 
     def clearHands(self):
@@ -147,10 +136,6 @@ class TableSlot:
         """Places amt in pot"""
         self.pots[self.index] += amt
 
-    def multiplyPot(self, factor):
-        """Adds factor of current pot to pot"""
-        self.pots[self.index] += self.player.wager(floor(self.pot * factor))
-
     def splitHand(self):
         """Splits player's hand into 2 new hands with one card each"""
         (card1, card2) = self.hand.splitCards
@@ -164,3 +149,7 @@ class TableSlot:
         self.pots.insert(self.index + 1, split_bet)
         self.hands[self.index + 1].addCards(card2)
         self.hands[self.index + 1].wasSplit = True
+
+    def _canAfford(self, ratioName):
+        needed_amt = floor(self.pot * config.get(ratioName))
+        return self.player.stack.amount >= needed_amt

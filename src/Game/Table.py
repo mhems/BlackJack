@@ -2,7 +2,6 @@ from math import floor
 
 import src.Utilities.Configuration as config
 import src.Utilities.Utilities as util
-from src.Basic.Card import Card
 from src.Basic.Shoe import Shoe
 from src.Basic.Shoe import fisher_yates_shuffle
 from src.Game.TableSlot import TableSlot
@@ -88,39 +87,32 @@ class Table:
             return True
         return False
 
-    def play(self):
-        """Plays one round of blackjack"""
+    def beginRound(self):
         print('>' * 80)
-        dealerHasBlackjack = False
-        for slot in self.slots:
+        for slot in self.occupied_slots:
             slot.beginRound()
         self.dealer_slot.beginRound()
-        for slot in self.occupied_slots:
-            slot.promptBet()
         upcard = self.dealCards()
         print('Dealer shows', upcard.rank)
+        return upcard
+
+    def endRound(self):
+        self.settle_bets()
+        for slot in self.occupied_slots:
+            slot.endRound()
+        self.dealer_slot.endRound()
+        for slot in self.occupied_slots:
+            print('%s plus $%d in pot' % (slot.player, slot.pot))
+        print('<' * 80)
+
+    def play(self):
+        """Plays one round of blackjack"""
+
+        upcard = self.beginRound()
         if config.get('EARLY_SURRENDER'):
             self.offer_early_surrender()
-        if ( upcard.value == ( config.get('BLACKJACK_VALUE') -
-                               Card.HARD_ACE_VALUE ) and
-             self.dealer_slot.hand.isNaturalBlackjack ):
-            dealerHasBlackjack = True
-            print('Dealer has blackjack')
-        if config.get('OFFER_INSURANCE') and upcard.isAce:
-            for slot in self.active_slots:
-                slot.promptInsurance()
-            dealerHasBlackjack = self.dealer_slot.hand.isNaturalBlackjack
-            buffer = "has" if dealerHasBlackjack else "doesn't have"
-            print('Dealer %s blackjack' % buffer)
-        if dealerHasBlackjack:
-            for slot in self.active_slots:
-                if not slot.isNaturalBlackjack:
-                    self.bank.deposit(slot.takePot())
-                if slot.insured:
-                    print('You\'re insured though')
-                    self.payout(slot,
-                                slot.insurance * config.get('INSURANCE_PAYOUT_RATIO'))
-                slot.settled = True
+        if self.dealer_slot.hand.isNaturalBlackjack:
+            self.handle_dealer_blackjack(upcard)
         else:
             for slot in self.active_slots:
                 dealerActs = False
@@ -139,13 +131,8 @@ class Table:
                 util.printBanner('DEALER')
                 self.dealToSlot(self.dealer_slot, upcard)
                 print()
-        self.settle_bets()
-        for slot in self.occupied_slots:
-            slot.endRound()
-        self.dealer_slot.clearHands()
-        for slot in self.occupied_slots:
-            print('%s plus $%d in pot' % (slot.player, slot.pot))
-        print('<' * 80)
+
+        self.endRound()
 
     def payout(self, slot, amt):
         """Pay floor of amt to slot"""
@@ -153,13 +140,12 @@ class Table:
 
     def dealToSlot(self, slot, upcard):
         """Manages turn for active slot"""
-        for index in range(len(slot.hands)):
-            slot.index = index
+        for hand in slot.hands:
             done = False
             while not done:
-                if slot.hand.isBlackjackValued:
+                if hand.isBlackjackValued:
                     break
-                if slot.hand.isBust:
+                if hand.isBust:
                     self.bank.deposit(slot.takePot())
                     slot.settled = True
                     break
@@ -167,10 +153,11 @@ class Table:
                            if cmd.isAvailable(slot)]
                 response = slot.promptAction(upcard, actions)
                 if response == 'Su':
+                    slot.surrendered = True
                     self.bank.deposit(
                         slot.takePot(config.get('LATE_SURRENDER_RATIO')) )
                 done = self.commands[response].execute(slot)
-            print('Hand ends at', slot.hand.value)
+            print('Hand ends at', hand.value)
 
     def offer_early_surrender(self):
         """Offers early surrender to each active player"""
@@ -181,10 +168,10 @@ class Table:
                     slot.takePot(config.get('EARLY_SURRENDER_RATIO')) )
 
     def settle_bets(self):
-        """Settles each active player's
+        """Settles each active player's bet(s)
            Assumes:
               * each player's hands are not bust, natural, or surrendered
-              * dealer does not have natural"""
+              * dealer does not have natural blackjack"""
         dealer_value = self.dealer_slot.hand.value
         for slot in self.active_slots:
             if not slot.settled:
@@ -219,3 +206,19 @@ class Table:
         """Unregister player from slot, if present"""
         if self.slots[pos].isOccupied:
             self.slots[pos].unseatPlayer()
+
+
+    def handle_dealer_blackjack(self, upcard):
+        """Handles the event dealer is dealt a natural blackjack"""
+        if config.get('OFFER_INSURANCE') and upcard.isAce:
+            for slot in self.active_slots:
+                slot.promptInsurance()
+        print('Dealer has blackjack')
+        for slot in self.active_slots:
+            if not slot.isNaturalBlackjack:
+                self.bank.deposit(slot.takePot())
+            if slot.insured:
+                print("You're insured though")
+                self.payout(slot,
+                            slot.insurance * config.get('INSURANCE_PAYOUT_RATIO'))
+            slot.settled = True

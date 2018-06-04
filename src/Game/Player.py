@@ -1,6 +1,6 @@
 from src.Game.Bank import Bank
-from src.Game.Bank import HouseBank
 from src.Logic.DecisionPolicy import DealerPolicy
+from src.Logic.InsurancePolicy import DeclineInsurancePolicy
 
 class Player:
     """Representation of a blackjack player"""
@@ -56,6 +56,9 @@ class Dealer(Player):
 
     def __init__(self, name='Dealer'):
         """Initializes Dealer members"""
-        super().__init__(name, DealerPolicy())
+        super().__init__(name, DealerPolicy(), DeclineInsurancePolicy())
         self.isActive = True
-        self.stack = HouseBank()
+
+    def amountToBet(self, **kwargs):
+        """Dealer does not bet"""
+        return 0
