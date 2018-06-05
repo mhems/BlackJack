@@ -1,8 +1,8 @@
-from collections  import OrderedDict
+from collections import OrderedDict
 from configparser import ConfigParser
 import re
 
-from src.Basic.Card          import Card
+from src.Basic.Card import Card
 from src.Utilities.Utilities import Enum
 import src.Utilities.Utilities as util
 
@@ -134,8 +134,6 @@ def loadConfiguration(filename):
     assignInt('game', 'MAXIMUM_BET',
               lambda x : posInt(x) and x >= min_bet,
               'to be positive integer no less than minimum bet (%d)' % min_bet)
-
-    assignBool('preferences', 'WINNINGS_REMAIN_IN_POT')
 
 def loadDefaultConfiguration():
     """Loads default configuration"""
