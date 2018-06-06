@@ -1,6 +1,6 @@
 import unittest
 
-from src.Logic.InsurancePolicy import HumanInputInsurancePolicy
+from src.Logic.policies import HumanInputInsurancePolicy
 
 class testHumanInputInsurancePolicy(unittest.TestCase):
 

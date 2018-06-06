@@ -5,14 +5,14 @@ import argparse
 from src.Game.Player import Player
 from src.Game.Table import Table
 from src.Game.Bank import InsufficientFundsError
-from src.Logic.DecisionPolicy import HumanInputPolicy
-from src.Logic.DecisionPolicy import BasicStrategyPolicy
-from src.Logic.DecisionPolicy import FeedbackDecisionPolicy
-from src.Logic.InsurancePolicy import DeclineInsurancePolicy
-from src.Logic.BettingStrategy import MinBettingStrategy
+from src.Logic.policies import (HumanInputPolicy,
+                                BasicStrategyPolicy,
+                                FeedbackDecisionPolicy,
+                                DeclineInsurancePolicy,
+                                MinBettingStrategy)
 from src.Logic.CardCount import HiLoCount
-from src.Utilities.Configuration import loadConfiguration
-from src.Utilities.Configuration import SemanticConfigError
+from src.Utilities.Configuration import (loadConfiguration,
+                                         SemanticConfigError)
 
 """Drives program execution"""
 

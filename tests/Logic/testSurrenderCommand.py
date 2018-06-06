@@ -4,7 +4,7 @@ from src.Basic.Card import Card
 from src.Basic.Shoe import Shoe
 from src.Logic.Command import (HitCommand,
                                SurrenderCommand)
-from src.Logic.BettingStrategy import MinBettingStrategy
+from src.Logic.policies import MinBettingStrategy
 from src.Game.TableSlot import TableSlot
 from src.Game.Player import Player
 import src.Utilities.Configuration as config

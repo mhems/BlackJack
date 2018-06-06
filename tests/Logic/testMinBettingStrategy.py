@@ -1,6 +1,6 @@
 import unittest
 
-from src.Logic.BettingStrategy import MinBettingStrategy
+from src.Logic.policies import MinBettingStrategy
 import src.Utilities.Configuration as config
 
 class testMinBettingStrategy(unittest.TestCase):

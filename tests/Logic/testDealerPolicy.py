@@ -2,7 +2,7 @@ import unittest
 
 from src.Basic.Card import Card
 from src.Basic.BlackjackHand import BlackjackHand
-from src.Logic.DecisionPolicy import DealerPolicy
+from src.Logic.policies import DealerPolicy
 from src.Logic.Command import Command
 import src.Utilities.Configuration as config
 

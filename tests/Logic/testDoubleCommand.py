@@ -6,7 +6,7 @@ from src.Logic.Command import (DoubleCommand,
                                HitCommand,
                                StandCommand,
                                SplitCommand)
-from src.Logic.BettingStrategy import MinBettingStrategy
+from src.Logic.policies import MinBettingStrategy
 from src.Game.TableSlot import TableSlot
 from src.Game.Player import Player
 import src.Utilities.Configuration as config

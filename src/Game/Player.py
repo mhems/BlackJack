@@ -1,6 +1,6 @@
 from src.Game.Bank import Bank
-from src.Logic.DecisionPolicy import DealerPolicy
-from src.Logic.InsurancePolicy import DeclineInsurancePolicy
+from src.Logic.policies import (DealerPolicy,
+                                DeclineInsurancePolicy)
 
 class Player:
     """Representation of a blackjack player"""

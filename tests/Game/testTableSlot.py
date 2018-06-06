@@ -1,11 +1,11 @@
 import unittest
 
-from src.Basic.Card               import Card
-from src.Basic.BlackjackHand      import BlackjackHand
-from src.Game.Player              import Player
-from src.Game.TableSlot           import TableSlot
-from src.Logic.BettingStrategy    import BettingStrategy
-from src.Logic.BettingStrategy import MinBettingStrategy
+from src.Basic.Card import Card
+from src.Basic.BlackjackHand import BlackjackHand
+from src.Game.Player import Player
+from src.Game.TableSlot import TableSlot
+from src.Logic.policies import (BettingStrategy,
+                                MinBettingStrategy)
 import src.Utilities.Configuration as config
 
 class testTableSlot(unittest.TestCase):

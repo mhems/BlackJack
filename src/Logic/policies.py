@@ -243,3 +243,58 @@ class StrategyChart:
             result += '\n\n> Pairs\n'
             result += repr(self.pair_chart)
         return result
+
+class BettingStrategy(metaclass=ABCMeta):
+    """Base class for betting policies"""
+
+    @abstractmethod
+    def bet(self, **kwargs):
+        """Returns amount to wager"""
+        raise NotImplementedError(
+            'BettingStrategy implentations must implement the bet method')
+
+class HumanInputBettingStrategy(BettingStrategy):
+    """Policy to bet based on inputted amount"""
+
+    def bet(self, **kwargs):
+        """Bets according to human input"""
+        result = input('Enter your bet amount: ')
+        while not re.match(r'[1-9][0-9]+', result):
+            print('Bet must be positive integer')
+            result =input('Enter your bet amount: ')
+        return result
+
+class MinBettingStrategy(BettingStrategy):
+    """Policy to always bet table minimum"""
+
+    def bet(self, **kwargs):
+        """Return minimum bet allowed"""
+        return config.get('MINIMUM_BET')
+
+class InsurancePolicy(metaclass=ABCMeta):
+    """Base Class for insurance policies on when to accept insurance"""
+
+    @abstractmethod
+    def insure(self, hand, **kwargs):
+        """Return True if player accepts insurance offer"""
+        raise NotImplementedError(
+            'InsurancePolicy implementations must implement the insure method')
+
+class DeclineInsurancePolicy(InsurancePolicy):
+    """Policy that always declines insurance offers"""
+
+    def insure(self, hand, **kwargs):
+        """Always returns False"""
+        return False
+
+class HumanInputInsurancePolicy(InsurancePolicy):
+    """Policy that prompts for whether to accept insurance offer"""
+
+    def insure(self, hand, **kwargs):
+        """Returns True iff input indicates wish to insure"""
+        response = 'uninitialized'
+        while response[0].lower() not in ['y', 'n']:
+            response = input('Your hand (%s) has value %d, '
+                             'Take insurance? (Yes/No)' %
+                             (str(hand), hand.value))
+        return response[0].lower() == 'y'

@@ -1,6 +1,6 @@
 import unittest
 
-from src.Logic.InsurancePolicy import DeclineInsurancePolicy
+from src.Logic.policies import DeclineInsurancePolicy
 
 class testDeclineInsurancePolicy(unittest.TestCase):
 

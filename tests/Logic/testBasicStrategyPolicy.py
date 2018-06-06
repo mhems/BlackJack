@@ -1,7 +1,7 @@
 import unittest
 import re
 
-from src.Logic.DecisionPolicy import BasicStrategyPolicy
+from src.Logic.policies import BasicStrategyPolicy
 from src.Basic.BlackjackHand import BlackjackHand
 from src.Basic.Card import Card
 from src.Logic.Command import Command
