@@ -1,14 +1,14 @@
 import unittest
 
-from src.Basic.Card          import Card
-from src.Basic.Shoe          import Shoe
-from src.Logic.DoubleCommand import DoubleCommand
-from src.Logic.HitCommand    import HitCommand
-from src.Logic.StandCommand  import StandCommand
-from src.Logic.SplitCommand  import SplitCommand
+from src.Basic.Card import Card
+from src.Basic.Shoe import Shoe
+from src.Logic.Command import (DoubleCommand,
+                               HitCommand,
+                               StandCommand,
+                               SplitCommand)
 from src.Logic.BettingStrategy import MinBettingStrategy
-from src.Game.TableSlot      import TableSlot
-from src.Game.Player         import Player
+from src.Game.TableSlot import TableSlot
+from src.Game.Player import Player
 import src.Utilities.Configuration as config
 
 class testDoubleCommand(unittest.TestCase):

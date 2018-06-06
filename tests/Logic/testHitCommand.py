@@ -1,9 +1,9 @@
 import unittest
 
-from src.Logic.HitCommand import HitCommand
-from src.Basic.Shoe       import Shoe
-from src.Game.TableSlot   import TableSlot
-from src.Game.Player      import Player
+from src.Logic.Command import HitCommand
+from src.Basic.Shoe import Shoe
+from src.Game.TableSlot import TableSlot
+from src.Game.Player import Player
 
 class testHitCommand(unittest.TestCase):
     def setUp(self):

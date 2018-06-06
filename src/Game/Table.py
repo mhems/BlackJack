@@ -7,12 +7,13 @@ from src.Game.TableSlot import TableSlot
 from src.Game.Bank import Bank
 from src.Game.Player import Dealer
 from src.Logic.CardCount     import HiLoCount
-from src.Logic.Command       import Command
-from src.Logic.HitCommand    import HitCommand
-from src.Logic.StandCommand  import StandCommand
-from src.Logic.DoubleCommand import DoubleCommand
-from src.Logic.SplitCommand  import SplitCommand
-from src.Logic.SurrenderCommand  import SurrenderCommand
+from src.Logic.Command import (Command,
+                               HitCommand,
+                               StandCommand,
+                               DoubleCommand,
+                               SplitCommand,
+                               SurrenderCommand)
+
 
 class Table:
     """Representation of Blackjack Table"""

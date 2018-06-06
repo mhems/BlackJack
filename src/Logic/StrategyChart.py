@@ -1,8 +1,8 @@
 import re
 
 import src.Utilities.Configuration as config
-from src.Basic.Card              import Card
-from src.Logic.Command           import Command
+from src.Basic.Card import Card
+from src.Logic.Command import Command
 
 # Actions:
 # H  - Hit

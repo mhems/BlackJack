@@ -1,12 +1,12 @@
 import unittest
 
-from src.Basic.Card               import Card
-from src.Basic.Shoe               import Shoe
-from src.Logic.HitCommand         import HitCommand
-from src.Logic.SurrenderCommand   import SurrenderCommand
+from src.Basic.Card import Card
+from src.Basic.Shoe import Shoe
+from src.Logic.Command import (HitCommand,
+                               SurrenderCommand)
 from src.Logic.BettingStrategy import MinBettingStrategy
-from src.Game.TableSlot           import TableSlot
-from src.Game.Player              import Player
+from src.Game.TableSlot import TableSlot
+from src.Game.Player import Player
 import src.Utilities.Configuration as config
 
 class testSurrenderCommand(unittest.TestCase):
