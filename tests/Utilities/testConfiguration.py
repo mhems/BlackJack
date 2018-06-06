@@ -1,6 +1,6 @@
 import unittest
 
-from src.Utilities.Configuration import *
+from src.Utilities.config import *
 
 class testConfiguration(unittest.TestCase):
 

@@ -3,14 +3,16 @@ import unittest
 from src.Basic.Card import Card
 from src.Basic.Shoe import Shoe
 from src.Basic.BlackjackHand import BlackjackHand
-from src.Logic.Command import (HitCommand,
-                               StandCommand,
-                               DoubleCommand,
-                               SplitCommand)
+from src.Logic.commands import (HitCommand,
+                                StandCommand,
+                                DoubleCommand,
+                                SplitCommand)
 from src.Logic.policies import MinBettingStrategy
 from src.Game.TableSlot import TableSlot
 from src.Game.Player import Player
-import src.Utilities.Configuration as config
+from src.Utilities.config import (get,
+                                  loadConfiguration,
+                                  loadDefaultConfiguration)
 
 class testSplitCommand(unittest.TestCase):
     def setUp(self):
@@ -27,8 +29,8 @@ class testSplitCommand(unittest.TestCase):
         hitCmd = HitCommand(shoe)
         standCmd = StandCommand()
         splitCmd = SplitCommand(hitCmd, standCmd)
-        player.receive_payment(config.get('MINIMUM_BET') *
-                               (1 + config.get('SPLIT_RATIO')))
+        player.receive_payment(get('MINIMUM_BET') *
+                               (1 + get('SPLIT_RATIO')))
         slot.addCards(Card(5,'C'), Card(5,'H'))
         slot.promptBet()
         rc = splitCmd.perform(slot)
@@ -53,12 +55,12 @@ class testSplitCommand(unittest.TestCase):
         hitCmd = HitCommand(shoe)
         standCmd = StandCommand()
         splitCmd = SplitCommand(hitCmd, standCmd)
-        player.receive_payment(config.get('MINIMUM_BET'))
+        player.receive_payment(get('MINIMUM_BET'))
         slot.addCards(Card(5,'C'), Card(6,'C'))
         slot.promptBet()
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available to insufficiently funded player')
-        player.receive_payment(config.get('MINIMUM_BET') *
-                               config.get('SPLIT_RATIO'))
+        player.receive_payment(get('MINIMUM_BET') *
+                               get('SPLIT_RATIO'))
         slot.promptBet()
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be avaible to non-pair hand')
 
@@ -66,20 +68,20 @@ class testSplitCommand(unittest.TestCase):
         slot.addCards(Card(10,'C'), Card('K','C'))
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available to non rank-paired hand when split by value is disallowed')
         slot.clearHands()
-        config.loadConfiguration('tests/Logic/test_files/split_by_value.ini')
+        loadConfiguration('tests/Logic/test_files/split_by_value.ini')
         slot.addCards(Card(10,'C'), Card('K','C'))
         self.assertTrue(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should be availabe to non rank-paired hand when split by value is allowed')
 
         hitCmd.perform(slot)
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be availabe to hand beyond first action')
-        config.loadConfiguration('tests/Logic/test_files/resplit_upto.ini')
+        loadConfiguration('tests/Logic/test_files/resplit_upto.ini')
         slot.clearHands()
         slot.promptBet()
         slot.addCards(Card(5,'C'), Card(5,'C'))
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be availabe if splitting is disallowed')
 
-        player.receive_payment(config.get('MINIMUM_BET') *
-                               (2 + 2 * config.get('SPLIT_RATIO')))
+        player.receive_payment(get('MINIMUM_BET') *
+                               (2 + 2 * get('SPLIT_RATIO')))
         slot.promptBet()
         splitCmd.perform(slot)
         slot.clearHands()
@@ -87,11 +89,11 @@ class testSplitCommand(unittest.TestCase):
         splitCmd.perform(slot)
         slot.hand.reset()
         slot.hand.addCards(Card('A','C'), Card('A', 'H'))
-        config.loadConfiguration('tests/Logic/test_files/resplit_aces.ini')
+        loadConfiguration('tests/Logic/test_files/resplit_aces.ini')
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available if hand is aces from split and resplitting aces is disallowed')
-        player.receive_payment(config.get('MINIMUM_BET') *
-                               (2 + config.get('SPLIT_RATIO')))
-        config.loadDefaultConfiguration()
+        player.receive_payment(get('MINIMUM_BET') *
+                               (2 + get('SPLIT_RATIO')))
+        loadDefaultConfiguration()
         self.assertTrue(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should be available on split aces if resplit aces allowed')
 
 if __name__ == '__main__':

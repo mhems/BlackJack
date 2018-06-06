@@ -3,8 +3,6 @@ from operator import (le, lt, ge, gt)
 
 """Functions to gather statistics on various data structures"""
 
-# BASIC STATISTICS
-
 def mean(sequence):
     """Computes the mean of the sequence"""
     n = len(sequence)

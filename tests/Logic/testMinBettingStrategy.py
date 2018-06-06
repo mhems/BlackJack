@@ -1,7 +1,7 @@
 import unittest
 
 from src.Logic.policies import MinBettingStrategy
-import src.Utilities.Configuration as config
+from src.Utilities.config import get
 
 class testMinBettingStrategy(unittest.TestCase):
     def setUp(self):
@@ -12,7 +12,7 @@ class testMinBettingStrategy(unittest.TestCase):
 
     def testBet(self):
         strat = MinBettingStrategy()
-        self.assertEqual(strat.bet(), config.get('MINIMUM_BET'), 'testMinBettingStrategy:testBet:Bet should always be minimum')
+        self.assertEqual(strat.bet(), get('MINIMUM_BET'), 'testMinBettingStrategy:testBet:Bet should always be minimum')
 
 if __name__ == '__main__':
     unittest.main()

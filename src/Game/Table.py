@@ -1,18 +1,18 @@
 from math import floor
 
-import src.Utilities.Configuration as config
+from src.Utilities.config import get
 from src.Basic.Shoe import Shoe
 from src.Basic.Shoe import fisher_yates_shuffle
 from src.Game.TableSlot import TableSlot
 from src.Game.Bank import Bank
 from src.Game.Player import Dealer
-from src.Logic.CardCount     import HiLoCount
-from src.Logic.Command import (Command,
-                               HitCommand,
-                               StandCommand,
-                               DoubleCommand,
-                               SplitCommand,
-                               SurrenderCommand)
+from src.Logic.CardCount import HiLoCount
+from src.Logic.commands import (Command,
+                                HitCommand,
+                                StandCommand,
+                                DoubleCommand,
+                                SplitCommand,
+                                SurrenderCommand)
 
 
 class Table:
@@ -25,9 +25,9 @@ class Table:
         self.num_slots = num_slots
         # Index 0 is dealer's leftmost slot
         self.slots = [TableSlot() for _ in range(self.num_slots)]
-        self.shoe = Shoe(config.get('NUM_DECKS'),
+        self.shoe = Shoe(get('NUM_DECKS'),
                          fisher_yates_shuffle,
-                         config.get('CUT_INDEX'))
+                         get('CUT_INDEX'))
         self.shoe.shuffle()
         self.shoe.registerObserver(HiLoCount())
         self.dealer_slot.seatPlayer(Dealer())
@@ -109,7 +109,7 @@ class Table:
         """Plays one round of blackjack"""
 
         upcard = self.beginRound()
-        if config.get('EARLY_SURRENDER'):
+        if get('EARLY_SURRENDER'):
             self.offer_early_surrender()
         if self.dealer_slot.hand.isNaturalBlackjack:
             self.handle_dealer_blackjack(upcard)
@@ -120,7 +120,7 @@ class Table:
                 if slot.hand.isNaturalBlackjack:
                     print('BLACKJACK!')
                     self.payout( slot,
-                                 slot.pot * config.get('BLACKJACK_PAYOUT_RATIO') )
+                                 slot.pot * get('BLACKJACK_PAYOUT_RATIO') )
                     slot.settled = True
                 else:
                     dealerActs = True
@@ -155,7 +155,7 @@ class Table:
                 if response == 'Su':
                     slot.surrendered = True
                     self.bank.deposit(
-                        slot.takePot(config.get('LATE_SURRENDER_RATIO')) )
+                        slot.takePot(get('LATE_SURRENDER_RATIO')) )
                 done = self.commands[response].execute(slot)
             print('Hand ends at', hand.value)
 
@@ -165,7 +165,7 @@ class Table:
             slot.promptEarlySurrender()
             if slot.surrendered:
                 self.bank.deposit(
-                    slot.takePot(config.get('EARLY_SURRENDER_RATIO')) )
+                    slot.takePot(get('EARLY_SURRENDER_RATIO')) )
 
     def settle_bets(self):
         """Settles each active player's bet(s)
@@ -180,7 +180,7 @@ class Table:
                     value = slot.hand.value
                     if value > dealer_value or self.dealer_slot.hand.isBust:
                         self.payout(slot, slot.pot *
-                                    config.get('PAYOUT_RATIO') )
+                                    get('PAYOUT_RATIO') )
                     elif value < dealer_value:
                         self.bank.deposit(slot.takePot())
 
@@ -210,7 +210,7 @@ class Table:
 
     def handle_dealer_blackjack(self, upcard):
         """Handles the event dealer is dealt a natural blackjack"""
-        if config.get('OFFER_INSURANCE') and upcard.isAce:
+        if get('OFFER_INSURANCE') and upcard.isAce:
             for slot in self.active_slots:
                 slot.promptInsurance()
         print('Dealer has blackjack')
@@ -220,5 +220,5 @@ class Table:
             if slot.insured:
                 print("You're insured though")
                 self.payout(slot,
-                            slot.insurance * config.get('INSURANCE_PAYOUT_RATIO'))
+                            slot.insurance * get('INSURANCE_PAYOUT_RATIO'))
             slot.settled = True

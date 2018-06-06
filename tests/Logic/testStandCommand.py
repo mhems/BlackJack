@@ -1,6 +1,6 @@
 import unittest
 
-from src.Logic.Command import StandCommand
+from src.Logic.commands import StandCommand
 from src.Basic.Shoe import Shoe
 from src.Game.TableSlot import TableSlot
 from src.Game.Player import Player

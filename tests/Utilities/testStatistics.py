@@ -1,5 +1,5 @@
 import unittest
-from src.Utilities.Statistics import *
+from src.Utilities.stats import *
 
 class testStatistics(unittest.TestCase):
     def setUp(self):

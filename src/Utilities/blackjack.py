@@ -11,8 +11,8 @@ from src.Logic.policies import (HumanInputPolicy,
                                 DeclineInsurancePolicy,
                                 MinBettingStrategy)
 from src.Logic.CardCount import HiLoCount
-from src.Utilities.Configuration import (loadConfiguration,
-                                         SemanticConfigError)
+from src.Utilities.config import (loadConfiguration,
+                                  SemanticConfigError)
 
 """Drives program execution"""
 

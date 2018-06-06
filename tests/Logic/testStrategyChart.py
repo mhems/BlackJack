@@ -4,7 +4,7 @@ import unittest
 from src.Logic.policies import StrategyChart
 from src.Basic.BlackjackHand import BlackjackHand
 from src.Basic.Card import Card
-from src.Logic.Command import Command
+from src.Logic.commands import Command
 
 class testStrategyChart(unittest.TestCase):
 

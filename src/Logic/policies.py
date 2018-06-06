@@ -1,9 +1,9 @@
 from abc import ABCMeta, abstractmethod
 import re
 
-from src.Logic.Command import Command
+from src.Logic.commands import Command
 from src.Basic.Card import Card
-import src.Utilities.Configuration as config
+from src.Utilities.config import get
 
 class DecisionPolicy(metaclass=ABCMeta):
     """Base class for decision policies on how to act"""
@@ -30,7 +30,7 @@ class DealerPolicy(DecisionPolicy):
 
     def decide(self, hand, upcard, _, **kwargs):
         """Decides command according to dealer rules"""
-        hitS17 = hand.isSoft17 and config.get('DEALER_HITS_ON_SOFT_17')
+        hitS17 = hand.isSoft17 and get('DEALER_HITS_ON_SOFT_17')
         if hand.value < 17 or hitS17:
             return Command.HIT
         return Command.STAND
@@ -196,7 +196,7 @@ class StrategyChart:
         """Advise action given player's hand and dealer's up card"""
         value = player_hand.value
         advice = None
-        if config.get('SPLIT_BY_VALUE'):
+        if get('SPLIT_BY_VALUE'):
             isPair = player_hand.isPairByValue
         else:
             isPair = player_hand.isPairByRank
@@ -269,7 +269,7 @@ class MinBettingStrategy(BettingStrategy):
 
     def bet(self, **kwargs):
         """Return minimum bet allowed"""
-        return config.get('MINIMUM_BET')
+        return get('MINIMUM_BET')
 
 class InsurancePolicy(metaclass=ABCMeta):
     """Base Class for insurance policies on when to accept insurance"""

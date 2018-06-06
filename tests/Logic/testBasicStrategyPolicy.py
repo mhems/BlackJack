@@ -4,7 +4,7 @@ import re
 from src.Logic.policies import BasicStrategyPolicy
 from src.Basic.BlackjackHand import BlackjackHand
 from src.Basic.Card import Card
-from src.Logic.Command import Command
+from src.Logic.commands import Command
 
 class testBasicStrategyPolicy(unittest.TestCase):
     def setUp(self):

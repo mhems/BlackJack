@@ -1,7 +1,7 @@
 from math import floor
 
 from src.Basic.BlackjackHand import BlackjackHand
-import src.Utilities.Configuration as config
+from src.Utilities.config import get
 
 class TableSlot:
     """Representation of one seat at the table (player, pot, hand)"""
@@ -105,7 +105,7 @@ class TableSlot:
              self.player.insure(self.hand,**kwargs) ):
             self.insured = True
             self.insurance = self.player.wager(
-                self.pots[0] * config.get('INSURANCE_RATIO'))
+                self.pots[0] * get('INSURANCE_RATIO'))
 
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
@@ -144,12 +144,12 @@ class TableSlot:
         self.hands[self.index].wasSplit = True
         self.hands.insert(self.index + 1, BlackjackHand())
         split_bet = floor( self.pots[self.index] *
-                           config.get('SPLIT_RATIO') )
+                           get('SPLIT_RATIO') )
         self.player.wager(split_bet)
         self.pots.insert(self.index + 1, split_bet)
         self.hands[self.index + 1].addCards(card2)
         self.hands[self.index + 1].wasSplit = True
 
     def _canAfford(self, ratioName):
-        needed_amt = floor(self.pot * config.get(ratioName))
+        needed_amt = floor(self.pot * get(ratioName))
         return self.player.stack.amount >= needed_amt

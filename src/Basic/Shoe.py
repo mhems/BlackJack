@@ -2,7 +2,7 @@ from math import floor
 from random import Random
 
 from src.Basic.Card import Card
-import src.Utilities.Configuration as config
+from src.Utilities.config import get
 
 class Shoe:
     """Represents a shoe of decks for dealing purposes"""
@@ -73,7 +73,7 @@ class Shoe:
         self.cards = self.algorithm(self.cards)
         self.index = 0
         self.notifyObservers(None)
-        self.burn(config.get('NUM_CARDS_BURN_ON_SHUFFLE'))
+        self.burn(get('NUM_CARDS_BURN_ON_SHUFFLE'))
 
     def registerObserver(self, observer):
         self.observers.append(observer)

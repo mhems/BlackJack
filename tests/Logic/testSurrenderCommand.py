@@ -2,12 +2,14 @@ import unittest
 
 from src.Basic.Card import Card
 from src.Basic.Shoe import Shoe
-from src.Logic.Command import (HitCommand,
-                               SurrenderCommand)
+from src.Logic.commands import (HitCommand,
+                                SurrenderCommand)
 from src.Logic.policies import MinBettingStrategy
 from src.Game.TableSlot import TableSlot
 from src.Game.Player import Player
-import src.Utilities.Configuration as config
+from src.Utilities.config import (get,
+                                  loadDefaultConfiguration,
+                                  loadConfiguration)
 
 class testSurrenderCommand(unittest.TestCase):
     def setUp(self):
@@ -24,13 +26,13 @@ class testSurrenderCommand(unittest.TestCase):
 
     def testIsAvailable(self):
         player = Player("Test", None, None, MinBettingStrategy())
-        player.receive_payment(config.get('MINIMUM_BET'))
+        player.receive_payment(get('MINIMUM_BET'))
         self.slot.seatPlayer(player)
         self.slot.addCards(Card('A','H'), Card(6,'D'))
-        config.loadConfiguration('tests/Logic/test_files/no_surrender.ini')
+        loadConfiguration('tests/Logic/test_files/no_surrender.ini')
         self.assertFalse(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should not be available if disallowed')
 
-        config.loadDefaultConfiguration()
+        loadDefaultConfiguration()
         self.assertTrue(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should be available if allowed')
 
         HitCommand(Shoe(2, lambda x:x)).perform(self.slot)
