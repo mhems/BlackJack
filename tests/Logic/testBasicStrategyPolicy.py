@@ -1,10 +1,10 @@
 import unittest
 import re
 
-from src.Logic.DecisionPolicy      import BasicStrategyPolicy
-from src.Basic.BlackjackHand       import BlackjackHand
-from src.Basic.Card                import Card
-from src.Logic.Command             import Command
+from src.Logic.DecisionPolicy import BasicStrategyPolicy
+from src.Basic.BlackjackHand import BlackjackHand
+from src.Basic.Card import Card
+from src.Logic.Command import Command
 
 class testBasicStrategyPolicy(unittest.TestCase):
     def setUp(self):
@@ -14,26 +14,26 @@ class testBasicStrategyPolicy(unittest.TestCase):
         pass
 
     def assertRowNoSurrender(self, strat, hand, exp):
-        cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
-                Command.DOUBLE_ENUM, Command.SPLIT_ENUM]
+        cmds = [Command.HIT, Command.STAND,
+                Command.DOUBLE, Command.SPLIT]
         self.assertRowWithCommands(strat, hand, exp, cmds)
 
     def assertRowNoDouble(self, strat, hand, exp):
-        cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
-                Command.SPLIT_ENUM, Command.SURRENDER_ENUM]
+        cmds = [Command.HIT, Command.STAND,
+                Command.SPLIT, Command.SURRENDER]
         self.assertRowWithCommands(strat, hand, exp, cmds)
 
     def assertRow(self, strat, hand, exp):
-        cmds = [Command.HIT_ENUM, Command.STAND_ENUM,
-                Command.DOUBLE_ENUM, Command.SPLIT_ENUM,
-                Command.SURRENDER_ENUM]
+        cmds = [Command.HIT, Command.STAND,
+                Command.DOUBLE, Command.SPLIT,
+                Command.SURRENDER]
         self.assertRowWithCommands(strat, hand, exp, cmds)
 
     def assertRowWithCommands(self, strat, hand, exp, cmds):
         ls = re.split(r' +', exp)
         for (up, e) in zip(Card.values, ls):
             advice = strat.decide(hand, Card(up, 'H'), cmds)
-            expect = Command.getCommandEnumFromString(e)
+            expect = Command.string_to_command[e.upper()]
             self.assertEqual(advice, expect,
                              'Hand %s vs %s: Expected %s; Got %s' % (hand,
                                                                      up,

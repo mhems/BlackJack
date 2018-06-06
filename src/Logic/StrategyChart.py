@@ -3,7 +3,6 @@ import re
 import src.Utilities.Configuration as config
 from src.Basic.Card              import Card
 from src.Logic.Command           import Command
-from src.Utilities.Utilities     import LINE_END
 
 # Actions:
 # H  - Hit
@@ -58,13 +57,13 @@ class StrategyChart:
                 """Function to sort card rank characters"""
                 return value if value != 'A' else Card.HARD_ACE_VALUE
 
-            fmt = '#    %s' + LINE_END
+            fmt = '#    %s' + '\n'
             result = fmt % ' '.join(( str(e).rjust(2, ' ')
                                       for e in Card.values ))
             vals = sorted(set(t[0] for t in self.chart.keys()),
                           key = sort,
                           reverse = True)
-            fmt = ' %s  %s' + LINE_END
+            fmt = ' %s  %s' + '\n'
             for value in vals:
                 result += fmt % (str(value).rjust(2, ' '),
                                  ' '.join(str(self.chart[(value, up)]).rjust(2, ' ')
@@ -121,7 +120,7 @@ class StrategyChart:
         if isPair and self.pair_chart:
             arg = 'A' if player_hand.hasAce else int(value/2)
             advice = self.pair_chart.access(arg, dealer_up_card)
-            if advice == 'Sp' and Command.SPLIT_ENUM not in availableCommands:
+            if advice == 'Sp' and Command.SPLIT not in availableCommands:
                 # defer iff split advised but unavailable
                 advice = None
         # check for soft
@@ -132,16 +131,16 @@ class StrategyChart:
             advice = self.hard_chart.access(value, dealer_up_card)
         if advice:
             if advice[0].upper() == 'D' and len(advice) == 2:
-                if Command.DOUBLE_ENUM in availableCommands:
-                    return Command.DOUBLE_ENUM
+                if Command.DOUBLE in availableCommands:
+                    return Command.DOUBLE
                 elif advice[1].upper() == 'H':
-                    return Command.HIT_ENUM
+                    return Command.HIT
                 elif advice[1].upper() == 'S':
-                    return Command.STAND_ENUM
+                    return Command.STAND
             elif ( advice.upper() == 'SU' and
-                   Command.SURRENDER_ENUM not in availableCommands):
-                return Command.HIT_ENUM
-            return Command.getCommandEnumFromString(advice)
+                   Command.SURRENDER not in availableCommands):
+                return Command.HIT
+            return Command.string_to_command[advice.upper()]
         return None
 
     def toFile(self, filename):
@@ -151,14 +150,12 @@ class StrategyChart:
     def __repr__(self):
         result = ''
         if len(self.hard_chart) > 0:
-            result += '> Hard totals' + LINE_END
+            result += '> Hard totals' + '\n'
             result += repr(self.hard_chart)
         if len(self.soft_chart) > 0:
-            result += LINE_END * 2
-            result += '> Soft totals' + LINE_END
+            result += '\n\n> Soft totals\n'
             result += repr(self.soft_chart)
         if len(self.pair_chart) > 0:
-            result += LINE_END * 2
-            result += '> Pairs' + LINE_END
+            result += '\n\n> Pairs\n'
             result += repr(self.pair_chart)
         return result

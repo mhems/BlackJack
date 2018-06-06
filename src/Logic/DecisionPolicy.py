@@ -2,7 +2,6 @@ from abc import ABCMeta, abstractmethod
 
 from src.Logic.StrategyChart import StrategyChart
 from src.Logic.Command import Command
-from src.Utilities.Utilities import LINE_END
 import src.Utilities.Configuration as config
 
 class DecisionPolicy(metaclass=ABCMeta):
@@ -32,8 +31,8 @@ class DealerPolicy(DecisionPolicy):
         """Decides command according to dealer rules"""
         hitS17 = hand.isSoft17 and config.get('DEALER_HITS_ON_SOFT_17')
         if hand.value < 17 or hitS17:
-            return Command.getCommandEnumFromString('H')
-        return Command.getCommandEnumFromString('S')
+            return Command.HIT
+        return Command.STAND
 
 class FeedbackDecisionPolicy(DecisionPolicy):
     """Represents use of human input with basic strategy
@@ -58,29 +57,32 @@ class FeedbackDecisionPolicy(DecisionPolicy):
                                                **kwargs)
         if decision != expected and expected in availableCommands:
             self.num_wrong += 1
-            print( 'WRONG: You %s when you should have %s' %
-                   ( Command.getPastTenseCommandName(decision),
-                     Command.getPastTenseCommandName(expected) ) )
+            print('WRONG: You %s when you should have %s' %
+                  (Command.command_to_past_tense[decision],
+                    Command.command_to_past_tense[expected]))
         return decision
 
 class HumanInputPolicy(DecisionPolicy):
     """Class to prompt human for decision"""
+
+
 
     def decide(self, hand, upcard, availableCommands, **kwargs):
         """Decides according to human input"""
 
         def prompt(availableCommands):
             """Prompts for response"""
-            response = input( ('How will you act? Options = %s' + LINE_END) %
-                              ( ', '.join( ( Command.getCommandStringFromEnum(e)
-                                             for e in availableCommands ) ) ) )
-            return Command.getCommandEnumFromString(response), response
+            response = input('How will you act? Options = %s\n' %
+                             ', '.join(Command.command_to_string[e] for e in availableCommands))
+            if response.upper() in Command.string_to_command:
+                return True, response
+            return False, None
 
         print('Your hand (%s) has value %d, Dealer shows %s' % (hand.ranks,
                                                                 hand.value,
                                                                 upcard))
-        command, response = prompt(availableCommands)
-        while command is None:
+        success, response = prompt(availableCommands)
+        while not success:
             print('Unknown or unavailable action: %s' % response)
-            command, response = prompt(availableCommands)
-        return command
+            success, response = prompt(availableCommands)
+        return Command.string_to_command[response.upper()]

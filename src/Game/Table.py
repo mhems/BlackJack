@@ -1,7 +1,6 @@
 from math import floor
 
 import src.Utilities.Configuration as config
-import src.Utilities.Utilities as util
 from src.Basic.Shoe import Shoe
 from src.Basic.Shoe import fisher_yates_shuffle
 from src.Game.TableSlot import TableSlot
@@ -34,11 +33,11 @@ class Table:
         hitCmd = HitCommand(self.shoe)
         standCmd = StandCommand()
         self.commands = {
-            Command.HIT_ENUM       : hitCmd,
-            Command.STAND_ENUM     : standCmd,
-            Command.DOUBLE_ENUM    : DoubleCommand(hitCmd, standCmd),
-            Command.SPLIT_ENUM     : SplitCommand(hitCmd, standCmd),
-            Command.SURRENDER_ENUM : SurrenderCommand()
+            Command.HIT       : hitCmd,
+            Command.STAND     : standCmd,
+            Command.DOUBLE    : DoubleCommand(hitCmd, standCmd),
+            Command.SPLIT     : SplitCommand(hitCmd, standCmd),
+            Command.SURRENDER : SurrenderCommand()
         }
 
     @property
@@ -124,11 +123,11 @@ class Table:
                     slot.settled = True
                 else:
                     dealerActs = True
-                    util.printBanner('PLAYER: %s' % slot.player.name)
+                    print('PLAYER: %s' % slot.player.name)
                     self.dealToSlot(slot, upcard)
                     print()
             if dealerActs:
-                util.printBanner('DEALER')
+                print('DEALER')
                 self.dealToSlot(self.dealer_slot, upcard)
                 print()
 
@@ -215,7 +214,7 @@ class Table:
                 slot.promptInsurance()
         print('Dealer has blackjack')
         for slot in self.active_slots:
-            if not slot.isNaturalBlackjack:
+            if not slot.hand.isNaturalBlackjack:
                 self.bank.deposit(slot.takePot())
             if slot.insured:
                 print("You're insured though")

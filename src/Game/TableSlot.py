@@ -49,7 +49,7 @@ class TableSlot:
     @property
     def playerCanAffordInsurance(self):
         """Return True iff player has adequate funds to insurance"""
-        return self._canAfford('INSURANCE_RAIO')
+        return self._canAfford('INSURANCE_RATIO')
 
     @property
     def isActive(self):

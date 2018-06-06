@@ -13,7 +13,6 @@ from src.Logic.BettingStrategy import MinBettingStrategy
 from src.Logic.CardCount import HiLoCount
 from src.Utilities.Configuration import loadConfiguration
 from src.Utilities.Configuration import SemanticConfigError
-from src.Utilities.Utilities import LINE_END
 
 """Drives program execution"""
 
@@ -71,7 +70,7 @@ if __name__ == '__main__':
         while True:
             table.play()
             print('Count is ' + str(counter.count))
-            print(LINE_END)
+            print()
             nRounds += 1
     except InsufficientFundsError as e:
         print(e)

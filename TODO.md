@@ -3,6 +3,7 @@
   - basic logic, basic strategy action, dealer action
 
 * GUI
+  - felt color 0x00a000
 * Markov learning deterministic process to online learn basic strategy
   - manipulate payout ratios, minimum bets, play policies to see how strategy changes
 

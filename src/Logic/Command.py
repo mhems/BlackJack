@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-from src.Utilities.Utilities import Enum
 
 class UnavailableCommandError(Exception):
     """Exception signifying unavailable command attempted to execute"""
@@ -16,63 +15,42 @@ class UnavailableCommandError(Exception):
 class Command(metaclass=ABCMeta):
     """Base class for Blackjack commands"""
 
-    HIT_ENUM = Enum()
-    STAND_ENUM = Enum()
-    DOUBLE_ENUM = Enum()
-    SPLIT_ENUM = Enum()
-    SURRENDER_ENUM = Enum()
+    HIT = 1
+    STAND = 2
+    DOUBLE = 3
+    SPLIT = 4
+    SURRENDER = 5
 
-    command_string_map = {
-        # Order duplicate entries by descending string length
-        'HIT'       : HIT_ENUM,
-        'H'         : HIT_ENUM,
-        'STAND'     : STAND_ENUM,
-        'S'         : STAND_ENUM,
-        'DOUBLE'    : DOUBLE_ENUM,
-        'D'         : DOUBLE_ENUM,
-        'SPLIT'     : SPLIT_ENUM,
-        'SP'        : SPLIT_ENUM,
-        'SURRENDER' : SURRENDER_ENUM,
-        'SU'        : SURRENDER_ENUM
+    commands = [HIT, STAND, DOUBLE, SPLIT, SURRENDER]
+
+    command_to_string = {
+        HIT : '(H)it',
+        STAND : '(S)tand',
+        DOUBLE : '(D)ouble',
+        SPLIT : '(Sp)lit',
+        SURRENDER : '(Su)rrender'
     }
 
-    # Thanks to Emil @ stackoverflow.com/questions/3318625
-    #   for his succinct approach to bidirectional mapping
-    # Note this assumes no commands are inserted dynamically
-    command_enum_map = dict( ( reversed(item)
-                               for item in
-                               command_string_map.items()
-                               if len(item[0]) > 2 ) )
-
-    past_tense_command_map = {
-        HIT_ENUM       : 'HIT',
-        STAND_ENUM     : 'STOOD',
-        DOUBLE_ENUM    : 'DOUBLED',
-        SPLIT_ENUM     : 'SPLIT',
-        SURRENDER_ENUM : 'SURRENDERED'
+    string_to_command = {
+        'H' : HIT,
+        'HIT' : HIT,
+        'S' : STAND,
+        'STAND' : STAND,
+        'D' : DOUBLE,
+        'DOUBLE' : DOUBLE,
+        'SP' : SPLIT,
+        'SPLIT' : SPLIT,
+        'SU' : SURRENDER,
+        'SURRENDER' : SURRENDER
     }
 
-    @staticmethod
-    def getCommandEnumFromString(string):
-        """Returns Command enum from string representation"""
-        s = string.upper()
-        if s in Command.command_string_map:
-            return Command.command_string_map[s]
-        return None
-
-    @staticmethod
-    def getCommandStringFromEnum(enum):
-        """Returns Command string from enum representation"""
-        if enum in Command.command_enum_map:
-            return Command.command_enum_map[enum]
-        return None
-
-    @staticmethod
-    def getPastTenseCommandName(enum):
-        """Returns past tense of command from enum"""
-        if enum in Command.past_tense_command_map:
-            return Command.past_tense_command_map[enum]
-        return None
+    command_to_past_tense = {
+        HIT       : 'HIT',
+        STAND     : 'STOOD',
+        DOUBLE    : 'DOUBLED',
+        SPLIT     : 'SPLIT',
+        SURRENDER : 'SURRENDERED'
+    }
 
     def execute(self, slot, **kwargs):
         """Executes the command on slot,

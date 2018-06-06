@@ -3,8 +3,6 @@ from configparser import ConfigParser
 import re
 
 from src.Basic.Card import Card
-from src.Utilities.Utilities import Enum
-import src.Utilities.Utilities as util
 
 class SemanticConfigError(RuntimeError):
     """Represents error for configuration value with improper semantic value"""
@@ -33,7 +31,7 @@ class InvalidOptionError(KeyError):
 
 # To add new configuration option, add assignment in loadConfiguration
 
-UNRESTRICTED = Enum()
+UNRESTRICTED = 1
 configuration = OrderedDict()
 default_filename  = 'src/Utilities/default_config.ini'
 
@@ -193,10 +191,10 @@ def representation():
     s = ""
     for category in configuration.keys():
         s += '[%s]' % category
-        s += util.LINE_END
-        s += util.LINE_END.join( ('%s : %s' % (key, configuration[category][key]))
+        s += '\n'
+        s += '\n'.join( ('%s : %s' % (key, configuration[category][key]))
                                  for key in configuration[category] )
-        s += util.LINE_END
+        s += '\n'
     return s
 
 def writeConfigFile(filename):
