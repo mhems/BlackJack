@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-export PYTHONPATH=.
+export PYTHONPATH=src
 python3 src/blackjack.py "$@"

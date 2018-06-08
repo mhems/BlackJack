@@ -1,11 +1,11 @@
 import unittest
 
-from src.cards import (Card, BlackjackHand)
-from src.game import Player
-from src.table import TableSlot
-from src.policies import (BettingStrategy,
-                          MinBettingStrategy)
-from src.config import get
+from cards import (Card, BlackjackHand)
+from config import get
+from game import Player
+from policies import (BettingStrategy,
+                      MinBettingStrategy)
+from table import TableSlot
 
 class testTableSlot(unittest.TestCase):
     def setUp(self):

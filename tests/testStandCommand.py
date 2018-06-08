@@ -1,9 +1,9 @@
 import unittest
 
-from src.commands import StandCommand
-from src.cards import Shoe
-from src.table import TableSlot
-from src.game import Player
+from cards import Shoe
+from commands import StandCommand
+from game import Player
+from table import TableSlot
 
 class testStandCommand(unittest.TestCase):
     def setUp(self):

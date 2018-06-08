@@ -1,17 +1,15 @@
 from math import floor
 
-from src.config import get
-from src.cards import (BlackjackHand,
-                       Shoe,
-                       fisher_yates_shuffle)
-from src.game import (Bank, Dealer)
-from src.policies import CardCount
-from src.commands import (Command,
-                          HitCommand,
-                          StandCommand,
-                          DoubleCommand,
-                          SplitCommand,
-                          SurrenderCommand)
+from cards import (BlackjackHand, Shoe, fisher_yates_shuffle)
+from commands import (Command,
+                      HitCommand,
+                      StandCommand,
+                      DoubleCommand,
+                      SplitCommand,
+                      SurrenderCommand)
+from config import get
+from game import (Bank, Dealer)
+from policies import CardCount
 
 class Table:
     """Representation of Blackjack Table"""

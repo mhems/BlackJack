@@ -1,6 +1,6 @@
 import unittest
 
-from src.stats import *
+from stats import *
 
 class testStatistics(unittest.TestCase):
     def setUp(self):

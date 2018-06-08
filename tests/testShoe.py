@@ -1,7 +1,6 @@
 import unittest
 
-from src.cards import (Card, Shoe)
-
+from cards import (Card, Shoe)
 
 def alg(cards):
     cards.reverse()

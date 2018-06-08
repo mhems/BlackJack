@@ -1,18 +1,18 @@
 import unittest
 
-from src.cards import (Card,
+from cards import (Card,
                        BlackjackHand,
                        Shoe)
-from src.commands import (HitCommand,
+from commands import (HitCommand,
                           StandCommand,
                           DoubleCommand,
                           SplitCommand)
-from src.policies import MinBettingStrategy
-from src.table import TableSlot
-from src.game import Player
-from src.config import (get,
-                        loadConfiguration,
-                        loadDefaultConfiguration)
+from config import (get,
+                    loadConfiguration,
+                    loadDefaultConfiguration)
+from game import Player
+from policies import MinBettingStrategy
+from table import TableSlot
 
 class testSplitCommand(unittest.TestCase):
     def setUp(self):

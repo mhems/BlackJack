@@ -1,9 +1,9 @@
 from abc import ABCMeta, abstractmethod
 import re
 
-from src.commands import Command
-from src.cards import BlackjackHand
-from src.config import get
+from cards import BlackjackHand
+from commands import Command
+from config import get
 
 class DecisionPolicy(metaclass=ABCMeta):
     """Base class for decision policies on how to act"""

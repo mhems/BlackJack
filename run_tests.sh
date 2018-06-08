@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-export PYTHONPATH=.
+export PYTHONPATH=src:tests
 python3 -m unittest discover

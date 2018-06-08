@@ -1,5 +1,4 @@
-from src.policies import (DealerPolicy,
-                          DeclineInsurancePolicy)
+from policies import (DealerPolicy, DeclineInsurancePolicy)
 
 class InsufficientFundsError(Exception):
     """Error class to represent error of overwithdrawing from bank"""

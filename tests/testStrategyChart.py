@@ -1,9 +1,9 @@
 import re
 import unittest
 
-from src.policies import StrategyChart
-from src.cards import (Card, BlackjackHand)
-from src.commands import Command
+from cards import (Card, BlackjackHand)
+from commands import Command
+from policies import StrategyChart
 
 class testStrategyChart(unittest.TestCase):
 

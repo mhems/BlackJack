@@ -1,9 +1,9 @@
 import unittest
 import re
 
-from src.policies import BasicStrategyPolicy
-from src.cards import (Card, BlackjackHand)
-from src.commands import Command
+from cards import (Card, BlackjackHand)
+from commands import Command
+from policies import BasicStrategyPolicy
 
 class testBasicStrategyPolicy(unittest.TestCase):
     def setUp(self):

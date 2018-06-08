@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from math import floor
 
-from src.config import (get,
-                        UNRESTRICTED)
+from config import (get, UNRESTRICTED)
 
 class UnavailableCommandError(Exception):
     """Exception signifying unavailable command attempted to execute"""

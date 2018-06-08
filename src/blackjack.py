@@ -1,17 +1,16 @@
+import argparse
 import signal
 import sys
-import argparse
 
-from src.table import Table
-from src.game import (InsufficientFundsError, Player)
-from src.policies import (HumanInputPolicy,
-                          BasicStrategyPolicy,
-                          FeedbackDecisionPolicy,
-                          DeclineInsurancePolicy,
-                          MinBettingStrategy)
-from src.policies import CardCount
-from src.config import (loadConfiguration,
-                        SemanticConfigError)
+from config import (loadConfiguration, SemanticConfigError)
+from game import (InsufficientFundsError, Player)
+from policies import (BasicStrategyPolicy,
+                      CardCount,
+                      DeclineInsurancePolicy,
+                      FeedbackDecisionPolicy,
+                      HumanInputPolicy,
+                      MinBettingStrategy)
+from table import Table
 
 """Drives program execution"""
 

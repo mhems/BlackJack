@@ -1,16 +1,16 @@
 import unittest
 
-from src.cards import (Card, Shoe)
-from src.commands import (DoubleCommand,
-                          HitCommand,
-                          StandCommand,
-                          SplitCommand)
-from src.policies import MinBettingStrategy
-from src.table import TableSlot
-from src.game import Player
-from src.config import (get,
-                        loadConfiguration,
-                        loadDefaultConfiguration)
+from cards import (Card, Shoe)
+from commands import (DoubleCommand,
+                      HitCommand,
+                      StandCommand,
+                      SplitCommand)
+from config import (get,
+                    loadConfiguration,
+                    loadDefaultConfiguration)
+from game import Player
+from policies import MinBettingStrategy
+from table import TableSlot
 
 class testDoubleCommand(unittest.TestCase):
     def setUp(self):

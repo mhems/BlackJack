@@ -1,14 +1,14 @@
 import unittest
 
-from src.cards import (Card, Shoe)
-from src.commands import (HitCommand,
-                          SurrenderCommand)
-from src.policies import MinBettingStrategy
-from src.table import TableSlot
-from src.game import Player
-from src.config import (get,
-                        loadDefaultConfiguration,
-                        loadConfiguration)
+from cards import (Card, Shoe)
+from commands import (HitCommand,
+                      SurrenderCommand)
+from config import (get,
+                    loadDefaultConfiguration,
+                    loadConfiguration)
+from game import Player
+from policies import MinBettingStrategy
+from table import TableSlot
 
 class testSurrenderCommand(unittest.TestCase):
     def setUp(self):

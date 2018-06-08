@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from math import floor
 from random import Random
 
-from src.config import get
+from config import get
 
 class Card:
     """Represents a playing card"""

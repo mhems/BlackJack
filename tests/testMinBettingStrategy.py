@@ -1,7 +1,7 @@
 import unittest
 
-from src.policies import MinBettingStrategy
-from src.config import get
+from config import get
+from policies import MinBettingStrategy
 
 class testMinBettingStrategy(unittest.TestCase):
     def setUp(self):

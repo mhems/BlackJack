@@ -1,6 +1,6 @@
 import unittest
 
-from src.policies import DeclineInsurancePolicy
+from policies import DeclineInsurancePolicy
 
 class testDeclineInsurancePolicy(unittest.TestCase):
 

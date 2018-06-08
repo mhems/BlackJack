@@ -1,6 +1,6 @@
 import unittest
 
-from src.policies import FeedbackDecisionPolicy
+from policies import FeedbackDecisionPolicy
 
 class testFeedbackDecisionPolicy(unittest.TestCase):
 

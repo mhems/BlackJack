@@ -1,9 +1,9 @@
 import unittest
 
-from src.cards import (Card, BlackjackHand)
-from src.policies import DealerPolicy
-from src.commands import Command
-from src.config import (get, loadConfiguration)
+from cards import (Card, BlackjackHand)
+from commands import Command
+from config import (get, loadConfiguration)
+from policies import DealerPolicy
 
 class testDealerPolicy(unittest.TestCase):
     def setUp(self):
