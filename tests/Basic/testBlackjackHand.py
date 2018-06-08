@@ -1,6 +1,6 @@
-from src.Basic.BlackjackHand import BlackjackHand
-from src.Basic.Card import Card
 import unittest
+
+from src.Basic.cards import (Card, BlackjackHand)
 
 class testBlackjackHand(unittest.TestCase):
 

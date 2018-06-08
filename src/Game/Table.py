@@ -1,12 +1,12 @@
 from math import floor
 
 from src.Utilities.config import get
-from src.Basic.Shoe import Shoe
-from src.Basic.Shoe import fisher_yates_shuffle
+from src.Basic.cards import (Shoe,
+                             fisher_yates_shuffle)
 from src.Game.TableSlot import TableSlot
 from src.Game.Bank import Bank
 from src.Game.Player import Dealer
-from src.Logic.CardCount import HiLoCount
+from src.Logic.policies import CardCount
 from src.Logic.commands import (Command,
                                 HitCommand,
                                 StandCommand,
@@ -29,7 +29,7 @@ class Table:
                          fisher_yates_shuffle,
                          get('CUT_INDEX'))
         self.shoe.shuffle()
-        self.shoe.registerObserver(HiLoCount())
+        self.shoe.registerObserver(CardCount('HiLoCount'))
         self.dealer_slot.seatPlayer(Dealer())
         hitCmd = HitCommand(self.shoe)
         standCmd = StandCommand()

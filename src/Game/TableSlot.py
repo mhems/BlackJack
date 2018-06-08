@@ -1,6 +1,6 @@
 from math import floor
 
-from src.Basic.BlackjackHand import BlackjackHand
+from src.Basic.cards import BlackjackHand
 from src.Utilities.config import get
 
 class TableSlot:

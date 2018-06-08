@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 import re
 
 from src.Logic.commands import Command
-from src.Basic.Card import Card
+from src.Basic.cards import BlackjackHand
 from src.Utilities.config import get
 
 class DecisionPolicy(metaclass=ABCMeta):
@@ -22,7 +22,7 @@ class BasicStrategyPolicy(DecisionPolicy):
 
     def decide(self, hand, upcard, availableCommands, **kwargs):
         """Decides command based on basic strategy"""
-        upvalue = 'A' if upcard.isAce else upcard.value
+        upvalue = 'A' if upcard.isAce else BlackjackHand.card_value(upcard)
         return self.strategy.advise(hand, upvalue, availableCommands)
 
 class DealerPolicy(DecisionPolicy):
@@ -120,7 +120,7 @@ class StrategyChart:
                 player_val = toks[0]
                 if re.match(r'\b[12]?[0-9]\b', player_val):
                     player_val = int(player_val)
-                for (card, action) in zip(Card.values, toks[1:]):
+                for (card, action) in zip(BlackjackHand.VALUES, toks[1:]):
                     chart[(player_val, card)] = action
                 index += 1
             return StrategyChart.Chart(chart), index
@@ -139,11 +139,11 @@ class StrategyChart:
 
             def sort(value):
                 """Function to sort card rank characters"""
-                return value if value != 'A' else Card.HARD_ACE_VALUE
+                return value if value != 'A' else BlackjackHand.HARD_ACE_VALUE
 
             fmt = '#    %s' + '\n'
             result = fmt % ' '.join(( str(e).rjust(2, ' ')
-                                      for e in Card.values ))
+                                      for e in BlackjackHand.VALUES ))
             vals = sorted(set(t[0] for t in self.chart.keys()),
                           key = sort,
                           reverse = True)
@@ -151,7 +151,7 @@ class StrategyChart:
             for value in vals:
                 result += fmt % (str(value).rjust(2, ' '),
                                  ' '.join(str(self.chart[(value, up)]).rjust(2, ' ')
-                                          for up in Card.values))
+                                          for up in BlackjackHand.VALUES))
             return result
 
     # END CHART CLASS
@@ -270,6 +270,31 @@ class MinBettingStrategy(BettingStrategy):
     def bet(self, **kwargs):
         """Return minimum bet allowed"""
         return get('MINIMUM_BET')
+
+class CardCount():
+    """Pluggable mechanism for card counting"""
+
+    systems = {
+        'HiLoCount':     [1, 1, 1, 1, 1,   0, 0,  0, -1, -1, -1, -1, -1],
+        'HiOptOneCount': [0, 1, 1, 1, 1,   0, 0,  0, -1, -1, -1, -1,  0],
+        'HiOptTwoCount': [1, 1, 2, 2, 1,   1, 0,  0, -2, -2, -2, -2,  0],
+        'KOCount':       [1, 1, 1, 1, 1,   1, 0,  0, -1, -1, -1, -1, -1],
+        'OmegaTwoCount': [1, 1, 2, 2, 2,   1, 0, -1, -2, -2, -2, -2,  0],
+        'RedSevenCount': [1, 1, 1, 1, 1, 0.5, 0,  0, -1, -1, -1, -1, -1],
+        'ZenCount':      [1, 1, 2, 2, 2,   1, 0,  0, -2, -2, -2, -2, -1]
+    }
+
+    def __init__(self, system):
+        """Initializes members"""
+        self.count = 0
+        self.ranking = CardCount.systems[system]
+
+    def update(self, card):
+        """Updates count based on card"""
+        if card is None:
+            self.count = 0
+        else:
+            self.count += self.ranking[card.index]
 
 class InsurancePolicy(metaclass=ABCMeta):
     """Base Class for insurance policies on when to accept insurance"""

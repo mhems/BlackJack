@@ -1,7 +1,7 @@
 import unittest
 
 from src.Logic.commands import HitCommand
-from src.Basic.Shoe import Shoe
+from src.Basic.cards import Shoe
 from src.Game.TableSlot import TableSlot
 from src.Game.Player import Player
 

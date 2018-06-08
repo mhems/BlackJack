@@ -1,6 +1,7 @@
-from src.Basic.Card import *
-from itertools import *
 import unittest
+
+from src.Basic.cards import Card
+# from itertools import *
 
 class testCard(unittest.TestCase):
 
@@ -27,14 +28,6 @@ class testCard(unittest.TestCase):
     def testSuit(self):
         c = Card(10,'H')
         self.assertEqual(c.suit,'H','testCard:testRank:Card suit doesn\'t evaluate properly')
-
-    def testValue(self):
-        num = Card(8,'S')
-        self.assertEqual(num.value,8,'testCard:testValue:Numeric card value doesn\'t evaluate properly')
-        face = Card('K','S')
-        self.assertEqual(face.value, 10,'testCard:testValue:Face card value doesn\'t evaluate properly')
-        ace = Card('A','S')
-        self.assertEqual(ace.value, Card.HARD_ACE_VALUE,'testCard:testValue:Ace value doesn\'t evaluate properly')
 
     def testStr(self):
         c = Card('A','S')
@@ -71,17 +64,6 @@ class testCard(unittest.TestCase):
         c = Card('J','H')
         c1 = Card('K','D')
         self.assertFalse(c.rankEquivalent(c1),'testCard:testRankEq:Cards should not have same rank')
-
-    def testValueEquivalent(self):
-        c = Card(4,'H')
-        c1 = Card(4,'D')
-        self.assertTrue(c.valueEquivalent(c1),'testCard:testValueEq:Cards should have same value')
-        c = Card('J','H')
-        c1 = Card('K','C')
-        self.assertTrue(c.valueEquivalent(c1),'testCard:testValueEq:Face cards should have same value')
-        c = Card('A','H')
-        c1 = Card('J','C')
-        self.assertFalse(c.valueEquivalent(c1),'testCard:testValueEq:Cards should not have same value')
 
     def testIsAce(self):
         c = Card('A','H')

@@ -1,8 +1,8 @@
 import unittest
 
-from src.Basic.Card import Card
-from src.Basic.Shoe import Shoe
-from src.Basic.BlackjackHand import BlackjackHand
+from src.Basic.cards import (Card,
+                             BlackjackHand,
+                             Shoe)
 from src.Logic.commands import (HitCommand,
                                 StandCommand,
                                 DoubleCommand,

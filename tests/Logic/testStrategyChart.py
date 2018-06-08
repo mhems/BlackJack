@@ -2,8 +2,7 @@ import re
 import unittest
 
 from src.Logic.policies import StrategyChart
-from src.Basic.BlackjackHand import BlackjackHand
-from src.Basic.Card import Card
+from src.Basic.cards import (Card, BlackjackHand)
 from src.Logic.commands import Command
 
 class testStrategyChart(unittest.TestCase):
@@ -32,7 +31,7 @@ class testStrategyChart(unittest.TestCase):
 
     def assertRowWithCommands(self, chart, hand, exp, cmds):
         ls = re.split(r' +', exp)
-        for (up, e) in zip(Card.values, ls):
+        for (up, e) in zip(BlackjackHand.VALUES, ls):
             advice = chart.advise(hand, up, cmds)
             expect = Command.string_to_command[e.upper()]
             self.assertEqual(advice, expect,

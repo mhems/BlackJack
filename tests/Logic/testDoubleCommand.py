@@ -1,7 +1,6 @@
 import unittest
 
-from src.Basic.Card import Card
-from src.Basic.Shoe import Shoe
+from src.Basic.cards import (Card, Shoe)
 from src.Logic.commands import (DoubleCommand,
                                 HitCommand,
                                 StandCommand,

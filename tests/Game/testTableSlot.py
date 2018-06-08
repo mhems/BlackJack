@@ -1,7 +1,6 @@
 import unittest
 
-from src.Basic.Card import Card
-from src.Basic.BlackjackHand import BlackjackHand
+from src.Basic.cards import (Card, BlackjackHand)
 from src.Game.Player import Player
 from src.Game.TableSlot import TableSlot
 from src.Logic.policies import (BettingStrategy,

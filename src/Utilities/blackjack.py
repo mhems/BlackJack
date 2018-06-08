@@ -10,7 +10,7 @@ from src.Logic.policies import (HumanInputPolicy,
                                 FeedbackDecisionPolicy,
                                 DeclineInsurancePolicy,
                                 MinBettingStrategy)
-from src.Logic.CardCount import HiLoCount
+from src.Logic.policies import CardCount
 from src.Utilities.config import (loadConfiguration,
                                   SemanticConfigError)
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     table = Table()
     table.register_player(player)
     nRounds = 0
-    counter = HiLoCount()
+    counter = CardCount('HiLoCount')
     table.shoe.registerObserver(counter)
 
     def handler(_signum, _frame):

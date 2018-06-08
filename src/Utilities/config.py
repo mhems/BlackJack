@@ -2,8 +2,6 @@ from collections import OrderedDict
 from configparser import ConfigParser
 import re
 
-from src.Basic.Card import Card
-
 class SemanticConfigError(RuntimeError):
     """Represents error for configuration value with improper semantic value"""
 
@@ -82,8 +80,9 @@ def loadConfiguration(filename):
     # check any semantics and assign iff valid
     assignInt('general', 'BLACKJACK_VALUE', posInt, posIntErr)
     assignInt('general', 'NUM_DECKS', nonNegInt, nonNegIntErr)
+    assignInt('general', 'NUM_CARDS_PER_DECK', nonNegInt, nonNegIntErr)
     assignBool('general', 'PUSH_ON_BLACKJACK')
-    num_cards = get('NUM_DECKS') * Card.NUM_CARDS_PER_DECK
+    num_cards = get('NUM_DECKS') * get('NUM_CARDS_PER_DECK')
     assignInt('general', 'CUT_INDEX',
               lambda x : isinstance(x, int) and abs(x) <= num_cards,
               'to be at most the number of cards in shoe (%d)' % num_cards)
@@ -164,6 +163,7 @@ def checkRatio(conf, category, flagname, allowImproper=True):
 
 def checkCardRange(conf, category, flagname):
     """Semantic check of options with range values"""
+    RANK_REGEX = '10|J(?:ack)?|Q(?:ueen)?|K(?:ing)?|A(?:ce)?|[2-9]'
     if not conf.has_option(category, flagname):
         return None
     value = conf.get(category, flagname)
@@ -173,7 +173,7 @@ def checkCardRange(conf, category, flagname):
         configuration[category][flagname] = UNRESTRICTED
     else:
         # refactor to allow only ranks, raise error if anything else found
-        ls = list(set(re.findall(Card.RANK_REGEX, value, re.I)))
+        ls = list(set(re.findall(RANK_REGEX, value, re.I)))
         for idx, elem in enumerate(ls):
             if re.match('[0-9]+', elem):
                 ls[idx] = int(elem)
