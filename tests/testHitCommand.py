@@ -2,8 +2,8 @@ import unittest
 
 from src.commands import HitCommand
 from src.cards import Shoe
-from src.TableSlot import TableSlot
-from src.Player import Player
+from src.table import TableSlot
+from src.game import Player
 
 class testHitCommand(unittest.TestCase):
     def setUp(self):

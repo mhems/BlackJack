@@ -1,6 +1,6 @@
 import unittest
 
-from src.Bank import (Bank, InsufficientFundsError)
+from src.game import (Bank, InsufficientFundsError)
 
 class testBank(unittest.TestCase):
     def setUp(self):

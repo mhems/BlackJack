@@ -4,8 +4,8 @@ from src.cards import (Card, Shoe)
 from src.commands import (HitCommand,
                           SurrenderCommand)
 from src.policies import MinBettingStrategy
-from src.TableSlot import TableSlot
-from src.Player import Player
+from src.table import TableSlot
+from src.game import Player
 from src.config import (get,
                         loadDefaultConfiguration,
                         loadConfiguration)

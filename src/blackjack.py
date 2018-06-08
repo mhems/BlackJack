@@ -2,9 +2,8 @@ import signal
 import sys
 import argparse
 
-from src.Player import Player
-from src.Table import Table
-from src.Bank import InsufficientFundsError
+from src.table import Table
+from src.game import (InsufficientFundsError, Player)
 from src.policies import (HumanInputPolicy,
                           BasicStrategyPolicy,
                           FeedbackDecisionPolicy,

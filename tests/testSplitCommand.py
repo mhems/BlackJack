@@ -8,8 +8,8 @@ from src.commands import (HitCommand,
                           DoubleCommand,
                           SplitCommand)
 from src.policies import MinBettingStrategy
-from src.TableSlot import TableSlot
-from src.Player import Player
+from src.table import TableSlot
+from src.game import Player
 from src.config import (get,
                         loadConfiguration,
                         loadDefaultConfiguration)
