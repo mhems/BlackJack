@@ -126,11 +126,11 @@ class Table:
                 else:
                     dealerActs = True
                     print('PLAYER: %s' % slot.player.name)
-                    self.dealToSlot(slot, upcard)
+                    self.dealSlot(slot, upcard)
                     print()
             if dealerActs:
                 print('DEALER')
-                self.dealToSlot(self.dealer_slot, upcard)
+                self.dealSlot(self.dealer_slot, upcard)
                 print()
 
         self.endRound()
@@ -139,26 +139,33 @@ class Table:
         """Pay floor of amt to slot"""
         slot.payToPot(self.bank.withdraw(floor(amt)))
 
-    def dealToSlot(self, slot, upcard):
+    def dealHand(self, i, slot, upcard):
+        """Deals a hand within a slot"""
+        while True:
+            hand = slot.hands[i]
+            if hand.isBlackjackValued:
+                break
+            if hand.isBust:
+                self.bank.deposit(slot.takePot())
+                slot.settled = True
+                break
+            actions = [key for (key, cmd) in self.commands.items()
+                       if cmd.isAvailable(slot)]
+            response = slot.promptAction(upcard, actions)
+            if response == Command.SURRENDER:
+                slot.surrendered = True
+                self.bank.deposit(slot.takePot(get('LATE_SURRENDER_RATIO')))
+            if self.commands[response].execute(slot):
+                break
+        print('Hand ends at', hand.value)
+
+    def dealSlot(self, slot, upcard):
         """Manages turn for active slot"""
-        for hand in slot.hands:
-            done = False
-            while not done:
-                if hand.isBlackjackValued:
-                    break
-                if hand.isBust:
-                    self.bank.deposit(slot.takePot())
-                    slot.settled = True
-                    break
-                actions = [key for (key, cmd) in self.commands.items()
-                           if cmd.isAvailable(slot)]
-                response = slot.promptAction(upcard, actions)
-                if response == 'Su':
-                    slot.surrendered = True
-                    self.bank.deposit(
-                        slot.takePot(get('LATE_SURRENDER_RATIO')) )
-                done = self.commands[response].execute(slot)
-            print('Hand ends at', hand.value)
+        i = 0
+        while i < len(slot.hands):
+            slot.index = i
+            self.dealHand(i, slot, upcard)
+            i += 1
 
     def offer_early_surrender(self):
         """Offers early surrender to each active player"""
