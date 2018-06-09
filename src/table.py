@@ -17,7 +17,6 @@ class Table:
     def __init__(self, num_slots = 6):
         """Initializes table members"""
         self.dealer_slot = TableSlot()
-        self.bank = Bank()
         self.num_slots = num_slots
         # Index 0 is dealer's leftmost slot
         self.slots = [TableSlot() for _ in range(self.num_slots)]
@@ -36,6 +35,11 @@ class Table:
             Command.SPLIT     : SplitCommand(hitCmd, standCmd),
             Command.SURRENDER : SurrenderCommand()
         }
+
+    @property
+    def bank(self):
+        """Returns the table's dealer's bank"""
+        return self.dealer_slot.player.stack
 
     @property
     def all_slots(self):
@@ -98,7 +102,8 @@ class Table:
             slot.endRound()
         self.dealer_slot.endRound()
         for slot in self.occupied_slots:
-            print('%s plus $%d in pot' % (slot.player, slot.pot))
+            print(slot.player)
+        print(self.dealer_slot.player)
         print('<' * 80)
 
     def play(self):

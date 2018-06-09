@@ -15,9 +15,9 @@ class InsufficientFundsError(Exception):
 class Bank:
     """Model for withdraw/deposit transactions"""
 
-    def __init__(self):
+    def __init__(self, amount=0):
         """Initializes Bank"""
-        self.amount = 0
+        self.amount = amount
 
     def withdraw(self, amt):
         """Attempts to withdraw amt from Bank.
@@ -33,6 +33,14 @@ class Bank:
             raise ValueError('amt cannot be negative')
         self.amount += amt
 
+    def __str__(self):
+        """Return string representation of Bank"""
+        return "$" + str(self.amount)
+
+    def __repr__(self):
+        """Return representation of Bank"""
+        return str(self.amount)
+
 class HouseBank(Bank):
     """Model for endless Bank"""
 
@@ -44,7 +52,6 @@ class HouseBank(Bank):
         """Withdraws amt from Bank"""
         self.amount -= amt
         return amt
-
 
 class Player:
     """Representation of a blackjack player"""
@@ -102,6 +109,7 @@ class Dealer(Player):
         """Initializes Dealer members"""
         super().__init__(name, DealerPolicy(), DeclineInsurancePolicy())
         self.isActive = True
+        self.stack = HouseBank()
 
     def amountToBet(self, **kwargs):
         """Dealer does not bet"""
