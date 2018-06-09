@@ -55,7 +55,7 @@ class testDoubleCommand(unittest.TestCase):
         player.receive_payment(get('MINIMUM_BET') *
                                (1 + get('DOUBLE_RATIO')))
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should not be available beyond first action')
-        loadConfiguration('tests/test_files/double_totals.ini')
+        loadConfiguration('cfg/double_totals.ini')
         slot.clearHands()
         slot.addCards(Card(2,'H'), Card(4, 'C'))
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should not be availabe if total not in allowed totals')
@@ -69,7 +69,7 @@ class testDoubleCommand(unittest.TestCase):
         slot.clearHands()
         slot.addCards(Card(5,'C'), Card(5, 'H'))
         splitCmd.perform(slot)
-        loadConfiguration('tests/test_files/DAS_false.ini')
+        loadConfiguration('cfg/DAS_false.ini')
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailbe:Double should not be available if player split and DAS is disallowed')
 
         loadDefaultConfiguration()

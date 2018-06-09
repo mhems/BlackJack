@@ -34,7 +34,7 @@ class testDealerPolicy(unittest.TestCase):
         # soft 17
         hand.addCards(Card('A', 'H'), Card(6, 'H'))
         self.assertEqual(policy.decide(hand, None, cmds), Command.HIT, 'testDealerPolicy:testDecide:Dealer should hit on soft 17 if configured to do so')
-        loadConfiguration('tests/test_files/S17_false.ini')
+        loadConfiguration('cfg/S17_false.ini')
         self.assertEqual(policy.decide(hand, None, cmds), Command.STAND, 'testDealerPolicy:testDecide:Dealer should stand on soft 17 if configured to do so')
 
 if __name__ == '__main__':

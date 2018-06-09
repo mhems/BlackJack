@@ -28,7 +28,7 @@ class testSurrenderCommand(unittest.TestCase):
         player.receive_payment(get('MINIMUM_BET'))
         self.slot.seatPlayer(player)
         self.slot.addCards(Card('A','H'), Card(6,'D'))
-        loadConfiguration('tests/test_files/no_surrender.ini')
+        loadConfiguration('cfg/no_surrender.ini')
         self.assertFalse(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should not be available if disallowed')
 
         loadDefaultConfiguration()

@@ -40,7 +40,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
                                                                      advice))
 
     def testThreeCompleteCharts(self):
-        strat = BasicStrategyPolicy('tests/test_files/three_chart.txt')
+        strat = BasicStrategyPolicy('cfg/three_chart.txt')
 
         # test pair advice
         hand = makePair('A')
@@ -129,7 +129,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
         self.assertRow(strat, hand, 'H H H H H H H H H H')
 
     def testNoPairCharts(self):
-        strat = BasicStrategyPolicy('tests/test_files/no_pair.txt')
+        strat = BasicStrategyPolicy('cfg/no_pair.txt')
 
         # test pair -- should be same as advice for sum
         hand = makePair('A')
@@ -220,7 +220,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
 
 
     def testNoSoft(self):
-        strat = BasicStrategyPolicy('tests/test_files/no_soft.txt')
+        strat = BasicStrategyPolicy('cfg/no_soft.txt')
 
         # test soft -- should be same as for sum
         hand = makeSoft(9)
@@ -305,7 +305,7 @@ class testBasicStrategyPolicy(unittest.TestCase):
         self.assertRow(strat, hand, 'H H H H H H H H H H')
 
     def testOneChart(self):
-        strat = BasicStrategyPolicy('tests/test_files/one_chart.txt')
+        strat = BasicStrategyPolicy('cfg/one_chart.txt')
 
         # test hard advice
         hand = makeHand(10,10)

@@ -31,7 +31,7 @@ class InvalidOptionError(KeyError):
 
 UNRESTRICTED = 1
 configuration = OrderedDict()
-default_filename  = 'src/default_config.ini'
+default_filename  = 'cfg/default_config.ini'
 
 def loadConfiguration(filename):
     """Loads configuration data"""

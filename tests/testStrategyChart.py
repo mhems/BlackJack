@@ -41,7 +41,7 @@ class testStrategyChart(unittest.TestCase):
                                                                      advice))
 
     def testThreeCompleteCharts(self):
-        chart = StrategyChart.fromFile('tests/test_files/three_chart.txt')
+        chart = StrategyChart.fromFile('cfg/three_chart.txt')
 
         # test pair advice
         hand = makePair('A')
@@ -130,7 +130,7 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'H H H H H H H H H H')
 
     def testNoPairCharts(self):
-        chart = StrategyChart.fromFile('tests/test_files/no_pair.txt')
+        chart = StrategyChart.fromFile('cfg/no_pair.txt')
 
         # test pair -- should be same as advice for sum
         hand = makePair('A')
@@ -221,7 +221,7 @@ class testStrategyChart(unittest.TestCase):
 
 
     def testNoSoft(self):
-        chart = StrategyChart.fromFile('tests/test_files/no_soft.txt')
+        chart = StrategyChart.fromFile('cfg/no_soft.txt')
 
         # test soft -- should be same as for sum
         hand = makeSoft(9)
@@ -306,7 +306,7 @@ class testStrategyChart(unittest.TestCase):
         self.assertRow(chart, hand, 'H H H H H H H H H H')
 
     def testOneChart(self):
-        chart = StrategyChart.fromFile('tests/test_files/one_chart.txt')
+        chart = StrategyChart.fromFile('cfg/one_chart.txt')
 
         # test hard advice
         hand = makeHand(10,10)

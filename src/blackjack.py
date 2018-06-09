@@ -19,7 +19,7 @@ def parseCommandLine():
     """Return True upon success"""
     parser = argparse.ArgumentParser(description='Blackjack Game Suit')
     parser.add_argument('-cfg', '--config_file',
-                        default = 'src/default_config.ini',
+                        default = 'cfg/default_config.ini',
                         dest    = 'config_file_name',
                         metavar = 'CONFIG_FILE',
                         help    = 'the location of the configuration file')
@@ -35,7 +35,7 @@ if __name__ == '__main__':
         print(e)
 
     hip1 = HumanInputPolicy()
-    strat = BasicStrategyPolicy('tests/test_files/three_chart.txt')
+    strat = BasicStrategyPolicy('cfg/three_chart.txt')
     strat1 = FeedbackDecisionPolicy(hip1, strat)
     player = Player("Matt",
                     strat1,

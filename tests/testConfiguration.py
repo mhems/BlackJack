@@ -4,7 +4,7 @@ from config import *
 
 class testConfiguration(unittest.TestCase):
 
-    prefix = 'tests/test_files/'
+    prefix = 'cfg/'
 
     def setUp(self):
         loadDefaultConfiguration()
