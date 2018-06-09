@@ -7,7 +7,7 @@ from config import (get,
                     loadDefaultConfiguration,
                     loadConfiguration)
 from game import Player
-from policies import MinBettingStrategy
+from policies import MinBettingPolicy
 from table import TableSlot
 
 class testSurrenderCommand(unittest.TestCase):
@@ -24,7 +24,7 @@ class testSurrenderCommand(unittest.TestCase):
         self.assertTrue(rc, 'testSurrenderCommand:testPerform:Surrender should end player\'s turn')
 
     def testIsAvailable(self):
-        player = Player("Test", None, None, MinBettingStrategy())
+        player = Player("Test", None, None, MinBettingPolicy())
         player.receive_payment(get('MINIMUM_BET'))
         self.slot.seatPlayer(player)
         self.slot.addCards(Card('A','H'), Card(6,'D'))

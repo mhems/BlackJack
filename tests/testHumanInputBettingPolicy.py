@@ -1,6 +1,6 @@
 import unittest
 
-class testHumanInputBettingStrategy(unittest.TestCase):
+class testHumanInputBettingPolicy(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -8,7 +8,7 @@ class testHumanInputBettingStrategy(unittest.TestCase):
         pass
 
     def test(self):
-        pass # self.fail('Implement test HumanInputBettingStrategy')
+        pass # self.fail('Implement test HumanInputBettingPolicy')
 
 if __name__ == '__main__':
     unittest.main()

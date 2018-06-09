@@ -11,7 +11,7 @@ from config import (get,
                     loadConfiguration,
                     loadDefaultConfiguration)
 from game import Player
-from policies import MinBettingStrategy
+from policies import MinBettingPolicy
 from table import TableSlot
 
 class testSplitCommand(unittest.TestCase):
@@ -23,7 +23,7 @@ class testSplitCommand(unittest.TestCase):
 
     def testPerform(self):
         slot = TableSlot()
-        player = Player("Test", None, None, MinBettingStrategy())
+        player = Player("Test", None, None, MinBettingPolicy())
         slot.seatPlayer(player)
         shoe = Shoe(1,lambda x:x)
         hitCmd = HitCommand(shoe)
@@ -49,7 +49,7 @@ class testSplitCommand(unittest.TestCase):
 
     def testIsAvailable(self):
         slot = TableSlot()
-        player = Player("Test", None, None, MinBettingStrategy())
+        player = Player("Test", None, None, MinBettingPolicy())
         slot.seatPlayer(player)
         shoe = Shoe(1,lambda x:x)
         hitCmd = HitCommand(shoe)

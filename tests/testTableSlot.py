@@ -3,8 +3,8 @@ import unittest
 from cards import (Card, BlackjackHand)
 from config import get
 from game import Player
-from policies import (BettingStrategy,
-                      MinBettingStrategy)
+from policies import (BettingPolicy,
+                      MinBettingPolicy)
 from table import TableSlot
 
 class testTableSlot(unittest.TestCase):
@@ -31,7 +31,7 @@ class testTableSlot(unittest.TestCase):
         slot.addCards(Card(9,'D'), Card(8,'H'))
         self.assertEqual(slot.numSplits,0,'testTableSlot:testNumSplits:New hand should have no splits')
         slot = TableSlot()
-        player = Player('', None, MinBettingStrategy(), None)
+        player = Player('', None, MinBettingPolicy(), None)
         player.receive_payment(get('SPLIT_RATIO'))
         slot.seatPlayer(player)
         slot.addCards(Card(7,'D'), Card(7,'H'))
@@ -45,18 +45,18 @@ class testTableSlot(unittest.TestCase):
         pass
 
     def testIsActive(self):
-        player = Player('Tim', None, None, MinBettingStrategy())
+        player = Player('Tim', None, None, MinBettingPolicy())
         player.receive_payment(1000)
         slot = TableSlot()
         slot.seatPlayer(player)
         slot.promptBet()
         self.assertTrue(slot.isActive,'testTableSlot:testIsActive:Slot with betting player should be active')
 
-        class NoBettingStrategy(BettingStrategy):
+        class NoBettingPolicy(BettingPolicy):
             def bet(self, **kwargs):
                 return 0
 
-        player = Player('Jack',None, None, NoBettingStrategy())
+        player = Player('Jack',None, None, NoBettingPolicy())
         slot = TableSlot()
         slot.seatPlayer(player)
         slot.promptBet()

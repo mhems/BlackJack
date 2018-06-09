@@ -66,8 +66,6 @@ class FeedbackDecisionPolicy(DecisionPolicy):
 class HumanInputPolicy(DecisionPolicy):
     """Class to prompt human for decision"""
 
-
-
     def decide(self, hand, upcard, availableCommands, **kwargs):
         """Decides according to human input"""
 
@@ -244,16 +242,16 @@ class StrategyChart:
             result += repr(self.pair_chart)
         return result
 
-class BettingStrategy(metaclass=ABCMeta):
+class BettingPolicy(metaclass=ABCMeta):
     """Base class for betting policies"""
 
     @abstractmethod
     def bet(self, **kwargs):
         """Returns amount to wager"""
         raise NotImplementedError(
-            'BettingStrategy implentations must implement the bet method')
+            'BettingPolicy implentations must implement the bet method')
 
-class HumanInputBettingStrategy(BettingStrategy):
+class HumanInputBettingPolicy(BettingPolicy):
     """Policy to bet based on inputted amount"""
 
     def bet(self, **kwargs):
@@ -264,7 +262,7 @@ class HumanInputBettingStrategy(BettingStrategy):
             result =input('Enter your bet amount: ')
         return result
 
-class MinBettingStrategy(BettingStrategy):
+class MinBettingPolicy(BettingPolicy):
     """Policy to always bet table minimum"""
 
     def bet(self, **kwargs):
@@ -272,7 +270,7 @@ class MinBettingStrategy(BettingStrategy):
         return get('MINIMUM_BET')
 
 class CardCount():
-    """Pluggable mechanism for card counting"""
+    """Mechanism for card counting"""
 
     systems = {
         'HiLoCount':     [1, 1, 1, 1, 1,   0, 0,  0, -1, -1, -1, -1, -1],

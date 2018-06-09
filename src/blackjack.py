@@ -9,7 +9,7 @@ from policies import (BasicStrategyPolicy,
                       DeclineInsurancePolicy,
                       FeedbackDecisionPolicy,
                       HumanInputPolicy,
-                      MinBettingStrategy)
+                      MinBettingPolicy)
 from table import Table
 
 """Drives program execution"""
@@ -40,13 +40,13 @@ if __name__ == '__main__':
     player = Player("Matt",
                     strat1,
                     DeclineInsurancePolicy(),
-                    MinBettingStrategy())
+                    MinBettingPolicy())
     player.receive_payment(10000)
 
     player2 = Player("Billy Batch",
                      strat1,
                      DeclineInsurancePolicy(),
-                     MinBettingStrategy())
+                     MinBettingPolicy())
     player2.receive_payment(1000)
 
     table = Table()
