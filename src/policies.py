@@ -69,21 +69,22 @@ class HumanInputPolicy(DecisionPolicy):
     def decide(self, hand, upcard, availableCommands, **kwargs):
         """Decides according to human input"""
 
-        def prompt(availableCommands):
+        opts = [Command.command_to_string[e] for e in availableCommands]
+        def prompt():
             """Prompts for response"""
-            response = input('How will you act? Options = %s\n' %
-                             ', '.join(Command.command_to_string[e] for e in availableCommands))
+            response = input('How will you act? Options = %s\n' % ', '.join(opts))
             if response.upper() in Command.string_to_command:
-                return True, response
-            return False, None
-
+                cmd = Command.string_to_command[response.upper()]
+                if cmd in availableCommands:
+                    return True, response
+            return False, response
         print('Your hand (%s) has value %d, Dealer shows %s' % (hand.ranks,
                                                                 hand.value,
                                                                 upcard))
-        success, response = prompt(availableCommands)
+        success, response = prompt()
         while not success:
             print('Unknown or unavailable action: %s' % response)
-            success, response = prompt(availableCommands)
+            success, response = prompt()
         return Command.string_to_command[response.upper()]
 
 class StrategyChart:
