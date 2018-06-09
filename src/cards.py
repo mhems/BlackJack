@@ -53,7 +53,6 @@ class Card:
         """Returns suit of card"""
         return Card.charToNameDict[self.suit]
 
-
     @property
     def isAce(self):
         """Returns True iff card is an Ace"""
@@ -69,12 +68,15 @@ class Card:
         return self.rank == other.rank
 
     def __str__(self):
-        """Returns canonical representation of card"""
+        """Returns formatted representation of card"""
         return self.rankName + ' of ' + self.suitName
 
     def __repr__(self):
         """Returns canonical representation of card"""
-        return self.__str__()
+        rank = str(self.rank)
+        if self.isAce:
+            rank = "'" + rank + "'"
+        return "Card(%s, '%s')" % (rank, self.suit)
 
     def __eq__(self, other):
         """Returns True if self has equal rank and suit to that of other"""
@@ -348,4 +350,8 @@ class BlackjackHand(Hand):
 
     def __str__(self):
         """Returns comma delimited list of cards' representations"""
-        return '[' + ', '.join((str(c) for c in self.cards)) +']'
+        return '[' + ', '.join(str(c) for c in self.cards) +']'
+
+    def __repr__(self):
+        """Returns comma delimited list of cards' representations"""
+        return '[' + ', '.join(repr(c) for c in self.cards) +']'

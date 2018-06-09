@@ -34,7 +34,7 @@ class testCard(unittest.TestCase):
 
     def testRepr(self):
         c = Card('A','S')
-        self.assertEqual(repr(c),'Ace of Spades','testCard:testStr: repr not working')
+        self.assertEqual(repr(c),"Card('A', 'S')",'testCard:testStr: repr not working')
 
     def testEQ(self):
         c = Card(4,'H')
