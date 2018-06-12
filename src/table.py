@@ -9,6 +9,7 @@ from commands import (Command,
                       SurrenderCommand)
 from config import get
 from game import (Bank, Dealer)
+from log import log
 from policies import CardCount
 
 class Table:
@@ -105,10 +106,11 @@ class Table:
             print(slot.player)
         print(self.dealer_slot.player)
         print('<' * 80)
+        log('\n')
 
     def play(self):
         """Plays one round of blackjack"""
-
+        dealerActs = False
         upcard = self.beginRound()
         if get('EARLY_SURRENDER'):
             self.offer_early_surrender()
@@ -116,12 +118,13 @@ class Table:
             self.handle_dealer_blackjack(upcard)
         else:
             for slot in self.active_slots:
-                dealerActs = False
                 self.bank.deposit(slot.takeInsurance())
                 if slot.hand.isNaturalBlackjack:
                     print('BLACKJACK!')
-                    self.payout( slot,
-                                 slot.pot * get('BLACKJACK_PAYOUT_RATIO') )
+                    log('%s has natural blackjack\n' % slot.player.name)
+                    amt = slot.pot * get('BLACKJACK_PAYOUT_RATIO')
+                    log('%s wins $%d\n' % (slot.player.name, amt))
+                    self.payout(slot, amt)
                     slot.settled = True
                 else:
                     dealerActs = True
@@ -144,17 +147,28 @@ class Table:
         while True:
             hand = slot.hands[i]
             if hand.isBlackjackValued:
+                log('%s has blackjack\n' % slot.player.name)
                 break
             if hand.isBust:
-                self.bank.deposit(slot.takePot())
+                log('%s busts on %s\n' % (slot.player.name,
+                                          slot.hand.description))
+                amt = slot.takePot()
+                if not slot.player.isDealer:
+                    log('%s loses $%d\n' % (slot.player.name, amt))
+                self.bank.deposit(amt)
                 slot.settled = True
                 break
             actions = [key for (key, cmd) in self.commands.items()
                        if cmd.isAvailable(slot)]
             response = slot.promptAction(upcard, actions)
+            log('%s %s on %s\n' % (slot.player.name,
+                                   Command.command_to_past_tense[response].lower(),
+                                   slot.hand.description))
             if response == Command.SURRENDER:
                 slot.surrendered = True
-                self.bank.deposit(slot.takePot(get('LATE_SURRENDER_RATIO')))
+                amt = slot.takePot(get('LATE_SURRENDER_RATIO'))
+                log('%s loses $%d\n' % (slot.player.name, amt))
+                self.bank.deposit(amt)
             if self.commands[response].execute(slot):
                 break
         print('Hand ends at', hand.value)
@@ -172,6 +186,7 @@ class Table:
         for slot in self.active_slots:
             slot.promptEarlySurrender()
             if slot.surrendered:
+                log('%s surrenders early\n' % slot.player.name)
                 self.bank.deposit(
                     slot.takePot(get('EARLY_SURRENDER_RATIO')) )
 
@@ -187,10 +202,15 @@ class Table:
                     slot.index = index
                     value = slot.hand.value
                     if value > dealer_value or self.dealer_slot.hand.isBust:
-                        self.payout(slot, slot.pot *
-                                    get('PAYOUT_RATIO') )
+                        amt = slot.pot * get('PAYOUT_RATIO')
+                        log('%s wins $%d\n' % (slot.player.name, amt))
+                        self.payout(slot, amt)
                     elif value < dealer_value:
-                        self.bank.deposit(slot.takePot())
+                        amt = slot.takePot()
+                        log('%s loses $%d\n' % (slot.player.name, amt))
+                        self.bank.deposit(amt)
+                    else:
+                        log('%s pushes\n' % slot.player.name)
 
     def dealCards(self):
         """Deals hands to all active players
@@ -201,6 +221,7 @@ class Table:
         for slot in self.active_slots:
             slot.addCards(self.shoe.dealOneCard())
         upcard = self.shoe.dealOneCard()
+        log('Dealer shows %s\n' % str(upcard))
         self.dealer_slot.addCards(upcard)
         return upcard
 
@@ -221,14 +242,19 @@ class Table:
         if get('OFFER_INSURANCE') and upcard.isAce:
             for slot in self.active_slots:
                 slot.promptInsurance()
+        log('Dealer has natural blackjack\n')
         print('Dealer has blackjack')
         for slot in self.active_slots:
             if not slot.hand.isNaturalBlackjack:
-                self.bank.deposit(slot.takePot())
+                amt = slot.takePot()
+                log('%s loses $%d\n' % (slot.player.name, amt))
+                self.bank.deposit(amt)
             if slot.insured:
                 print("You're insured though")
-                self.payout(slot,
-                            slot.insurance * get('INSURANCE_PAYOUT_RATIO'))
+                amt = slot.insurance * get('INSURANCE_PAYOUT_RATIO')
+                log('%s is insured\n' % slot.player.name)
+                log('%s wins $%d\n' % (slot.player.name, amt))
+                self.payout(slot, amt)
             slot.settled = True
 
 class TableSlot:
@@ -331,6 +357,7 @@ class TableSlot:
         """Prompts player for insurance"""
         if ( self.playerCanAffordInsurance and
              self.player.insure(self.hand,**kwargs) ):
+            log('%s takes insurance\n' % self.player.name)
             self.insured = True
             self.insurance = self.player.wager(
                 self.pots[0] * get('INSURANCE_RATIO'))
@@ -338,6 +365,8 @@ class TableSlot:
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
         amt = self.player.amountToBet(**kwargs)
+        if not self.player.isDealer:
+            log('%s bets $%d\n' % (self.player, amt))
         if amt >= self.pot:
             self.pots[self.index] += self.player.wager(amt - self.pot)
         else:
