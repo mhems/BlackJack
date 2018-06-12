@@ -1,3 +1,7 @@
+"""
+Provides handling and access of configuration files
+"""
+
 from collections import OrderedDict
 from configparser import ConfigParser
 import re
@@ -24,8 +28,6 @@ class InvalidOptionError(KeyError):
 
     def __str__(self):
         return 'Invalid configuration option \'%s\'' % self.option
-
-"""Provides handling and access of configuration files"""
 
 # To add new configuration option, add assignment in loadConfiguration
 
@@ -193,7 +195,7 @@ def representation():
         s += '[%s]' % category
         s += '\n'
         s += '\n'.join( ('%s : %s' % (key, configuration[category][key]))
-                                 for key in configuration[category] )
+                        for key in configuration[category] )
         s += '\n'
     return s
 

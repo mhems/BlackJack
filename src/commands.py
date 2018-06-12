@@ -1,3 +1,7 @@
+"""
+Provides classes for commands modelling blackjack actions
+"""
+
 from abc import ABCMeta, abstractmethod
 from math import floor
 
@@ -151,12 +155,10 @@ class DoubleCommand(Command):
             return False
         if not slot.firstAction:
             return False
-        double_range = get('TOTALS_ALLOWED_FOR_DOUBLE')
-        if (double_range != UNRESTRICTED and
-            not slot.hand.value in double_range):
+        range_ = get('TOTALS_ALLOWED_FOR_DOUBLE')
+        if range_ != UNRESTRICTED and not slot.hand.value in range_:
             return False
-        if (slot.hand.wasSplit and
-            not get('DOUBLE_AFTER_SPLIT_ALLOWED')):
+        if slot.hand.wasSplit and not get('DOUBLE_AFTER_SPLIT_ALLOWED'):
             return False
         return True
 
@@ -190,20 +192,14 @@ class SplitCommand(Command):
 
     def isAvailable(self, slot):
         """Returns True iff Split command is available"""
-        if not slot.hand.isPair:
-            return False
-        if not slot.playerCanAffordSplit:
-            return False
-        if not slot.firstAction:
-            return False
-        num_splits_allowed = get('RESPLIT_UP_TO')
-        if (num_splits_allowed != UNRESTRICTED and
-            slot.numSplits + 1 >= num_splits_allowed):
-            return False
-        if (slot.hand.wasSplit and slot.hand.isAcePair and
-            not get('RESPLIT_ACES')):
-            return False
-        return True
+        can_resplit = get('RESPLIT_ACES')
+        max_splits = get('RESPLIT_UP_TO')
+        if slot.hand.isPair and slot.playerCanAffordSplit and slot.firstAction:
+            if max_splits == UNRESTRICTED or slot.numSplits + 1 < max_splits:
+                if slot.hand.wasSplit and slot.hand.isAcePair and not can_resplit:
+                    return False
+                return True
+        return False
 
     def __str__(self):
         """Returns string representing Split Command"""

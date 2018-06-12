@@ -1,3 +1,5 @@
+"""Drives program execution"""
+
 import argparse
 import signal
 import sys
@@ -12,11 +14,9 @@ from policies import (BasicStrategyPolicy,
                       MinBettingPolicy)
 from table import Table
 
-"""Drives program execution"""
-
 def parseCommandLine():
-    """Parses command line to establish configurations"""
-    """Return True upon success"""
+    """Parses command line to establish configurations.
+    Returns True upon success"""
     parser = argparse.ArgumentParser(description='Blackjack Game Suit')
     parser.add_argument('-cfg', '--config_file',
                         default = 'cfg/default_config.ini',
@@ -26,7 +26,6 @@ def parseCommandLine():
     return parser.parse_args()
 
 if __name__ == '__main__':
-
     nspace = parseCommandLine()
 
     try:
@@ -44,7 +43,7 @@ if __name__ == '__main__':
     player.receive_payment(10000)
 
     player2 = Player("Billy Batch",
-                     strat1,
+                     strat,
                      DeclineInsurancePolicy(),
                      MinBettingPolicy())
     player2.receive_payment(1000)
@@ -56,6 +55,7 @@ if __name__ == '__main__':
     table.shoe.registerObserver(counter)
 
     def handler(_signum, _frame):
+        """Handles Ctrl+C signals"""
         print()
         print(str(nRounds) + ' rounds played')
         print(str(strat1.num_wrong) + ' hands played incorrectly')

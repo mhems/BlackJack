@@ -1,3 +1,7 @@
+"""
+Provides classes necessary for blackjack gameplay
+"""
+
 from policies import (DealerPolicy, DeclineInsurancePolicy)
 
 class InsufficientFundsError(Exception):
@@ -73,6 +77,7 @@ class Player:
 
     @property
     def isDealer(self):
+        """Returns True iff player is a Dealer"""
         return False
 
     def wager(self, amt):

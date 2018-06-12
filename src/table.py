@@ -1,14 +1,18 @@
+"""
+Provides classes modelling gameplay on a single blackjack table
+"""
+
 from math import floor
 
-from cards import (BlackjackHand, Shoe, fisher_yates_shuffle)
 from commands import (Command,
                       HitCommand,
                       StandCommand,
                       DoubleCommand,
                       SplitCommand,
                       SurrenderCommand)
+from cards import (BlackjackHand, Shoe, fisher_yates_shuffle)
 from config import get
-from game import (Bank, Dealer)
+from game import (Dealer)
 from log import log
 from policies import CardCount
 
@@ -89,6 +93,7 @@ class Table:
         return False
 
     def beginRound(self):
+        """Begins round of blackjack play"""
         print('>' * 80)
         for slot in self.occupied_slots:
             slot.beginRound()
@@ -98,6 +103,7 @@ class Table:
         return upcard
 
     def endRound(self):
+        """Ends round of blackjack play"""
         self.settle_bets()
         for slot in self.occupied_slots:
             slot.endRound()
@@ -166,11 +172,14 @@ class Table:
                                    slot.hand.description))
             if response == Command.SURRENDER:
                 slot.surrendered = True
+                slot.settled = True
                 amt = slot.takePot(get('LATE_SURRENDER_RATIO'))
                 log('%s loses $%d\n' % (slot.player.name, amt))
                 self.bank.deposit(amt)
             if self.commands[response].execute(slot):
                 break
+        if not slot.settled:
+            log('%s hand ends at %d\n' % (slot.player.name, hand.value))
         print('Hand ends at', hand.value)
 
     def dealSlot(self, slot, upcard):
@@ -408,5 +417,6 @@ class TableSlot:
         self.hands[self.index + 1].wasSplit = True
 
     def _canAfford(self, ratioName):
+        """Returns True iff player can afford a given wager"""
         needed_amt = floor(self.pot * get(ratioName))
         return self.player.stack.amount >= needed_amt

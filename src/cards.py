@@ -1,3 +1,7 @@
+"""
+Provides classes modelling playing card logic needed for blackjack gameplay
+"""
+
 from abc import ABCMeta, abstractmethod
 from math import floor
 from random import Random
@@ -126,8 +130,8 @@ class Shoe:
 
     @property
     def isEmpty(self):
-        """Returns True iff all cards in shoe have been dealt"""
-        """This is only possible if cut index == len(self.cards)"""
+        """Returns True iff all cards in shoe have been dealt.
+        This is only possible if cut index == len(self.cards)"""
         return self.index >= self.numDecks * get('NUM_CARDS_PER_DECK')
 
     def deal(self,n=1,visible=True):
@@ -159,16 +163,20 @@ class Shoe:
         self.burn(get('NUM_CARDS_BURN_ON_SHUFFLE'))
 
     def registerObserver(self, observer):
+        """Registers observers wishing to subscribe to events"""
         self.observers.append(observer)
 
     def unregisterObserver(self, observer):
+        """Registers observers wishing to unsubscribe to events"""
         self.observers.remove(observer)
 
     def notifyObservers(self, card):
+        """Notifies subscribed observers of an event"""
         for o in self.observers:
             o.update(card)
 
 def faro_shuffle(deck):
+    """Performs Faro shuffle on a given deck"""
     N = len(deck)//2
     ret = []
     for (a,b) in zip(deck[:N], deck[N:]):
@@ -177,6 +185,7 @@ def faro_shuffle(deck):
     return ret
 
 def fisher_yates_shuffle(deck):
+    """Performs Fisher-Yates shuffle on a given deck"""
     rand = Random()
     for i in range(len(deck) - 1, 1, -1):
         j = rand.randint(0, i)

@@ -1,8 +1,13 @@
+"""
+Provide classes for policies for making decisions about
+action, betting, and insurance
+"""
+
 from abc import ABCMeta, abstractmethod
 import re
 
-from cards import BlackjackHand
 from commands import Command
+from cards import BlackjackHand
 from config import get
 
 class DecisionPolicy(metaclass=ABCMeta):
@@ -60,7 +65,7 @@ class FeedbackDecisionPolicy(DecisionPolicy):
             self.num_wrong += 1
             print('WRONG: You %s when you should have %s' %
                   (Command.command_to_past_tense[decision],
-                    Command.command_to_past_tense[expected]))
+                   Command.command_to_past_tense[expected]))
         return decision
 
 class HumanInputPolicy(DecisionPolicy):
@@ -164,6 +169,7 @@ class StrategyChart:
     def fromFile(filename):
         """Create StrategyChart from file"""
         def hasContent(line):
+            """Returns True iff line has contents"""
             return not (re.match(r'^[ \t]*$', line) or
                         re.match(r'^[ \t]*#', line))
         File = open(filename, 'r')

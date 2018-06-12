@@ -1,7 +1,7 @@
+"""Functions to gather statistics on various data structures"""
+
 from math import sqrt
 from operator import (le, lt, ge, gt)
-
-"""Functions to gather statistics on various data structures"""
 
 def mean(sequence):
     """Computes the mean of the sequence"""
