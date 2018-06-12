@@ -190,11 +190,7 @@ class SplitCommand(Command):
 
     def isAvailable(self, slot):
         """Returns True iff Split command is available"""
-        if get('SPLIT_BY_VALUE'):
-            toTest = slot.hand.isPairByValue
-        else:
-            toTest = slot.hand.isPairByRank
-        if not toTest:
+        if not slot.hand.isPair:
             return False
         if not slot.playerCanAffordSplit:
             return False

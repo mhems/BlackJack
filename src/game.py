@@ -71,6 +71,10 @@ class Player:
         self.insurance_policy = insurance_policy
         self.bet_policy = betting_policy
 
+    @property
+    def isDealer(self):
+        return False
+
     def wager(self, amt):
         """Attempts to wager amt"""
         return self.stack.withdraw(amt)
@@ -110,6 +114,10 @@ class Dealer(Player):
         super().__init__(name, DealerPolicy(), DeclineInsurancePolicy())
         self.isActive = True
         self.stack = HouseBank()
+
+    @property
+    def isDealer(self):
+        return True
 
     def amountToBet(self, **kwargs):
         """Dealer does not bet"""

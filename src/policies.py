@@ -195,12 +195,8 @@ class StrategyChart:
         """Advise action given player's hand and dealer's up card"""
         value = player_hand.value
         advice = None
-        if get('SPLIT_BY_VALUE'):
-            isPair = player_hand.isPairByValue
-        else:
-            isPair = player_hand.isPairByRank
         # check for pair
-        if isPair and self.pair_chart:
+        if player_hand.isPair and self.pair_chart:
             arg = 'A' if player_hand.hasAce else int(value/2)
             advice = self.pair_chart.access(arg, dealer_up_card)
             if advice == 'Sp' and Command.SPLIT not in availableCommands:

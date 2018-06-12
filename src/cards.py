@@ -314,6 +314,13 @@ class BlackjackHand(Hand):
         return self.numCards == 2 and v1 == v2
 
     @property
+    def isPair(self):
+        """Returns True iff this hand is a pair"""
+        if get('SPLIT_BY_VALUE'):
+            return self.isPairByValue
+        return self.isPairByRank
+
+    @property
     def isBust(self):
         """Returns True iff hand value is greater than blackjack value"""
         return self.value > get('BLACKJACK_VALUE')
@@ -329,6 +336,16 @@ class BlackjackHand(Hand):
         if self.numCards > 2:
             raise Exception('Cannot split hand of more than 2 cards')
         return tuple(self.cards)
+
+    @property
+    def description(self):
+        """Returns description of hand"""
+        if self.isPair:
+            return 'pair of %ss' % self.cards[0].rank
+        value = str(self.value)
+        if self.isSoft:
+            return 'soft ' + value
+        return value
 
     def addCards(self, *cards):
         """Adds args to hand"""
