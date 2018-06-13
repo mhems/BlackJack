@@ -58,6 +58,13 @@ class testBlackjackHand(unittest.TestCase):
         h.addCards(Card(10,'D'), Card(6,'H'))
         self.assertFalse(h.isSoft,'testBlackjackHand:testSoft:10,5 should not be soft')
 
+        h = BlackjackHand()
+        h.addCards(Card('A','D'), Card(2,'H'))
+        self.assertTrue(h.isSoft,'testBlackjackHand:testSoft:A,2 should be soft')
+
+        h.addCards(Card(6,'D'))
+        self.assertTrue(h.isSoft,'testBlackjackHand:testSoft:A,2,6 should be soft')
+
     def testIsAcePair(self):
         h = BlackjackHand()
         h.addCards(Card('A','D'), Card('A','H'))

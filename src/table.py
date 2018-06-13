@@ -100,6 +100,7 @@ class Table:
         self.dealer_slot.beginRound()
         upcard = self.dealCards()
         print('Dealer shows', upcard.rank)
+        log('Dealer shows %s\n' % upcard)
         return upcard
 
     def endRound(self):
@@ -230,7 +231,6 @@ class Table:
         for slot in self.active_slots:
             slot.addCards(self.shoe.dealOneCard())
         upcard = self.shoe.dealOneCard()
-        log('Dealer shows %s\n' % str(upcard))
         self.dealer_slot.addCards(upcard)
         return upcard
 
@@ -244,7 +244,7 @@ class Table:
         """Unregister player from slot, if present"""
         if self.slots[pos].isOccupied:
             self.slots[pos].unseatPlayer()
-
+        log('%s left table\n' % self.slots[pos].player)
 
     def handle_dealer_blackjack(self, upcard):
         """Handles the event dealer is dealt a natural blackjack"""
@@ -327,6 +327,8 @@ class TableSlot:
     def seatPlayer(self, player):
         """Seats player at table slot"""
         self.player = player
+        if not player.isDealer:
+            log('%s sat down\n' % player)
 
     def unseatPlayer(self):
         """Removes player from table slot"""
