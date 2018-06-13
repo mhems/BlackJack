@@ -378,10 +378,7 @@ class TableSlot:
         amt = self.player.amountToBet(**kwargs)
         if not self.player.isDealer:
             log('%s bets $%d\n' % (self.player, amt))
-        if amt >= self.pot:
-            self.pots[self.index] += self.player.wager(amt - self.pot)
-        else:
-            self.player.receive_payment(self.pot - amt)
+        self.pots[self.index] += self.player.wager(amt)
 
     def promptEarlySurrender(self, upcard, **kwargs):
         """Prompts player for early surrender"""
