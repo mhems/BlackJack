@@ -195,7 +195,7 @@ class SplitCommand(Command):
         can_resplit = get('RESPLIT_ACES')
         max_splits = get('RESPLIT_UP_TO')
         if slot.hand.isPair and slot.playerCanAffordSplit and slot.firstAction:
-            if max_splits == UNRESTRICTED or slot.numSplits + 1 < max_splits:
+            if max_splits == UNRESTRICTED or slot.numSplits < max_splits:
                 if slot.hand.wasSplit and slot.hand.isAcePair and not can_resplit:
                     return False
                 return True

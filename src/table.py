@@ -384,7 +384,7 @@ class TableSlot:
     def promptEarlySurrender(self, upcard, **kwargs):
         """Prompts player for early surrender"""
         if self.player.earlySurrender(self.hand, upcard, **kwargs):
-            pass
+            self.surrendered = True
 
     def takePot(self, fraction=1):
         """Takes and returns specified fraction of pot"""
