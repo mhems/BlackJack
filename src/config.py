@@ -57,8 +57,7 @@ def loadConfiguration(filename):
                 #                    msg = 'type ' + typ if typ else ''
                 #                    raise SemanticConfigError(key, msg)
                 if result is not None:
-                    if ( check is None or
-                         check is not None and check(result) ):
+                    if check is None or check(result):
                         configuration[category][key] = result
                     else:
                         raise SemanticConfigError(key, err)
