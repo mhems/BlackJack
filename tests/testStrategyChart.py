@@ -391,6 +391,21 @@ class testStrategyChart(unittest.TestCase):
         hand = makePair(2)
         self.assertRow(chart, hand, 'H H H H H H H H H H')
 
+    def testUnavailableCommand(self):
+        chart = StrategyChart.fromFile('cfg/three_chart.txt')
+        hand = BlackjackHand()
+        upcard = 5
+        hand.addCards(Card(2, 'H'), Card(2, 'C'))
+        availableCommands = [Command.HIT, Command.STAND]
+        advice = chart.advise(hand, upcard, availableCommands)
+        expect = Command.HIT
+        self.assertEqual(advice,
+                         expect,
+                         'Hand %s vs %s: Expected %s; Got %s' % (hand,
+                                                                 upcard,
+                                                                 expect,
+                                                                 advice))
+
 def makePair(rank):
     hand = BlackjackHand()
     hand.addCards(Card(rank, 'H'), Card(rank, 'C'))

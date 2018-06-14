@@ -129,7 +129,7 @@ class Table:
                 if slot.hand.isNaturalBlackjack:
                     print('BLACKJACK!')
                     log('%s has natural blackjack\n' % slot.player.name)
-                    amt = slot.pot * get('BLACKJACK_PAYOUT_RATIO')
+                    amt = slot.first_bet * get('BLACKJACK_PAYOUT_RATIO')
                     log('%s wins $%d\n' % (slot.player.name, amt))
                     self.payout(slot, amt)
                     slot.settled = True
@@ -278,6 +278,7 @@ class TableSlot:
         self.index = 0
         self.surrendered = False
         self.settled = False
+        self.first_bet = 0
 
     @property
     def hand(self):
@@ -353,6 +354,7 @@ class TableSlot:
         self.index = 0
         self.settled = False
         self.surrendered = False
+        self.first_bet = 0
         self.clearHands()
 
     def clearHands(self):
@@ -371,7 +373,7 @@ class TableSlot:
             log('%s takes insurance\n' % self.player.name)
             self.insured = True
             self.insurance = self.player.wager(
-                self.pots[0] * get('INSURANCE_RATIO'))
+                self.first_bet * get('INSURANCE_RATIO'))
 
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
@@ -379,6 +381,8 @@ class TableSlot:
         if not self.player.isDealer:
             log('%s bets $%d\n' % (self.player, amt))
         self.pots[self.index] += self.player.wager(amt)
+        if self.first_bet == 0:
+            self.first_bet = amt
 
     def promptEarlySurrender(self, upcard, **kwargs):
         """Prompts player for early surrender"""
@@ -408,8 +412,7 @@ class TableSlot:
         self.hands[self.index].addCards(card1)
         self.hands[self.index].wasSplit = True
         self.hands.insert(self.index + 1, BlackjackHand())
-        split_bet = floor( self.pots[self.index] *
-                           get('SPLIT_RATIO') )
+        split_bet = floor(self.first_bet * get('SPLIT_RATIO'))
         self.player.wager(split_bet)
         self.pots.insert(self.index + 1, split_bet)
         self.hands[self.index + 1].addCards(card2)
@@ -417,5 +420,5 @@ class TableSlot:
 
     def _canAfford(self, ratioName):
         """Returns True iff player can afford a given wager"""
-        needed_amt = floor(self.pot * get(ratioName))
+        needed_amt = floor(self.first_bet * get(ratioName))
         return self.player.stack.amount >= needed_amt

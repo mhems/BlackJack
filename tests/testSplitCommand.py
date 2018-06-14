@@ -60,7 +60,7 @@ class testSplitCommand(unittest.TestCase):
         slot.promptBet()
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available to insufficiently funded player')
         player.receive_payment(get('MINIMUM_BET') *
-                               get('SPLIT_RATIO'))
+                               (1 + get('SPLIT_RATIO')))
         slot.promptBet()
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be avaible to non-pair hand')
 
@@ -73,6 +73,8 @@ class testSplitCommand(unittest.TestCase):
         self.assertTrue(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should be availabe to non rank-paired hand when split by value is allowed')
 
         hitCmd.perform(slot)
+        player.receive_payment(get('MINIMUM_BET'))
+        loadDefaultConfiguration()
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be availabe to hand beyond first action')
         loadConfiguration('cfg/resplit_upto.ini')
         slot.clearHands()
@@ -80,17 +82,17 @@ class testSplitCommand(unittest.TestCase):
         slot.addCards(Card(5,'C'), Card(5,'C'))
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be availabe if splitting is disallowed')
 
-        player.receive_payment(get('MINIMUM_BET') *
-                               (2 + 2 * get('SPLIT_RATIO')))
-        slot.promptBet()
-        splitCmd.perform(slot)
+        player.receive_payment(3 * get('MINIMUM_BET') * get('SPLIT_RATIO'))
         slot.clearHands()
+        slot.promptBet()
         slot.addCards(Card('A','C'), Card('A','H'))
         splitCmd.perform(slot)
-        slot.hand.reset()
-        slot.hand.addCards(Card('A','C'), Card('A', 'H'))
+        slot.hands[0].cards = []
+        slot.hands[0].addCards(Card('A', 'C'), Card('A', 'D'))
+        loadDefaultConfiguration()
         loadConfiguration('cfg/resplit_aces.ini')
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available if hand is aces from split and resplitting aces is disallowed')
+
         player.receive_payment(get('MINIMUM_BET') *
                                (2 + get('SPLIT_RATIO')))
         loadDefaultConfiguration()
