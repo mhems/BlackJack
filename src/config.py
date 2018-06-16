@@ -31,27 +31,30 @@ class UnknownOptionError(KeyError):
 
 def verifyBool(_, value):
     """Parses and verifies a boolean value"""
-    if value.lower() in ['true', 'false']:
-        return value.lower() == 'true', None
+    if value in [True, False]:
+        return value, None
+    if str(value).lower() in ['true', 'false']:
+        return str(value).lower() == 'true', None
     return None, "to be 'true' or 'false'"
 
 def verifyCutIndex(conf, value):
     """Parses and verifies a cut index"""
     num_cards = conf['NUM_DECKS'] * conf['NUM_CARDS_PER_DECK']
     fail = False
-    try:
-        parsed = int(value)
-    except ValueError:
-        fail = True
+    if not isinstance(value, int):
+        try:
+            value = int(value)
+        except ValueError:
+            fail = True
     if not fail:
-        fail = abs(parsed) > num_cards
+        fail = abs(value) > num_cards
     if fail:
         return None, 'to be within the number of cards in the shoe (%d)' % num_cards
-    return parsed, None
+    return value, None
 
 def verifyInfiniteInt(conf, value):
     """Parses and verifies an unrestricted value or integer"""
-    if value == '*':
+    if value in ['*', Config.UNRESTRICTED]:
         return Config.UNRESTRICTED, None
     parsed, err = verifyNonNegativeInt(conf, value)
     if err is None:
@@ -71,15 +74,16 @@ def verifyMaxBet(conf, value):
 def verifyNonNegativeInt(_, value):
     """Parses and verifies a non-negative integer"""
     fail = False
-    try:
-        parsed = int(value)
-    except ValueError:
-        fail = True
+    if not isinstance(value, int):
+        try:
+            value = int(value)
+        except ValueError:
+            fail = True
     if not fail:
-        fail = parsed < 0
+        fail = value < 0
     if fail:
         return None, 'to be a non-negative integer'
-    return parsed, None
+    return value, None
 
 def verifyNumCardsBurn(conf, value):
     """Parses and verifies the number of cards to burn"""
@@ -95,32 +99,50 @@ def verifyNumCardsBurn(conf, value):
 def verifyPositiveInt(_, value):
     """Parses and verifies a positive integer"""
     fail = False
-    try:
-        parsed = int(value)
-    except ValueError:
-        fail = True
+    if not isinstance(value, int):
+        try:
+            value = int(value)
+        except ValueError:
+            fail = True
     if not fail:
-        fail = parsed <= 0
+        fail = value <= 0
     if fail:
         return None, 'to be positive integer'
-    return parsed, None
+    return value, None
 
 def verifyRange(conf, value):
     """Parses and verifies a range of hand totals"""
     low = 4
     high = conf['BLACKJACK_VALUE']
     msg = 'to be a comma-separated list of integers between %d and %d' % (low, high)
+    def verifyElement(e):
+        fail = False
+        if not isinstance(e, int):
+            try:
+                e = int(e)
+            except ValueError:
+                fail = True
+        if not fail:
+            fail = e < low or e > high
+        return e if not fail else None
     if value == '*':
         return Config.UNRESTRICTED, None
+    try:
+        if all(verifyElement(e) is not None for e in value):
+            return value, None
+    except TypeError:
+        pass
     totals = []
     fail = True
     try:
-        value = value.strip('[]')
+        value = str(value).strip('[]')
         for total in value.split(','):
-            temp = int(total)
-            if temp < low or temp > high:
+            e = verifyElement(total)
+            if e is not None:
+                totals.append(e)
+            else:
+                fail = True
                 break
-            totals.append(temp)
         else:
             fail = False
     except ValueError:
@@ -132,13 +154,15 @@ def verifyRange(conf, value):
 def verifyRatio(_, value):
     """Parses and verifies a ratio expressed as a decimal or fraction"""
     fail = False
+    if (isinstance(value, float) or isinstance(value, int)) and value > 0:
+        return value, None
     try:
         parsed = float(value)
     except ValueError:
         fail = True
     if not fail and parsed > 0:
         return parsed, None
-    match = re.match('^\\+?([1-9][0-9]*)/([1-9][0-9]*)$', value)
+    match = re.match('^\\+?([1-9][0-9]*)/([1-9][0-9]*)$', str(value))
     if match:
         return float(int(match.group(1))/int(match.group(2))), None
     return None, 'to be a positive decimal or fraction'
@@ -222,6 +246,9 @@ class Config:
         for section in conf.sections():
             for key, value in conf.items(section):
                 self.__setitem__(key, value)
+
+    def reset(self):
+        self.mergeFile(Config.default_filename)
 
     def keys(self):
         """Returns the keys of this instance"""

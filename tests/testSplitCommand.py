@@ -72,7 +72,7 @@ class testSplitCommand(unittest.TestCase):
 
         hitCmd.perform(slot)
         player.receive_payment(cfg['MINIMUM_BET'])
-        cfg.mergeFile('cfg/default_config.ini')
+        cfg.reset()
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be availabe to hand beyond first action')
         cfg.mergeFile('cfg/resplit_upto.ini')
         slot.clearHands()
@@ -87,13 +87,13 @@ class testSplitCommand(unittest.TestCase):
         splitCmd.perform(slot)
         slot.hands[0].cards = []
         slot.hands[0].addCards(Card('A', 'C'), Card('A', 'D'))
-        cfg.mergeFile('cfg/default_config.ini')
+        cfg.reset()
         cfg.mergeFile('cfg/resplit_aces.ini')
         self.assertFalse(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should not be available if hand is aces from split and resplitting aces is disallowed')
 
         player.receive_payment(cfg['MINIMUM_BET'] *
                                (2 + cfg['SPLIT_RATIO']))
-        cfg.mergeFile('cfg/default_config.ini')
+        cfg.reset()
         self.assertTrue(splitCmd.isAvailable(slot), 'testSplitCommand:testIsAvailable:Split should be available on split aces if resplit aces allowed')
 
 if __name__ == '__main__':

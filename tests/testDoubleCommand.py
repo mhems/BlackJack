@@ -70,7 +70,7 @@ class testDoubleCommand(unittest.TestCase):
         cfg.mergeFile('cfg/DAS_false.ini')
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailbe:Double should not be available if player split and DAS is disallowed')
 
-        cfg.mergeFile('cfg/default_config.ini')
+        cfg.reset()
         self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be available after split if DAS is allowed')
         slot.clearHands()
         slot.addCards(Card(2,'H'), Card(4, 'C'))
