@@ -4,7 +4,7 @@ import argparse
 import signal
 import sys
 
-from config import (loadConfiguration, SemanticConfigError)
+from config import (cfg, SemanticConfigError)
 from game import (InsufficientFundsError, Player)
 from policies import (BasicStrategyPolicy,
                       CardCount,
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     nspace = parseCommandLine()
 
     try:
-        loadConfiguration(nspace.config_file_name)
+        cfg.mergeFile(nspace.config_file_name)
     except SemanticConfigError as e:
         print(e)
 

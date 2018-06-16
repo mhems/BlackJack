@@ -8,7 +8,7 @@ import re
 
 from commands import Command
 from cards import BlackjackHand
-from config import get
+from config import cfg
 
 class DecisionPolicy(metaclass=ABCMeta):
     """Base class for decision policies on how to act"""
@@ -35,7 +35,7 @@ class DealerPolicy(DecisionPolicy):
 
     def decide(self, hand, upcard, _, **kwargs):
         """Decides command according to dealer rules"""
-        hitS17 = hand.isSoft17 and get('DEALER_HITS_ON_SOFT_17')
+        hitS17 = hand.isSoft17 and cfg['DEALER_HITS_ON_SOFT_17']
         if hand.value < 17 or hitS17:
             return Command.HIT
         return Command.STAND
@@ -270,7 +270,7 @@ class MinBettingPolicy(BettingPolicy):
 
     def bet(self, **kwargs):
         """Return minimum bet allowed"""
-        return get('MINIMUM_BET')
+        return cfg['MINIMUM_BET']
 
 class CardCount():
     """Mechanism for card counting"""

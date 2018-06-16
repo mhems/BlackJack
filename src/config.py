@@ -2,24 +2,24 @@
 Provides handling and access of configuration files
 """
 
-from collections import OrderedDict
 from configparser import ConfigParser
 import re
 
-class SemanticConfigError(RuntimeError):
+class SemanticConfigError(ValueError):
     """Represents error for configuration value with improper semantic value"""
 
-    def __init__(self, option, msg):
+    def __init__(self, option, msg, value):
         super().__init__()
         self.option = option
         self.msg = msg
+        self.value = value
 
     def __str__(self):
         return 'Expected option %s %s, received %s' % (self.option,
                                                        self.msg,
-                                                       str(get(self.option)))
+                                                       self.value)
 
-class InvalidOptionError(KeyError):
+class UnknownOptionError(KeyError):
     """Represents error for unknown configuration option"""
 
     def __init__(self, option):
@@ -27,181 +27,246 @@ class InvalidOptionError(KeyError):
         self.option = option
 
     def __str__(self):
-        return 'Invalid configuration option \'%s\'' % self.option
+        return "Unknown configuration option '%s'" % self.option
 
-# To add new configuration option, add assignment in loadConfiguration
+def verifyBool(_, value):
+    """Parses and verifies a boolean value"""
+    if value.lower() in ['true', 'false']:
+        return value.lower() == 'true', None
+    return None, "to be 'true' or 'false'"
 
-UNRESTRICTED = 1
-configuration = OrderedDict()
-default_filename  = 'cfg/default_config.ini'
-
-def loadConfiguration(filename):
-    """Loads configuration data"""
-
-    def assignFromFunc(func):
-        """Return function with func bound as retrieval method"""
-        def assign(category, key, check=None, err=''):
-            """Assign option key under category into configuration
-               If check specified, perform check before assignment and
-               raise SemanticConfigError with err message if check fails"""
-            if conf.has_option(category, key):
-                #                try:
-                result = func(category, key)
-                #                except ValueError as e:
-                #                    # attempt to pull type from function name
-                #                    typ = func.__name__
-                #                    if len(typ) > 2 and 'get' == typ[:3]:
-                #                        typ = typ[3:]
-                #                    else:
-                #                        typ = None
-                #                    msg = 'type ' + typ if typ else ''
-                #                    raise SemanticConfigError(key, msg)
-                if result is not None:
-                    if check is None or check(result):
-                        configuration[category][key] = result
-                    else:
-                        raise SemanticConfigError(key, err)
-        return assign
-    posInt = lambda x : isinstance(x, int) and x >  0
-    posIntErr = 'to be positive integer'
-    nonNegInt = lambda x : isinstance(x, int) and x >= 0
-    nonNegIntErr = 'to be an integer greater than 0'
-
-    conf = ConfigParser()
-    if len(conf.read(filename)) == 0:
-        return
-
-    for s in conf.sections():
-        if s not in configuration:
-            configuration[s] = OrderedDict()
-
-    assignInt = assignFromFunc(conf.getint)
-    assignBool = assignFromFunc(conf.getboolean)
-
-    # check any semantics and assign iff valid
-    assignInt('general', 'BLACKJACK_VALUE', posInt, posIntErr)
-    assignInt('general', 'NUM_DECKS', nonNegInt, nonNegIntErr)
-    assignInt('general', 'NUM_CARDS_PER_DECK', nonNegInt, nonNegIntErr)
-    assignBool('general', 'PUSH_ON_BLACKJACK')
-    num_cards = get('NUM_DECKS') * get('NUM_CARDS_PER_DECK')
-    assignInt('general', 'CUT_INDEX',
-              lambda x : isinstance(x, int) and abs(x) <= num_cards,
-              'to be at most the number of cards in shoe (%d)' % num_cards)
-    assignInt('general', 'NUM_CARDS_BURN_ON_SHUFFLE', nonNegInt, nonNegIntErr)
-    if get('NUM_CARDS_BURN_ON_SHUFFLE') > num_cards:
-        raise SemanticConfigError('NUM_CARDS_BURN_ON_SHUFFLE',
-                                  'to be at most the number of cards in shoe'
-                                  ' (%d)' % num_cards)
-
-    checkRatio(conf, 'payout_ratio', 'PAYOUT_RATIO')
-    checkRatio(conf, 'payout_ratio', 'BLACKJACK_PAYOUT_RATIO')
-    checkRatio(conf, 'payout_ratio', 'INSURANCE_PAYOUT_RATIO')
-
-    assignBool('dealer', 'DEALER_HITS_ON_SOFT_17')
-    assignBool('dealer', 'DEALER_CHECKS_FOR_BLACKJACK')
-
-    assignBool('double', 'DOUBLE_AFTER_SPLIT_ALLOWED')
-    checkCardRange(conf, 'double', 'TOTALS_ALLOWED_FOR_DOUBLE')
-    checkRatio(conf, 'double', 'DOUBLE_RATIO')
-
-    assignBool('split', 'SPLIT_BY_VALUE')
-    resplit_num = None
-    if conf.has_section('split') and conf.has_option('split', 'RESPLIT_UP_TO'):
-        resplit_num = conf.getint('split', 'RESPLIT_UP_TO')
-    if resplit_num is not None:
-        if resplit_num == '*':
-            configuration['split']['RESPLIT_UP_TO'] = UNRESTRICTED
-        elif nonNegInt(resplit_num):
-            configuration['split']['RESPLIT_UP_TO'] = resplit_num
-        else:
-            raise SemanticConfigError('RESPLIT_UP_TO', nonNegIntErr)
-    assignBool('split', 'RESPLIT_ACES')
-    assignBool('split', 'HIT_SPLIT_ACES')
-    checkRatio(conf, 'split', 'SPLIT_RATIO')
-
-    assignBool('surrender', 'LATE_SURRENDER')
-    checkRatio(conf, 'surrender', 'LATE_SURRENDER_RATIO', False)
-    assignBool('surrender', 'EARLY_SURRENDER')
-    checkRatio(conf, 'surrender', 'EARLY_SURRENDER_RATIO', False)
-
-    assignBool('insurance', 'OFFER_INSURANCE')
-    checkRatio(conf, 'insurance', 'INSURANCE_RATIO', False)
-
-    assignInt('game', 'MINIMUM_BET', posInt, posIntErr)
-    min_bet = get('MINIMUM_BET')
-    assignInt('game', 'MAXIMUM_BET',
-              lambda x : posInt(x) and x >= min_bet,
-              'to be positive integer no less than minimum bet (%d)' % min_bet)
-
-def loadDefaultConfiguration():
-    """Loads default configuration"""
-    loadConfiguration(default_filename)
-
-def checkRatio(conf, category, flagname, allowImproper=True):
-    """Semantic check of options with ratio values"""
-    if not conf.has_option(category, flagname):
-        return None
-    value = conf.get(category, flagname)
-    ratio = None
-    if value is None:
-        return None
+def verifyCutIndex(conf, value):
+    """Parses and verifies a cut index"""
+    num_cards = conf['NUM_DECKS'] * conf['NUM_CARDS_PER_DECK']
+    fail = False
     try:
-        ratio = float(value)
-        if ratio < 0:
-            raise SemanticConfigError(flagname, 'to be positive')
+        parsed = int(value)
     except ValueError:
-        match = re.match('^\\+?([1-9][0-9]*)/([1-9][0-9]*)$', value)
-        if match:
-            ratio = float(int(match.group(1))/int(match.group(2)))
+        fail = True
+    if not fail:
+        fail = abs(parsed) > num_cards
+    if fail:
+        return None, 'to be within the number of cards in the shoe (%d)' % num_cards
+    return parsed, None
+
+def verifyInfiniteInt(conf, value):
+    """Parses and verifies an unrestricted value or integer"""
+    if value == '*':
+        return Config.UNRESTRICTED, None
+    parsed, err = verifyNonNegativeInt(conf, value)
+    if err is None:
+        return parsed, None
+    return None, "to be either '*' or a non-negative integer"
+
+def verifyMaxBet(conf, value):
+    """Parses and verifies a maximum bet"""
+    min_bet = conf['MINIMUM_BET']
+    parsed, err = verifyPositiveInt(conf, value)
+    if err is None:
+        fail = parsed < min_bet
+    if err is not None or fail:
+        return None, 'to be an integer no less than the minimum bet (%d)' % min_bet
+    return parsed, None
+
+def verifyNonNegativeInt(_, value):
+    """Parses and verifies a non-negative integer"""
+    fail = False
+    try:
+        parsed = int(value)
+    except ValueError:
+        fail = True
+    if not fail:
+        fail = parsed < 0
+    if fail:
+        return None, 'to be a non-negative integer'
+    return parsed, None
+
+def verifyNumCardsBurn(conf, value):
+    """Parses and verifies the number of cards to burn"""
+    num_cards = conf['NUM_DECKS'] * conf['NUM_CARDS_PER_DECK']
+    msg = 'to be a non-negative integer no more than the number of cards in the shoe (%d)' % num_cards
+    parsed, err = verifyNonNegativeInt(conf, value)
+    if err is None:
+        fail = parsed > num_cards
+    if err is not None or fail:
+        return None, msg
+    return parsed, None
+
+def verifyPositiveInt(_, value):
+    """Parses and verifies a positive integer"""
+    fail = False
+    try:
+        parsed = int(value)
+    except ValueError:
+        fail = True
+    if not fail:
+        fail = parsed <= 0
+    if fail:
+        return None, 'to be positive integer'
+    return parsed, None
+
+def verifyRange(conf, value):
+    """Parses and verifies a range of hand totals"""
+    low = 4
+    high = conf['BLACKJACK_VALUE']
+    msg = 'to be a comma-separated list of integers between %d and %d' % (low, high)
+    if value == '*':
+        return Config.UNRESTRICTED, None
+    totals = []
+    fail = True
+    try:
+        value = value.strip('[]')
+        for total in value.split(','):
+            temp = int(total)
+            if temp < low or temp > high:
+                break
+            totals.append(temp)
         else:
-            raise SemanticConfigError(flagname,
-                                      'to be either a decimal or a fraction')
-    if ratio:
-        if not allowImproper and ratio > 1.0:
-            raise SemanticConfigError(flagname,
-                                      'to be ratio between 0 and 1 inclusive')
-        configuration[category][flagname] = ratio
+            fail = False
+    except ValueError:
+        fail = True
+    if fail:
+        return None, msg
+    return totals, None
 
-def checkCardRange(conf, category, flagname):
-    """Semantic check of options with range values"""
-    RANK_REGEX = '10|J(?:ack)?|Q(?:ueen)?|K(?:ing)?|A(?:ce)?|[2-9]'
-    if not conf.has_option(category, flagname):
-        return None
-    value = conf.get(category, flagname)
-    if value is None:
-        return None
-    elif value == '*':
-        configuration[category][flagname] = UNRESTRICTED
-    else:
-        # refactor to allow only ranks, raise error if anything else found
-        ls = list(set(re.findall(RANK_REGEX, value, re.I)))
-        for idx, elem in enumerate(ls):
-            if re.match('[0-9]+', elem):
-                ls[idx] = int(elem)
-        configuration[category][flagname] = ls
+def verifyRatio(_, value):
+    """Parses and verifies a ratio expressed as a decimal or fraction"""
+    fail = False
+    try:
+        parsed = float(value)
+    except ValueError:
+        fail = True
+    if not fail and parsed > 0:
+        return parsed, None
+    match = re.match('^\\+?([1-9][0-9]*)/([1-9][0-9]*)$', value)
+    if match:
+        return float(int(match.group(1))/int(match.group(2))), None
+    return None, 'to be a positive decimal or fraction'
 
-def get(key):
-    """Retrieve value associated with key"""
-    for category in configuration.keys():
-        if key in configuration[category]:
-            return configuration[category][key]
-    raise InvalidOptionError(key)
 
-def representation():
-    """Build string representation of all associations"""
-    s = ""
-    for category in configuration.keys():
-        s += '[%s]' % category
-        s += '\n'
-        s += '\n'.join( ('%s : %s' % (key, configuration[category][key]))
-                        for key in configuration[category] )
-        s += '\n'
-    return s
+class Config:
+    """Class to manage application configuration"""
 
-def writeConfigFile(filename):
-    """Outputs configuration to file"""
-    with open(filename, 'w') as f:
-        f.write(representation())
+    UNRESTRICTED = -1
 
-# Load eagerly on first import
-loadDefaultConfiguration()
+    default_filename  = 'cfg/default_config.ini'
+
+    _deps = {
+        'CUT_INDEX': ['NUM_DECKS', 'NUM_CARDS_PER_DECK'],
+        'MAXIMUM_BET': ['MINIMUM_BET'],
+        'NUM_CARDS_BURN_ON_SHUFFLE': ['NUM_DECKS', 'NUM_CARDS_PER_DECK'],
+        'TOTALS_ALLOWED_FOR_DOUBLE': ['BLACKJACK_VALUE'],
+    }
+
+    _key_map = {
+        'BLACKJACK_VALUE': verifyPositiveInt,
+        'NUM_DECKS': verifyNonNegativeInt,
+        'NUM_CARDS_PER_DECK': verifyNonNegativeInt,
+        'PUSH_ON_BLACKJACK': verifyBool,
+        'CUT_INDEX': verifyCutIndex,
+        'NUM_CARDS_BURN_ON_SHUFFLE': verifyNumCardsBurn,
+        'MINIMUM_BET': verifyPositiveInt,
+        'MAXIMUM_BET': verifyMaxBet,
+        'NUM_SEATS': verifyPositiveInt,
+        'PAYOUT_RATIO': verifyRatio,
+        'BLACKJACK_PAYOUT_RATIO': verifyRatio,
+        'INSURANCE_PAYOUT_RATIO': verifyRatio,
+        'DEALER_HITS_ON_SOFT_17': verifyBool,
+        'DEALER_CHECKS_FOR_BLACKJACK': verifyBool,
+        'DOUBLE_AFTER_SPLIT_ALLOWED': verifyBool,
+        'TOTALS_ALLOWED_FOR_DOUBLE': verifyRange,
+        'DOUBLE_RATIO': verifyRatio,
+        'SPLIT_BY_VALUE': verifyBool,
+        'RESPLIT_UP_TO': verifyInfiniteInt,
+        'RESPLIT_ACES': verifyBool,
+        'HIT_SPLIT_ACES': verifyBool,
+        'SPLIT_RATIO': verifyRatio,
+        'LATE_SURRENDER': verifyBool,
+        'LATE_SURRENDER_RATIO': verifyRatio,
+        'EARLY_SURRENDER': verifyBool,
+        'EARLY_SURRENDER_RATIO': verifyRatio,
+        'OFFER_INSURANCE': verifyBool,
+        'INSURANCE_RATIO': verifyRatio,
+    }
+
+    def __init__(self):
+        """Create a new Config object"""
+        self.parser = ConfigParser()
+        self.items = {}
+
+    @staticmethod
+    def load(filename=None):
+        """Load a Config object from a config file"""
+        if filename is not None:
+            conf = Config.load()
+            conf.mergeFile(filename)
+            return conf
+        conf = Config()
+        if filename is None:
+            filename = Config.default_filename
+        conf.parser.read(filename)
+        for section in conf.parser.sections():
+            for key, value in conf.parser.items(section):
+                conf.__setitem__(key, value)
+        return conf
+
+    def merge(self, conf):
+        """Merge an existing Config object into this instance"""
+        for key, value in conf:
+            self.items[key.upper()] = value
+
+    def mergeFile(self, filename):
+        """Merge config options from file into this instance"""
+        conf = ConfigParser()
+        conf.read(filename)
+        for section in conf.sections():
+            for key, value in conf.items(section):
+                self.__setitem__(key, value)
+
+    def keys(self):
+        """Returns the keys of this instance"""
+        return self.items.keys()
+
+    def writeToFile(self, filename):
+        """Writes this instance to file"""
+        for section in self.parser.sections():
+            for key in self.parser.options(section):
+                self.parser.set(section, key, self.__getitem__(key))
+        with open(filename, 'w') as fp:
+            self.parser.write(fp)
+
+    def __eq__(self, other):
+        """Returns True iff this instance is equal to other"""
+        return self.items == other
+
+    def __ne__(self, other):
+        """Returns True iff this instance is not equal to other"""
+        return not self == other
+
+    def __contains__(self, key):
+        """Returns True iff this instance contains key"""
+        return key.upper() in self.items
+
+    def __len__(self):
+        """Returns the number of config options in this instance"""
+        return len(self.items)
+
+    def __iter__(self):
+        """Returns an iterable over this instance's options"""
+        return iter(self.items.items())
+
+    def __getitem__(self, key):
+        """Gets the value associated with this instance's key"""
+        if key.upper() in self.items:
+            return self.items[key.upper()]
+        raise UnknownOptionError(key)
+
+    def __setitem__(self, key, value):
+        """Sets the value associated with this instance's key"""
+        parsed, err = Config._key_map[key.upper()](self, value)
+        if err is None:
+            self.items[key.upper()] = parsed
+        else:
+            raise SemanticConfigError(key, err, value)
+
+cfg = Config.load()

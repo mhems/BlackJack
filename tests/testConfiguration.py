@@ -1,13 +1,13 @@
 import unittest
 
-from config import *
+from config import (Config, SemanticConfigError)
 
 class testConfiguration(unittest.TestCase):
 
     prefix = 'cfg/'
 
     def setUp(self):
-        loadDefaultConfiguration()
+        cfg = Config.load()
         self.checkBadSemantics = self.assertIsRaised(SemanticConfigError)
         self.checkBadValue     = self.assertIsRaised(ValueError)
 
@@ -16,7 +16,7 @@ class testConfiguration(unittest.TestCase):
 
     def assertIsRaised(self, error):
         def __check(filename):
-            self.assertRaises(error, loadConfiguration, self.prefix + filename)
+            self.assertRaises(error, Config.load, self.prefix + filename)
         return __check
 
     def testNegPosInt(self):
@@ -42,9 +42,6 @@ class testConfiguration(unittest.TestCase):
 
     def testNegRatio(self):
         self.checkBadSemantics('neg_ratio.ini')
-
-    def testImproperRatio(self):
-        self.checkBadSemantics('improper_ratio.ini')
 
     def testBadRange(self):
         pass

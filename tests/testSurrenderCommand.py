@@ -3,9 +3,7 @@ import unittest
 from cards import (Card, Shoe)
 from commands import (HitCommand,
                       SurrenderCommand)
-from config import (get,
-                    loadDefaultConfiguration,
-                    loadConfiguration)
+from config import cfg
 from game import Player
 from policies import MinBettingPolicy
 from table import TableSlot
@@ -25,13 +23,13 @@ class testSurrenderCommand(unittest.TestCase):
 
     def testIsAvailable(self):
         player = Player("Test", None, None, MinBettingPolicy())
-        player.receive_payment(get('MINIMUM_BET'))
+        player.receive_payment(cfg['MINIMUM_BET'])
         self.slot.seatPlayer(player)
         self.slot.addCards(Card('A','H'), Card(6,'D'))
-        loadConfiguration('cfg/no_surrender.ini')
+        cfg.mergeFile('cfg/no_surrender.ini')
         self.assertFalse(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should not be available if disallowed')
 
-        loadDefaultConfiguration()
+        cfg.mergeFile('cfg/default_config.ini')
         self.assertTrue(self.surrenderCmd.isAvailable(self.slot), 'testSurrenderCommand:testIsAvailable:Surrender should be available if allowed')
 
         HitCommand(Shoe(2, lambda x:x)).perform(self.slot)

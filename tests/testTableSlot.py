@@ -1,7 +1,7 @@
 import unittest
 
 from cards import (Card, BlackjackHand)
-from config import get
+from config import cfg
 from game import Player
 from policies import (BettingPolicy,
                       MinBettingPolicy)
@@ -32,7 +32,7 @@ class testTableSlot(unittest.TestCase):
         self.assertEqual(slot.numSplits,0,'testTableSlot:testNumSplits:New hand should have no splits')
         slot = TableSlot()
         player = Player('', None, MinBettingPolicy(), None)
-        player.receive_payment(get('SPLIT_RATIO'))
+        player.receive_payment(cfg['SPLIT_RATIO'])
         slot.seatPlayer(player)
         slot.addCards(Card(7,'D'), Card(7,'H'))
         slot.splitHand()

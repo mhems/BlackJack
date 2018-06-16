@@ -5,7 +5,7 @@ Provides classes for commands modelling blackjack actions
 from abc import ABCMeta, abstractmethod
 from math import floor
 
-from config import (get, UNRESTRICTED)
+from config import cfg, Config
 
 class UnavailableCommandError(Exception):
     """Exception signifying unavailable command attempted to execute"""
@@ -144,7 +144,7 @@ class DoubleCommand(Command):
 
     def perform(self, slot, **kwargs):
         """Perform Double command"""
-        amt = floor(slot.pot * get('DOUBLE_RATIO'))
+        amt = floor(slot.pot * cfg['DOUBLE_RATIO'])
         slot.pots[slot.index] += slot.player.wager(amt)
         self.hit_command.execute(slot, **kwargs)
         return self.stand_command.execute(slot, **kwargs)
@@ -155,10 +155,10 @@ class DoubleCommand(Command):
             return False
         if not slot.firstAction:
             return False
-        range_ = get('TOTALS_ALLOWED_FOR_DOUBLE')
-        if range_ != UNRESTRICTED and not slot.hand.value in range_:
+        range_ = cfg['TOTALS_ALLOWED_FOR_DOUBLE']
+        if range_ != Config.UNRESTRICTED and not slot.hand.value in range_:
             return False
-        if slot.hand.wasSplit and not get('DOUBLE_AFTER_SPLIT_ALLOWED'):
+        if slot.hand.wasSplit and not cfg['DOUBLE_AFTER_SPLIT_ALLOWED']:
             return False
         return True
 
@@ -181,8 +181,8 @@ class SplitCommand(Command):
     def perform(self, slot, **kwargs):
         """Perform Split command"""
         done = (slot.hand.isAcePair and
-                not get('HIT_SPLIT_ACES') and
-                not get('RESPLIT_ACES'))
+                not cfg['HIT_SPLIT_ACES'] and
+                not cfg['RESPLIT_ACES'])
         slot.splitHand()
         self.hit_command.execute(slot, **kwargs)
         slot.index += 1
@@ -192,10 +192,10 @@ class SplitCommand(Command):
 
     def isAvailable(self, slot):
         """Returns True iff Split command is available"""
-        can_resplit = get('RESPLIT_ACES')
-        max_splits = get('RESPLIT_UP_TO')
+        can_resplit = cfg['RESPLIT_ACES']
+        max_splits = cfg['RESPLIT_UP_TO']
         if slot.hand.isPair and slot.playerCanAffordSplit and slot.firstAction:
-            if max_splits == UNRESTRICTED or slot.numSplits < max_splits:
+            if max_splits == Config.UNRESTRICTED or slot.numSplits < max_splits:
                 if slot.hand.wasSplit and slot.hand.isAcePair and not can_resplit:
                     return False
                 return True
@@ -219,7 +219,7 @@ class SurrenderCommand(Command):
 
     def isAvailable(self, slot):
         """Returns True iff (late) surrender is available"""
-        return get('LATE_SURRENDER') and slot.firstAction
+        return cfg['LATE_SURRENDER'] and slot.firstAction
 
     def __str__(self):
         """Returns string representing Surrender Command"""

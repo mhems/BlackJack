@@ -5,9 +5,7 @@ from commands import (DoubleCommand,
                       HitCommand,
                       StandCommand,
                       SplitCommand)
-from config import (get,
-                    loadConfiguration,
-                    loadDefaultConfiguration)
+from config import cfg
 from game import Player
 from policies import MinBettingPolicy
 from table import TableSlot
@@ -27,8 +25,8 @@ class testDoubleCommand(unittest.TestCase):
         hitCmd = HitCommand(shoe)
         standCmd = StandCommand()
         doubleCmd = DoubleCommand(hitCmd, standCmd)
-        player.receive_payment(get('MINIMUM_BET') *
-                               (1 + get('DOUBLE_RATIO')))
+        player.receive_payment(cfg['MINIMUM_BET'] *
+                               (1 + cfg['DOUBLE_RATIO']))
         slot.promptBet()
         rc = doubleCmd.perform(slot)
         self.assertEqual(player.stack.amount, 0, 'testDoubleCommand:testPerform:Double should remove amount in pot from player')
@@ -44,18 +42,18 @@ class testDoubleCommand(unittest.TestCase):
         doubleCmd = DoubleCommand(hitCmd, standCmd)
         slot.seatPlayer(player)
         slot.addCards(Card(5,'C'), Card(5, 'H'))
-        player.receive_payment(get('MINIMUM_BET'))
+        player.receive_payment(cfg['MINIMUM_BET'])
         slot.promptBet()
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should not be available for player with insufficient money')
-        player.receive_payment(get('MINIMUM_BET') *
-                               (1 + get('DOUBLE_RATIO')))
+        player.receive_payment(cfg['MINIMUM_BET'] *
+                               (1 + cfg['DOUBLE_RATIO']))
         slot.promptBet()
         self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be availabe for player with sufficient money and unrestricted totals')
         hitCmd.perform(slot)
-        player.receive_payment(get('MINIMUM_BET') *
-                               (1 + get('DOUBLE_RATIO')))
+        player.receive_payment(cfg['MINIMUM_BET'] *
+                               (1 + cfg['DOUBLE_RATIO']))
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should not be available beyond first action')
-        loadConfiguration('cfg/double_totals.ini')
+        cfg.mergeFile('cfg/double_totals.ini')
         slot.clearHands()
         slot.addCards(Card(2,'H'), Card(4, 'C'))
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should not be availabe if total not in allowed totals')
@@ -64,20 +62,20 @@ class testDoubleCommand(unittest.TestCase):
         slot.addCards(Card(5,'H'), Card(4, 'C'))
         self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be available when totals match')
         splitCmd = SplitCommand(hitCmd, standCmd)
-        player.receive_payment(get('MINIMUM_BET') *
-                               (1 + get('SPLIT_RATIO')))
+        player.receive_payment(cfg['MINIMUM_BET'] *
+                               (1 + cfg['SPLIT_RATIO']))
         slot.clearHands()
         slot.addCards(Card(5,'C'), Card(5, 'H'))
         splitCmd.perform(slot)
-        loadConfiguration('cfg/DAS_false.ini')
+        cfg.mergeFile('cfg/DAS_false.ini')
         self.assertFalse(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailbe:Double should not be available if player split and DAS is disallowed')
 
-        loadDefaultConfiguration()
+        cfg.mergeFile('cfg/default_config.ini')
         self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be available after split if DAS is allowed')
         slot.clearHands()
         slot.addCards(Card(2,'H'), Card(4, 'C'))
-        player.receive_payment(get('MINIMUM_BET') *
-                                    (1 + get('DOUBLE_RATIO')))
+        player.receive_payment(cfg['MINIMUM_BET'] *
+                                    (1 + cfg['DOUBLE_RATIO']))
         self.assertTrue(doubleCmd.isAvailable(slot), 'testDoubleCommand:testIsAvailable:Double should be availabe under sufficient funds and appropriate configurations')
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 from math import floor
 from random import Random
 
-from config import get
+from config import cfg
 
 class Card:
     """Represents a playing card"""
@@ -101,7 +101,7 @@ class Shoe:
         self.algorithm = algorithm
         self.index = 0
         self.observers = []
-        num_cards = get('NUM_CARDS_PER_DECK')
+        num_cards = cfg['NUM_CARDS_PER_DECK']
         if not cutIndex:
             self.cutIndex = int((n - 1/2) * num_cards)
         elif isinstance(cutIndex, float):
@@ -121,7 +121,7 @@ class Shoe:
     @property
     def numCardsRemainingInShoe(self):
         """Returns number of cards remaining in shoe"""
-        return self.numDecks * get('NUM_CARDS_PER_DECK') - self.index
+        return self.numDecks * cfg['NUM_CARDS_PER_DECK'] - self.index
 
     @property
     def isExhausted(self):
@@ -132,7 +132,7 @@ class Shoe:
     def isEmpty(self):
         """Returns True iff all cards in shoe have been dealt.
         This is only possible if cut index == len(self.cards)"""
-        return self.index >= self.numDecks * get('NUM_CARDS_PER_DECK')
+        return self.index >= self.numDecks * cfg['NUM_CARDS_PER_DECK']
 
     def deal(self,n=1,visible=True):
         """Remove and return n cards from beginning of shoe"""
@@ -160,7 +160,7 @@ class Shoe:
         self.cards = self.algorithm(self.cards)
         self.index = 0
         self.notifyObservers(None)
-        self.burn(get('NUM_CARDS_BURN_ON_SHUFFLE'))
+        self.burn(cfg['NUM_CARDS_BURN_ON_SHUFFLE'])
 
     def registerObserver(self, observer):
         """Registers observers wishing to subscribe to events"""
@@ -254,7 +254,7 @@ class BlackjackHand(Hand):
         nAces = self.numAces
         if nAces > 0:
             val += (nAces - 1) * BlackjackHand.SOFT_ACE_VALUE
-            if val + BlackjackHand.HARD_ACE_VALUE <= get('BLACKJACK_VALUE'):
+            if val + BlackjackHand.HARD_ACE_VALUE <= cfg['BLACKJACK_VALUE']:
                 val += BlackjackHand.HARD_ACE_VALUE
             else:
                 val += BlackjackHand.SOFT_ACE_VALUE
@@ -282,7 +282,7 @@ class BlackjackHand(Hand):
         numAces = self.numAces
         if numAces > 0:
             val += (numAces - 1) * BlackjackHand.SOFT_ACE_VALUE
-            if val + BlackjackHand.HARD_ACE_VALUE <= get('BLACKJACK_VALUE'):
+            if val + BlackjackHand.HARD_ACE_VALUE <= cfg['BLACKJACK_VALUE']:
                 return True
         return False
 
@@ -299,14 +299,14 @@ class BlackjackHand(Hand):
     @property
     def isBlackjackValued(self):
         """Returns True iff hand has value equal to Blackjack value"""
-        return self.value == get('BLACKJACK_VALUE')
+        return self.value == cfg['BLACKJACK_VALUE']
 
     @property
     def isNaturalBlackjack(self):
         """Returns True iff hand is natural blackjack
         Note a blackjack after split is NOT considered natural"""
         return (self.numCards == 2 and
-                self.value == get('BLACKJACK_VALUE') and
+                self.value == cfg['BLACKJACK_VALUE'] and
                 not self.wasSplit)
 
     @property
@@ -325,14 +325,14 @@ class BlackjackHand(Hand):
     @property
     def isPair(self):
         """Returns True iff this hand is a pair"""
-        if get('SPLIT_BY_VALUE'):
+        if cfg['SPLIT_BY_VALUE']:
             return self.isPairByValue
         return self.isPairByRank
 
     @property
     def isBust(self):
         """Returns True iff hand value is greater than blackjack value"""
-        return self.value > get('BLACKJACK_VALUE')
+        return self.value > cfg['BLACKJACK_VALUE']
 
     @property
     def hasAce(self):

@@ -11,7 +11,7 @@ from commands import (Command,
                       SplitCommand,
                       SurrenderCommand)
 from cards import (BlackjackHand, Shoe, fisher_yates_shuffle)
-from config import get
+from config import cfg
 from game import (Dealer)
 from log import log
 from policies import CardCount
@@ -19,15 +19,18 @@ from policies import CardCount
 class Table:
     """Representation of Blackjack Table"""
 
-    def __init__(self, num_slots = 6):
+    def __init__(self, num_slots=None):
         """Initializes table members"""
         self.dealer_slot = TableSlot()
-        self.num_slots = num_slots
+        if num_slots is None:
+            self.num_slots = cfg['NUM_SEATS']
+        else:
+            self.num_slots = num_slots
         # Index 0 is dealer's leftmost slot
         self.slots = [TableSlot() for _ in range(self.num_slots)]
-        self.shoe = Shoe(get('NUM_DECKS'),
+        self.shoe = Shoe(cfg['NUM_DECKS'],
                          fisher_yates_shuffle,
-                         get('CUT_INDEX'))
+                         cfg['CUT_INDEX'])
         self.shoe.shuffle()
         self.shoe.registerObserver(CardCount('HiLoCount'))
         self.dealer_slot.seatPlayer(Dealer())
@@ -119,7 +122,7 @@ class Table:
         """Plays one round of blackjack"""
         dealerActs = False
         upcard = self.beginRound()
-        if get('EARLY_SURRENDER'):
+        if cfg['EARLY_SURRENDER']:
             self.offer_early_surrender()
         if self.dealer_slot.hand.isNaturalBlackjack:
             self.handle_dealer_blackjack(upcard)
@@ -129,7 +132,7 @@ class Table:
                 if slot.hand.isNaturalBlackjack:
                     print('BLACKJACK!')
                     log('%s has natural blackjack\n' % slot.player.name)
-                    amt = slot.first_bet * get('BLACKJACK_PAYOUT_RATIO')
+                    amt = slot.first_bet * cfg['BLACKJACK_PAYOUT_RATIO']
                     log('%s wins $%d\n' % (slot.player.name, amt))
                     self.payout(slot, amt)
                     slot.settled = True
@@ -174,7 +177,7 @@ class Table:
             if response == Command.SURRENDER:
                 slot.surrendered = True
                 slot.settled = True
-                amt = slot.takePot(get('LATE_SURRENDER_RATIO'))
+                amt = slot.takePot(cfg['LATE_SURRENDER_RATIO'])
                 log('%s loses $%d\n' % (slot.player.name, amt))
                 self.bank.deposit(amt)
             if self.commands[response].execute(slot):
@@ -198,7 +201,7 @@ class Table:
             if slot.surrendered:
                 log('%s surrenders early\n' % slot.player.name)
                 self.bank.deposit(
-                    slot.takePot(get('EARLY_SURRENDER_RATIO')) )
+                    slot.takePot(cfg['EARLY_SURRENDER_RATIO']))
 
     def settle_bets(self):
         """Settles each active player's bet(s)
@@ -212,7 +215,7 @@ class Table:
                     slot.index = index
                     value = slot.hand.value
                     if value > dealer_value or self.dealer_slot.hand.isBust:
-                        amt = slot.pot * get('PAYOUT_RATIO')
+                        amt = slot.pot * cfg['PAYOUT_RATIO']
                         log('%s wins $%d\n' % (slot.player.name, amt))
                         self.payout(slot, amt)
                     elif value < dealer_value:
@@ -248,7 +251,7 @@ class Table:
 
     def handle_dealer_blackjack(self, upcard):
         """Handles the event dealer is dealt a natural blackjack"""
-        if get('OFFER_INSURANCE') and upcard.isAce:
+        if cfg['OFFER_INSURANCE'] and upcard.isAce:
             for slot in self.active_slots:
                 slot.promptInsurance()
         log('Dealer has natural blackjack\n')
@@ -260,7 +263,7 @@ class Table:
                 self.bank.deposit(amt)
             if slot.insured:
                 print("You're insured though")
-                amt = slot.insurance * get('INSURANCE_PAYOUT_RATIO')
+                amt = slot.insurance * cfg['INSURANCE_PAYOUT_RATIO']
                 log('%s is insured\n' % slot.player.name)
                 log('%s wins $%d\n' % (slot.player.name, amt))
                 self.payout(slot, amt)
@@ -373,7 +376,7 @@ class TableSlot:
             log('%s takes insurance\n' % self.player.name)
             self.insured = True
             self.insurance = self.player.wager(
-                self.first_bet * get('INSURANCE_RATIO'))
+                self.first_bet * cfg['INSURANCE_RATIO'])
 
     def promptBet(self, **kwargs):
         """Prompts player to bet"""
@@ -412,7 +415,7 @@ class TableSlot:
         self.hands[self.index].addCards(card1)
         self.hands[self.index].wasSplit = True
         self.hands.insert(self.index + 1, BlackjackHand())
-        split_bet = floor(self.first_bet * get('SPLIT_RATIO'))
+        split_bet = floor(self.first_bet * cfg['SPLIT_RATIO'])
         self.player.wager(split_bet)
         self.pots.insert(self.index + 1, split_bet)
         self.hands[self.index + 1].addCards(card2)
@@ -420,5 +423,5 @@ class TableSlot:
 
     def _canAfford(self, ratioName):
         """Returns True iff player can afford a given wager"""
-        needed_amt = floor(self.first_bet * get(ratioName))
+        needed_amt = floor(self.first_bet * cfg[ratioName])
         return self.player.stack.amount >= needed_amt
