@@ -116,6 +116,7 @@ def verifyRange(conf, value):
     high = conf['BLACKJACK_VALUE']
     msg = 'to be a comma-separated list of integers between %d and %d' % (low, high)
     def verifyElement(e):
+        """Parses and verifies a hand total"""
         fail = False
         if not isinstance(e, int):
             try:
@@ -248,6 +249,7 @@ class Config:
                 self.__setitem__(key, value)
 
     def reset(self):
+        """Resets configuration options to their default values"""
         self.mergeFile(Config.default_filename)
 
     def keys(self):
