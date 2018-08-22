@@ -285,17 +285,31 @@ class CardCount():
         'ZenCount':      [1, 1, 2, 2, 2,   1, 0,  0, -2, -2, -2, -2, -1]
     }
 
-    def __init__(self, system):
+    def __init__(self):
         """Initializes members"""
-        self.count = 0
-        self.ranking = CardCount.systems[system]
+        self.reset()
+
+    def reset(self):
+        self.counts = {k : 0 for k in CardCount.systems.keys()}
 
     def update(self, card):
         """Updates count based on card"""
         if card is None:
-            self.count = 0
+            self.reset()
         else:
-            self.count += self.ranking[card.index]
+            for k, v in CardCount.systems.items():
+                self.counts[k] += v[card.index]
+
+    def __str__(self):
+        '''Returns string representation of counts '''
+        s = ''
+        for k in sorted(self.counts.keys()):
+            s += '{:<13}    {:<4}\n'.format(k, self.counts[k])
+        return s
+
+    def __repr__(self):
+        '''Returns representation of counts '''
+        return repr(self.counts)
 
 class InsurancePolicy(metaclass=ABCMeta):
     """Base Class for insurance policies on when to accept insurance"""

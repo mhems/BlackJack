@@ -14,7 +14,6 @@ from cards import (BlackjackHand, Shoe, fisher_yates_shuffle)
 from config import cfg
 from game import (Dealer)
 from log import log
-from policies import CardCount
 
 class Table:
     """Representation of Blackjack Table"""
@@ -32,7 +31,6 @@ class Table:
                          fisher_yates_shuffle,
                          cfg['CUT_INDEX'])
         self.shoe.shuffle()
-        self.shoe.registerObserver(CardCount('HiLoCount'))
         self.dealer_slot.seatPlayer(Dealer())
         hitCmd = HitCommand(self.shoe)
         standCmd = StandCommand()
